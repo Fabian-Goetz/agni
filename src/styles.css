@@ -1,0 +1,96 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Firetruck theme tokens (game screens use bg-ember, text-go, …). */
+@theme {
+  --color-ink: #0a0e15;
+  --color-elevated: #111823;
+  --color-card: #131b27;
+  --color-input: #1c2634;
+  --color-edge: #263243;
+  --color-ember: #ef4444;
+  --color-ember-bright: #f87171;
+  --color-flame: #fb923c;
+  --color-go: #22c55e;
+  --color-warn: #eab308;
+  --color-sky: #3b82f6;
+  --color-muted: #64748b;
+  --color-subtle: #94a3b8;
+}
+
+/* spartan.ng / shadcn design tokens — dark firetruck palette. */
+:root {
+  --background: #0a0e15;
+  --foreground: #f1f5f9;
+  --card: #131b27;
+  --card-foreground: #f1f5f9;
+  --popover: #111823;
+  --popover-foreground: #f1f5f9;
+  --primary: #ef4444;
+  --primary-foreground: #ffffff;
+  --secondary: #1c2634;
+  --secondary-foreground: #f1f5f9;
+  --muted: #1c2634;
+  --muted-foreground: #94a3b8;
+  --accent: #263243;
+  --accent-foreground: #f1f5f9;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #263243;
+  --input: #263243;
+  --ring: #ef4444;
+  --radius: 0.5rem;
+}
+
+/* Map spartan tokens to Tailwind utilities (bg-background, border-border, …). */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: #f1f5f9;
+  font-family: system-ui, 'Segoe UI', Helvetica, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Tailwind v4 preflight leaves buttons at cursor:auto — restore the pointer. */
+button:not(:disabled),
+label:has(> input[type='checkbox']),
+label:has(> input[type='file']) {
+  cursor: pointer;
+}
