@@ -1,25 +1,19 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient } from '@supabase/supabase-js';
 import { ContentStore } from './content-store.port';
 import { VehicleType } from '../models/vehicle-type';
 import { Equipment } from '../models/equipment';
 import { Vehicle, Placement } from '../models/vehicle';
 
 /**
- * Supabase-backed ContentStore (ADR-0002). Same port as the local adapter, so
- * it swaps in with zero domain changes. Row-Level Security (docs/supabase/schema.sql)
- * scopes every read/write to the signed-in owner.
- *
- * NOTE (scaffold): save* uses upsert for equipment/vehicles (removed rows are
- * not pruned) and full delete-then-insert for placements. A production version
- * would extend the port with granular delete/add ops instead of whole-array
- * saves. vehicle_types are shared reference data seeded via SQL; save is a no-op.
+ * Supabase-backed ContentStore (ADR-0002). Same port as the local adapter, so it
+ * swaps in with zero domain changes. Takes the shared client (supabase.client.ts)
+ * so the signed-in JWT rides along; Row-Level Security (docs/supabase/schema.sql)
+ * scopes every read/write to the owner — `owner_id` defaults to `auth.uid()` on
+ * insert, so writes never set it explicitly. Vehicle types are shared reference
+ * data seeded via SQL, hence read-only here.
  */
 export class SupabaseContentStore implements ContentStore {
-  private readonly db: SupabaseClient;
-
-  constructor(url: string, anonKey: string) {
-    this.db = createClient(url, anonKey);
-  }
+  constructor(private readonly db: SupabaseClient) {}
 
   async loadVehicleTypes(): Promise<VehicleType[]> {
     const { data, error } = await this.db.from('vehicle_types').select('*');
@@ -33,21 +27,15 @@ export class SupabaseContentStore implements ContentStore {
     }));
   }
 
-  async saveVehicleTypes(): Promise<void> {
-    // Shared reference data — managed via SQL, not writable through the anon key.
-  }
-
   async loadEquipment(): Promise<Equipment[]> {
     const { data, error } = await this.db.from('equipment').select('*');
     if (error) throw error;
     return (data ?? []).map((r) => ({ id: r.id, name: r.name, category: r.category ?? undefined }));
   }
-
-  async saveEquipment(equipment: Equipment[]): Promise<void> {
-    if (equipment.length === 0) return;
+  async addEquipment(equipment: Equipment): Promise<void> {
     const { error } = await this.db
       .from('equipment')
-      .upsert(equipment.map((e) => ({ id: e.id, name: e.name, category: e.category ?? null })));
+      .upsert({ id: equipment.id, name: equipment.name, category: equipment.category ?? null });
     if (error) throw error;
   }
 
@@ -56,12 +44,15 @@ export class SupabaseContentStore implements ContentStore {
     if (error) throw error;
     return (data ?? []).map((r) => ({ id: r.id, name: r.name, typeId: r.type_id }));
   }
-
-  async saveVehicles(vehicles: Vehicle[]): Promise<void> {
-    if (vehicles.length === 0) return;
+  async putVehicle(vehicle: Vehicle): Promise<void> {
     const { error } = await this.db
       .from('vehicles')
-      .upsert(vehicles.map((v) => ({ id: v.id, name: v.name, type_id: v.typeId })));
+      .upsert({ id: vehicle.id, name: vehicle.name, type_id: vehicle.typeId });
+    if (error) throw error;
+  }
+  async deleteVehicle(vehicleId: string): Promise<void> {
+    // placements cascade on the FK (schema.sql); RLS scopes the delete to the owner.
+    const { error } = await this.db.from('vehicles').delete().eq('id', vehicleId);
     if (error) throw error;
   }
 
@@ -75,11 +66,7 @@ export class SupabaseContentStore implements ContentStore {
       qty: r.qty ?? undefined,
     }));
   }
-
-  async savePlacements(placements: Placement[]): Promise<void> {
-    // Full replace of the owner's placements (they have no app-stable id).
-    const del = await this.db.from('placements').delete().not('id', 'is', null);
-    if (del.error) throw del.error;
+  async addPlacements(placements: Placement[]): Promise<void> {
     if (placements.length === 0) return;
     const { error } = await this.db.from('placements').insert(
       placements.map((p) => ({
@@ -89,6 +76,17 @@ export class SupabaseContentStore implements ContentStore {
         qty: p.qty ?? null,
       })),
     );
+    if (error) throw error;
+  }
+  async removePlacement(placement: Placement): Promise<void> {
+    const { error } = await this.db
+      .from('placements')
+      .delete()
+      .match({
+        vehicle_id: placement.vehicleId,
+        compartment_id: placement.compartmentId,
+        equipment_id: placement.equipmentId,
+      });
     if (error) throw error;
   }
 }

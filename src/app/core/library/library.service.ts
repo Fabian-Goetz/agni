@@ -1,9 +1,16 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { CONTENT_STORE } from '../content/content-store.port';
+import { USE_SUPABASE } from '../content/supabase.config';
+import { AuthService } from '../auth/auth.service';
 import { VehicleType } from '../models/vehicle-type';
 import { Equipment } from '../models/equipment';
 import { Vehicle, Placement } from '../models/vehicle';
 import { Compartment, CompartmentId } from '../models/compartment';
+
+const samePlacement = (a: Placement, b: Placement): boolean =>
+  a.vehicleId === b.vehicleId &&
+  a.compartmentId === b.compartmentId &&
+  a.equipmentId === b.equipmentId;
 
 /**
  * App-level facade over the ContentStore. Loads the Library once into signals
@@ -14,6 +21,7 @@ import { Compartment, CompartmentId } from '../models/compartment';
 @Injectable({ providedIn: 'root' })
 export class LibraryService {
   private readonly store = inject(CONTENT_STORE);
+  private readonly auth = inject(AuthService);
 
   private readonly _vehicleTypes = signal<VehicleType[]>([]);
   private readonly _equipment = signal<Equipment[]>([]);
@@ -33,6 +41,30 @@ export class LibraryService {
   );
 
   private loadPromise?: Promise<void>;
+
+  constructor() {
+    // Under Supabase the Library is per-owner: when the signed-in user changes
+    // (sign in as someone else, sign out), drop the cached Library so the next
+    // load fetches the new owner's rows and never leaks the previous user's data.
+    if (USE_SUPABASE) {
+      let prev: string | null | undefined;
+      effect(() => {
+        const uid = this.auth.user()?.id ?? null;
+        if (prev !== undefined && uid !== prev) this.reset();
+        prev = uid;
+      });
+    }
+  }
+
+  /** Clear the in-memory Library so the next ensureLoaded() refetches. */
+  reset(): void {
+    this.loadPromise = undefined;
+    this._loaded.set(false);
+    this._vehicleTypes.set([]);
+    this._equipment.set([]);
+    this._vehicles.set([]);
+    this._placements.set([]);
+  }
 
   /** Load the Library once (idempotent). */
   ensureLoaded(): Promise<void> {
@@ -98,7 +130,8 @@ export class LibraryService {
     }));
     this._vehicles.update((v) => [...v, vehicle]);
     this._placements.update((p) => [...p, ...cloned]);
-    await Promise.all([this.persistVehicles(), this.persistPlacements()]);
+    await this.store.putVehicle(vehicle); // vehicle first: placements FK it
+    await this.store.addPlacements(cloned);
     return vehicle;
   }
 
@@ -117,7 +150,7 @@ export class LibraryService {
   async deleteVehicle(vehicleId: string): Promise<void> {
     this._vehicles.update((v) => v.filter((x) => x.id !== vehicleId));
     this._placements.update((p) => p.filter((x) => x.vehicleId !== vehicleId));
-    await Promise.all([this.persistVehicles(), this.persistPlacements()]);
+    await this.store.deleteVehicle(vehicleId); // placements cascade in the store
   }
 
   hasPlacement(vehicleId: string, compartmentId: CompartmentId, equipmentId: string): boolean {
@@ -136,34 +169,20 @@ export class LibraryService {
     equipmentId: string,
   ): Promise<void> {
     const exists = this.hasPlacement(vehicleId, compartmentId, equipmentId);
+    const placement: Placement = { vehicleId, compartmentId, equipmentId };
     this._placements.update((all) =>
-      exists
-        ? all.filter(
-            (p) =>
-              !(
-                p.vehicleId === vehicleId &&
-                p.compartmentId === compartmentId &&
-                p.equipmentId === equipmentId
-              ),
-          )
-        : [...all, { vehicleId, compartmentId, equipmentId }],
+      exists ? all.filter((p) => !samePlacement(p, placement)) : [...all, placement],
     );
-    await this.persistPlacements();
+    if (exists) await this.store.removePlacement(placement);
+    else await this.store.addPlacements([placement]);
   }
 
   /** Create a catalog entry inline; returns it. */
   async addEquipment(name: string, category?: string): Promise<Equipment> {
     const item: Equipment = { id: this.uid('eq'), name: name.trim(), category };
     this._equipment.update((e) => [...e, item]);
-    await this.store.saveEquipment(this._equipment());
+    await this.store.addEquipment(item);
     return item;
-  }
-
-  private persistVehicles(): Promise<void> {
-    return this.store.saveVehicles(this._vehicles());
-  }
-  private persistPlacements(): Promise<void> {
-    return this.store.savePlacements(this._placements());
   }
 
   private uid(prefix: string): string {

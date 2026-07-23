@@ -23,9 +23,12 @@ create policy vehicle_types_read on vehicle_types
 -- ---------------------------------------------------------------------------
 -- Per-Author Library
 -- ---------------------------------------------------------------------------
+-- Equipment is a shared canonical catalog (CONTEXT.md): the DIN seed rows have
+-- owner_id null and are readable by everyone; Authors may add their own custom
+-- items (owner_id = auth.uid()). Hence owner_id is nullable.
 create table if not exists equipment (
   id       text primary key,
-  owner_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  owner_id uuid default auth.uid() references auth.users (id) on delete cascade,
   name     text not null,
   category text
 );
@@ -53,23 +56,24 @@ alter table equipment  enable row level security;
 alter table vehicles   enable row level security;
 alter table placements enable row level security;
 
+-- Equipment: shared seed (owner_id null) is world-readable; own custom items too.
+-- Writes stay owner-scoped, so the shared catalog is immutable via the anon key.
+create policy equipment_read on equipment
+  for select using (owner_id is null or owner_id = auth.uid());
+create policy equipment_insert on equipment
+  for insert with check (owner_id = auth.uid());
+create policy equipment_update on equipment
+  for update using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+create policy equipment_delete on equipment
+  for delete using (owner_id = auth.uid());
+
 -- "Own your Library": each owner sees and mutates only their own rows.
-create policy equipment_owner on equipment
-  for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
 create policy vehicles_owner on vehicles
   for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
 create policy placements_owner on placements
   for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
 
 -- ---------------------------------------------------------------------------
--- Seed the shared vehicle type once (privileged / service-role context).
--- The app ships the same seed locally (core/seed/seed-lf.ts); insert the LF
--- type here so authenticated users can clone it. Example:
---
---   insert into vehicle_types (id, name, compartments, default_loadout, has_custom_sketch)
---   values ('lf-fabian', 'LF (Fabians Fahrzeug)', '[...]'::jsonb, '[...]'::jsonb, true)
---   on conflict (id) do update set
---     name = excluded.name,
---     compartments = excluded.compartments,
---     default_loadout = excluded.default_loadout,
---     has_custom_sketch = excluded.has_custom_sketch;
+-- Seed the shared reference data (vehicle types + DIN equipment catalog) by
+-- running docs/supabase/seed.sql next. It is generated from core/seed/seed-lf.ts
+-- so the app's local seed and the database stay identical.

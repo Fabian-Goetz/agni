@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/auth/auth.service';
+import { USE_SUPABASE } from '../../core/content/supabase.config';
 import { HlmButton } from '../../shared/ui/hlm-button.directive';
 
 /** Landing screen — pick a Game Mode. v1 ships In-Person; others are roadmap. */
@@ -17,6 +19,15 @@ import { HlmButton } from '../../shared/ui/hlm-button.directive';
           Wo liegt was auf dem Fahrzeug? Tippen, aufdecken, nachschauen.
         </p>
       </header>
+
+      @if (showAccount && auth.user(); as u) {
+        <div class="flex items-center justify-center gap-3 text-xs text-muted-foreground">
+          <span class="truncate">{{ u.email }}</span>
+          <button type="button" class="font-semibold text-primary" (click)="signOut()">
+            Abmelden
+          </button>
+        </div>
+      }
 
       <section class="flex flex-col gap-3">
         <a hlmBtn size="xl" routerLink="/select">🚒 In-Person Spiel starten</a>
@@ -37,4 +48,13 @@ import { HlmButton } from '../../shared/ui/hlm-button.directive';
     </main>
   `,
 })
-export class Home {}
+export class Home {
+  readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  readonly showAccount = USE_SUPABASE;
+
+  async signOut(): Promise<void> {
+    await this.auth.signOut();
+    this.router.navigate(['/login'], { replaceUrl: true });
+  }
+}

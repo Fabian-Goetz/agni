@@ -11,7 +11,9 @@ pull the real tool off the truck.
 - **Content editor**: pick a compartment on the schematic, tick what's stored there.
 - **One vehicle type**: the LF (reuses the `LfSketch` schematic from the sibling
   `feuerwehr-activity`), with a provisional DIN 14530-11 loadout seed.
-- Local-first persistence; a **Supabase** adapter swaps in behind the same port.
+- **Supabase** backend: Authors sign in (email/password or Google) and own an
+  RLS-scoped Library; a localStorage adapter swaps in behind the same port for
+  fully-offline/local use (`USE_SUPABASE = false`).
 
 Design & decisions: [`CONTEXT.md`](./CONTEXT.md) and [`docs/adr/`](./docs/adr).
 
@@ -22,9 +24,10 @@ Design & decisions: [`CONTEXT.md`](./CONTEXT.md) and [`docs/adr/`](./docs/adr).
 3. **Session driver** — `core/session` (In-Person; more modes later).
 4. **Presentation** — `features/*`, `shared/lf-sketch`, spartan-ng helm UI (`shared/ui`).
 
-Persistence is a swappable **`ContentStore` port** (`core/content`): a local
-`localStorage` adapter (default) and a `SupabaseContentStore` selected by
-`core/content/supabase.config.ts`.
+Persistence is a swappable **`ContentStore` port** (`core/content`) with granular
+add/put/remove ops: a `SupabaseContentStore` (active) and a `localStorage`
+adapter, selected by `core/content/supabase.config.ts`. Auth lives in
+`core/auth` and shares one client with the store so RLS scopes every query.
 
 ## Develop
 
@@ -35,12 +38,33 @@ npm test           # vitest unit tests
 npm run build      # production build
 ```
 
-## Enable Supabase (optional)
+## Backend (Supabase)
 
-1. Create a Supabase project; run [`docs/supabase/schema.sql`](./docs/supabase/schema.sql).
-2. Seed the LF `vehicle_types` row (see the SQL file's footer).
-3. Set `USE_SUPABASE = true` + the URL/anon key in
-   `src/app/core/content/supabase.config.ts`.
+Supabase is the active backend (`USE_SUPABASE = true` in
+`src/app/core/content/supabase.config.ts`; the publishable key is safe to ship —
+RLS protects the data). Authors sign in (email/password or Google) and get a
+private, RLS-scoped Library. To point at your own project:
+
+1. **Schema + seed.** In the Supabase SQL editor run
+   [`docs/supabase/schema.sql`](./docs/supabase/schema.sql), then
+   [`docs/supabase/seed.sql`](./docs/supabase/seed.sql) (shared vehicle types +
+   the DIN equipment catalog). `seed.sql` is generated from
+   `src/app/core/seed/seed-lf.ts` — regenerate it if the seed changes.
+2. **Config.** Set `SUPABASE_URL` + `SUPABASE_ANON_KEY` (Settings → API →
+   Project API keys → `anon`/publishable) in `supabase.config.ts`. Set
+   `USE_SUPABASE = false` to run fully offline/local with no accounts instead.
+3. **Google provider.** Authentication → Providers → Google: enable it and paste
+   the Google OAuth client ID + secret (from Google Cloud console). Add the
+   Supabase callback URL to Google's *Authorized redirect URIs*.
+4. **Redirect allow-list.** Authentication → URL Configuration: add the app
+   origins as redirect URLs — `http://localhost:4200/` for dev and the deployed
+   `https://<user>.github.io/agni/` for Pages.
+5. **Email confirmation** (optional) — off gives instant password sign-up; on
+   shows a "check your inbox" message after registering.
+
+Data model: `vehicle_types` and the DIN `equipment` seed rows are shared,
+read-only reference data (`owner_id null`); each Author's vehicles, placements,
+and any custom equipment are RLS-scoped to `auth.uid()`.
 
 ## Deploy
 

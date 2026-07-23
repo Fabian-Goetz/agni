@@ -11,8 +11,13 @@ const KEYS = {
   placements: 'fk.placements',
 } as const;
 
+const samePlacement = (a: Placement, b: Placement): boolean =>
+  a.vehicleId === b.vehicleId &&
+  a.compartmentId === b.compartmentId &&
+  a.equipmentId === b.equipmentId;
+
 /**
- * localStorage-backed ContentStore (v1 default). Vehicle types + equipment fall
+ * localStorage-backed ContentStore (local mode). Vehicle types + equipment fall
  * back to shipped DIN seed when nothing is persisted; user-owned vehicles and
  * placements start empty. Plain class taking a raw Storage so tests can inject a
  * fake (mirrors the sibling's adapter pattern).
@@ -23,29 +28,44 @@ export class LocalStorageContentStore implements ContentStore {
   loadVehicleTypes(): Promise<VehicleType[]> {
     return Promise.resolve(this.read<VehicleType[]>(KEYS.vehicleTypes) ?? SEED_VEHICLE_TYPES);
   }
-  saveVehicleTypes(types: VehicleType[]): Promise<void> {
-    return this.write(KEYS.vehicleTypes, types);
-  }
 
   loadEquipment(): Promise<Equipment[]> {
     return Promise.resolve(this.read<Equipment[]>(KEYS.equipment) ?? SEED_EQUIPMENT);
   }
-  saveEquipment(equipment: Equipment[]): Promise<void> {
-    return this.write(KEYS.equipment, equipment);
+  addEquipment(equipment: Equipment): Promise<void> {
+    const all = this.read<Equipment[]>(KEYS.equipment) ?? SEED_EQUIPMENT;
+    return this.write(KEYS.equipment, [...all.filter((e) => e.id !== equipment.id), equipment]);
   }
 
   loadVehicles(): Promise<Vehicle[]> {
     return Promise.resolve(this.read<Vehicle[]>(KEYS.vehicles) ?? []);
   }
-  saveVehicles(vehicles: Vehicle[]): Promise<void> {
-    return this.write(KEYS.vehicles, vehicles);
+  putVehicle(vehicle: Vehicle): Promise<void> {
+    const all = this.read<Vehicle[]>(KEYS.vehicles) ?? [];
+    return this.write(KEYS.vehicles, [...all.filter((v) => v.id !== vehicle.id), vehicle]);
+  }
+  async deleteVehicle(vehicleId: string): Promise<void> {
+    const vehicles = (this.read<Vehicle[]>(KEYS.vehicles) ?? []).filter((v) => v.id !== vehicleId);
+    const placements = (this.read<Placement[]>(KEYS.placements) ?? []).filter(
+      (p) => p.vehicleId !== vehicleId,
+    );
+    await this.write(KEYS.vehicles, vehicles);
+    await this.write(KEYS.placements, placements);
   }
 
   loadPlacements(): Promise<Placement[]> {
     return Promise.resolve(this.read<Placement[]>(KEYS.placements) ?? []);
   }
-  savePlacements(placements: Placement[]): Promise<void> {
-    return this.write(KEYS.placements, placements);
+  addPlacements(placements: Placement[]): Promise<void> {
+    const all = this.read<Placement[]>(KEYS.placements) ?? [];
+    return this.write(KEYS.placements, [...all, ...placements]);
+  }
+  removePlacement(placement: Placement): Promise<void> {
+    const all = this.read<Placement[]>(KEYS.placements) ?? [];
+    return this.write(
+      KEYS.placements,
+      all.filter((p) => !samePlacement(p, placement)),
+    );
   }
 
   private read<T>(key: string): T | null {
