@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agni · Startseite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Saira+Condensed:wght@500;600;700&family=Saira:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     AGNI — shared design tokens (see 01-anmelden.html)
+     ============================================================ */
+  :root {
+    --bay:#0E1116; --bay-2:#0B0E12; --panel:#161A21; --panel-2:#1B2029;
+    --steel:#262E3A; --steel-lo:#1E242D;
+    --signal:#E5352B; --signal-hi:#FF574C; --sodium:#F4B860;
+    --paper:#E8EAED; --muted:#8A94A3; --faint:#5A6473; --go:#46D07E;
+    --radius:4px; --maxw:1240px;
+    --font-display:"Saira Condensed",system-ui,sans-serif;
+    --font-body:"Saira",system-ui,sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  * { box-sizing:border-box; }
+  html,body { height:100%; }
+  body {
+    margin:0; font-family:var(--font-body); color:var(--paper); line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(120% 90% at 22% 8%, #171C25 0%, var(--bay) 46%, var(--bay-2) 100%),
+      linear-gradient(var(--steel-lo) 1px, transparent 1px),
+      linear-gradient(90deg, var(--steel-lo) 1px, transparent 1px);
+    background-size:100% 100%, 34px 34px, 34px 34px;
+  }
+  .shell {
+    min-height:100%; max-width:var(--maxw); margin:0 auto;
+    padding:clamp(20px,3.2vw,44px) clamp(20px,4vw,56px);
+    display:flex; flex-direction:column; gap:clamp(26px,3vw,44px);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .brand { display:flex; align-items:baseline; gap:12px; }
+  .brand .mark {
+    font-family:var(--font-display); font-weight:700; font-size:30px;
+    letter-spacing:0.14em; line-height:1; position:relative; padding-left:20px;
+  }
+  .brand .mark::before {
+    content:""; position:absolute; left:0; top:50%;
+    width:11px; height:11px; transform:translateY(-50%) rotate(45deg);
+    background:var(--signal); box-shadow:0 0 16px 1px rgba(229,53,43,0.55);
+  }
+  .brand .sub {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.28em;
+    text-transform:uppercase; color:var(--faint);
+  }
+  .account { display:flex; align-items:center; gap:18px; }
+  .account .lib {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--muted); text-decoration:none;
+    border:1px solid var(--steel); border-radius:var(--radius);
+    padding:8px 12px; background:rgba(22,26,33,0.6);
+  }
+  .account .lib:hover { border-color:var(--muted); }
+  .account .user { display:flex; align-items:center; gap:10px; }
+  .account .avatar {
+    width:32px; height:32px; border-radius:var(--radius);
+    background:var(--panel-2); border:1px solid var(--steel);
+    display:grid; place-items:center; font-family:var(--font-display);
+    font-weight:700; color:var(--sodium); font-size:15px;
+  }
+  .account .who { display:flex; flex-direction:column; line-height:1.2; }
+  .account .who .email { font-size:13px; color:var(--paper); }
+  .account .who a {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em;
+    color:var(--faint); text-decoration:none;
+  }
+  .account .who a:hover { color:var(--signal-hi); }
+
+  /* ---------- page header ---------- */
+  .eyebrow {
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.34em;
+    text-transform:uppercase; color:var(--signal); margin:0 0 14px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .eyebrow::after {
+    content:""; height:1px; flex:0 0 80px;
+    background:linear-gradient(90deg,var(--signal),transparent);
+  }
+  .page-head h1 {
+    font-family:var(--font-display); font-weight:600;
+    font-size:clamp(34px,4.6vw,54px); line-height:1; letter-spacing:-0.01em; margin:0;
+  }
+  .page-head p { color:var(--muted); font-size:16px; margin:12px 0 0; max-width:56ch; }
+
+  /* ---------- mode grid ---------- */
+  .modes {
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:clamp(16px,1.6vw,22px);
+  }
+  .mode {
+    position:relative; overflow:hidden;
+    background:linear-gradient(180deg,var(--panel),#12161D);
+    border:1px solid var(--steel); border-radius:var(--radius);
+    padding:24px 24px 26px; display:flex; flex-direction:column; gap:16px;
+    min-height:290px;
+  }
+  .mode .status {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.2em;
+    text-transform:uppercase; display:inline-flex; align-items:center; gap:8px;
+    color:var(--faint);
+  }
+  .mode .status .dot { width:7px; height:7px; border-radius:50%; background:var(--faint); }
+  .mode .icon { color:#4E5B6E; }
+  .mode .icon svg { display:block; }
+  .mode h2 {
+    font-family:var(--font-display); font-weight:600; font-size:27px;
+    letter-spacing:0.01em; margin:0;
+  }
+  .mode .desc { color:var(--muted); font-size:14.5px; margin:0; flex:1; }
+  .mode .meta {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em;
+    color:var(--faint); text-transform:uppercase;
+  }
+
+  /* available mode = In-Person */
+  .mode.available { border-color:#3A2422; }
+  .mode.available::before {
+    content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--signal) 0 44%,var(--steel) 44%);
+  }
+  .mode.available .status { color:var(--go); }
+  .mode.available .status .dot { background:var(--go); box-shadow:0 0 8px var(--go); }
+  .mode.available .icon { color:var(--sodium); }
+  .mode.available:hover { border-color:var(--signal); }
+
+  .mode .cta {
+    margin-top:2px;
+    font-family:var(--font-display); font-weight:600; font-size:15px;
+    letter-spacing:0.06em; text-transform:uppercase;
+    background:var(--signal); color:#fff; border:1px solid transparent;
+    border-radius:var(--radius); padding:12px 16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    transition:background .15s, transform .06s; text-decoration:none;
+  }
+  .mode .cta:hover { background:var(--signal-hi); }
+  .mode .cta:active { transform:translateY(1px); }
+  .mode .cta:focus-visible { outline:none; box-shadow:0 0 0 3px rgba(244,184,96,0.4); }
+
+  /* locked modes = roadmap */
+  .mode.locked { opacity:0.72; }
+  .mode.locked::after {
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(-45deg, transparent 0 9px, rgba(90,100,115,0.05) 9px 10px);
+  }
+  .mode.locked .badge {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--faint);
+    border:1px dashed var(--steel); border-radius:var(--radius);
+    padding:10px 14px; text-align:center;
+  }
+
+  /* ---------- prepare row ---------- */
+  .prep-label {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.24em;
+    text-transform:uppercase; color:var(--faint);
+    display:flex; align-items:center; gap:12px; margin-bottom:16px;
+  }
+  .prep-label::after { content:""; height:1px; flex:1; background:var(--steel-lo); }
+  .prep { display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,1.6vw,22px); }
+  .tile {
+    display:flex; align-items:center; gap:18px; text-decoration:none;
+    background:linear-gradient(180deg,var(--panel),#12161D);
+    border:1px solid var(--steel); border-radius:var(--radius);
+    padding:18px 22px; color:var(--paper); transition:border-color .15s;
+  }
+  .tile:hover { border-color:var(--muted); }
+  .tile .t-icon {
+    width:46px; height:46px; flex:none; border-radius:var(--radius);
+    background:var(--panel-2); border:1px solid var(--steel);
+    display:grid; place-items:center; color:var(--sodium);
+  }
+  .tile .t-body { flex:1; }
+  .tile .t-body strong { font-family:var(--font-display); font-weight:600; font-size:18px; letter-spacing:0.01em; }
+  .tile .t-body span { display:block; color:var(--muted); font-size:13.5px; }
+  .tile .t-go { font-family:var(--font-mono); color:var(--faint); font-size:18px; }
+  .tile.veh .t-icon { background:transparent; border-color:var(--steel-lo); color:#4E5B6E; width:76px; }
+  .tile.veh .t-badge {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em;
+    color:var(--sodium); text-transform:uppercase;
+  }
+
+  /* ---------- footer ---------- */
+  .footer {
+    display:flex; flex-wrap:wrap; gap:10px 22px; margin-top:auto;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--faint);
+    border-top:1px solid var(--steel-lo); padding-top:18px;
+  }
+  .footer span b { color:var(--muted); font-weight:400; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px) {
+    .modes { grid-template-columns:1fr; }
+    .prep { grid-template-columns:1fr; }
+    .account .who .email { display:none; }
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">AGNI</div>
+        <div class="sub">Fahrzeugkunde</div>
+      </div>
+      <div class="account">
+        <a class="lib" href="#">Meine Bibliothek</a>
+        <div class="user">
+          <div class="avatar">FK</div>
+          <div class="who">
+            <span class="email">f.koch@ff-konstanz.de</span>
+            <a href="#">Abmelden</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-head">
+      <p class="eyebrow">Willkommen zurück</p>
+      <h1>Wähle deinen Modus.</h1>
+      <p>Eine Bibliothek, drei Wege zu üben. Starte am Fahrzeug, wiederhole allein oder tritt gegeneinander an.</p>
+    </div>
+
+    <!-- MODE GRID -->
+    <section class="modes">
+
+      <!-- In-Person (available) -->
+      <article class="mode available">
+        <span class="status"><span class="dot"></span>Verfügbar</span>
+        <div class="icon">
+          <!-- truck side view (the app signature, in miniature) -->
+          <svg width="72" height="44" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+            <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 17 L20 15 L20 24 L8 24 Z" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="30" y1="22" x2="44" y2="22" stroke="currentColor" stroke-width="1"/>
+            <line x1="30" y1="26" x2="44" y2="26" stroke="currentColor" stroke-width="1"/>
+            <circle cx="20" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="2"/>
+            <circle cx="54" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <h2>In-Person</h2>
+        <p class="desc">Die Gruppe steht am Fahrzeug, ein Gerät wird gezeigt, ihr tippt das richtige Fach — dann greift ihr zu.</p>
+        <span class="meta">1 Gerät · Gruppe · offline</span>
+        <a class="cta" href="#">Spiel starten →</a>
+      </article>
+
+      <!-- Learning (roadmap) -->
+      <article class="mode locked">
+        <span class="status"><span class="dot"></span>Bald</span>
+        <div class="icon">
+          <svg width="52" height="44" viewBox="0 0 52 44" fill="none" aria-hidden="true">
+            <line x1="6" y1="6" x2="6" y2="38" stroke="currentColor" stroke-width="2"/>
+            <line x1="6" y1="38" x2="46" y2="38" stroke="currentColor" stroke-width="2"/>
+            <path d="M10 30 L20 22 L30 26 L44 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="20" cy="22" r="2.5" fill="currentColor"/>
+            <circle cx="30" cy="26" r="2.5" fill="currentColor"/>
+            <circle cx="44" cy="10" r="2.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <h2>Lernen</h2>
+        <p class="desc">Allein und im eigenen Tempo. Agni merkt sich, was noch sitzt und was du wiederholen solltest.</p>
+        <span class="meta">Einzeln · Fortschritt · Wiederholung</span>
+        <div class="badge">In Planung</div>
+      </article>
+
+      <!-- Online PvP (roadmap) -->
+      <article class="mode locked">
+        <span class="status"><span class="dot"></span>Bald</span>
+        <div class="icon">
+          <svg width="56" height="44" viewBox="0 0 56 44" fill="none" aria-hidden="true">
+            <rect x="4" y="10" width="24" height="26" rx="2" stroke="currentColor" stroke-width="2"/>
+            <rect x="28" y="10" width="24" height="26" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M30 16 L26 24 L30 24 L26 30" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="9" y1="16" x2="19" y2="16" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="9" y1="20" x2="16" y2="20" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <h2>Online-Duell</h2>
+        <p class="desc">Mehrere Geräte, ein Code. Gleiche Frage für alle, Countdown und Live-Rangliste — Kahoot-Stil.</p>
+        <span class="meta">Mehrspieler · Live · Rangliste</span>
+        <div class="badge">In Planung</div>
+      </article>
+
+    </section>
+
+    <!-- PREPARE -->
+    <section>
+      <div class="prep-label">Vorbereiten</div>
+      <div class="prep">
+        <a class="tile" href="#">
+          <span class="t-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 20 L4 16 L15 5 L19 9 L8 20 Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <line x1="13" y1="7" x2="17" y2="11" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </span>
+          <div class="t-body">
+            <strong>Beladung bearbeiten</strong>
+            <span>Fächer und Geräte deiner Fahrzeuge pflegen.</span>
+          </div>
+          <span class="t-go">→</span>
+        </a>
+
+        <a class="tile veh" href="#">
+          <span class="t-icon">
+            <svg width="60" height="34" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+              <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="1.6"/>
+              <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2"/>
+              <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2"/>
+              <circle cx="20" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="54" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </span>
+          <div class="t-body">
+            <span class="t-badge">Dienstfahrzeug</span>
+            <strong>LF 20 · FF Konstanz</strong>
+            <span>6 Geräteräume · 41 Geräte platziert</span>
+          </div>
+          <span class="t-go">→</span>
+        </a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span><b>v1</b> · In-Person-Modus</span>
+      <span>Beladung nach <b>DIN 14530-11</b></span>
+      <span>Angemeldet · <b>FF Konstanz</b></span>
+    </footer>
+
+  </div>
+</body>
+</html>
