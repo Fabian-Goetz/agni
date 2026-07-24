@@ -77,7 +77,13 @@ export class Select {
     return limit === null ? this.poolSize() : Math.min(limit, this.poolSize());
   });
   readonly estMinutes = computed(() => Math.max(1, Math.round((this.roundLength() * 40) / 60)));
-  readonly canStart = computed(() => this.roundLength() > 0);
+
+  /** The round draws on the type's schematic — catalog stubs have none (ADR-0003). */
+  readonly hasSchematic = computed(() => {
+    const v = this.vehicle();
+    return !!v && this.library.hasSchematic(v.id);
+  });
+  readonly canStart = computed(() => this.hasSchematic() && this.roundLength() > 0);
 
   readonly initials = computed(() => {
     const email = this.auth.user()?.email ?? '';
@@ -88,6 +94,13 @@ export class Select {
 
   placedCount(vehicleId: string): number {
     return this.library.placedEquipment(vehicleId).length;
+  }
+
+  /** Per-option summary in the chooser — flags the ones that can't be drilled. */
+  vehicleNote(vehicleId: string): string {
+    return this.library.hasSchematic(vehicleId)
+      ? `${this.placedCount(vehicleId)} Geräte`
+      : 'Kein Fächer-Layout';
   }
 
   constructor() {

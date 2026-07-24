@@ -79,7 +79,7 @@
                 </span>
                 <span class="vinfo">
                   <strong>{{ o.name }}</strong>
-                  <span>{{ placedCount(o.id) }} Geräte</span>
+                  <span>{{ vehicleNote(o.id) }}</span>
                 </span>
                 <span class="mark-sel">✓</span>
               </button>
@@ -128,6 +128,8 @@
         </button>
         @if (canStart()) {
           <p class="est">{{ roundLength() }} Fragen · ≈ {{ estMinutes() }} Min · Gruppentempo</p>
+        } @else if (!hasSchematic()) {
+          <p class="est warn">Für diesen Fahrzeugtyp fehlt noch das Fächer-Layout.</p>
         } @else {
           <p class="est warn">Keine Geräte platziert — erst im Editor beladen.</p>
         }

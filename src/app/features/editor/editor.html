@@ -23,7 +23,17 @@
       </select>
     }
 
-    <fk-lf-sketch [selected]="open() ? [open()!] : []" (pick)="openCompartment($event)" />
+    @if (hasSchematic()) {
+      <fk-lf-sketch [selected]="open() ? [open()!] : []" (pick)="openCompartment($event)" />
+    } @else {
+      <section class="rounded-md border border-border bg-card px-4 py-6 text-center">
+        <p class="font-semibold">Für diesen Fahrzeugtyp fehlt noch das Fächer-Layout.</p>
+        <p class="mt-1 text-sm text-muted-foreground">
+          Die Beladung lässt sich erst bearbeiten, wenn das Layout hinterlegt ist. Wähle bis dahin
+          ein anderes Fahrzeug.
+        </p>
+      </section>
+    }
 
     @if (open(); as fach) {
       <section hlmCard class="px-4 py-3">
@@ -64,7 +74,7 @@
           </button>
         </div>
       </section>
-    } @else {
+    } @else if (hasSchematic()) {
       <p class="text-center text-sm text-muted-foreground">
         Fach antippen, um seine Beladung zu bearbeiten.
       </p>

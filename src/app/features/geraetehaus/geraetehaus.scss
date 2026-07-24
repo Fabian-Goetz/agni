@@ -384,6 +384,12 @@ fk-geraetehaus {
   border-color: var(--signal);
   box-shadow: var(--focus-ring);
 }
+.geraetehaus-screen .create-hint {
+  margin: -4px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--faint);
+}
 .geraetehaus-screen .create-actions {
   display: flex;
   justify-content: flex-end;

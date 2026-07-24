@@ -63,12 +63,25 @@
             <label class="fld">
               <span>Fahrzeugtyp</span>
               <select [value]="newTypeId()" (change)="newTypeId.set($any($event.target).value)">
-                @for (t of types(); track t.id) {
-                  <option [value]="t.id">{{ t.name }}</option>
-                }
+                <optgroup label="Mit DIN-Beladung">
+                  @for (t of loadableTypes(); track t.id) {
+                    <option [value]="t.id">{{ t.name }}</option>
+                  }
+                </optgroup>
+                <optgroup label="Noch ohne Fächer-Layout">
+                  @for (t of stubTypes(); track t.id) {
+                    <option [value]="t.id">{{ t.name }}</option>
+                  }
+                </optgroup>
               </select>
             </label>
           </div>
+          @if (newTypeLocked()) {
+            <p class="create-hint">
+              Für diesen Typ ist noch kein Fächer-Layout hinterlegt — du kannst ihn anlegen, aber
+              noch nicht beladen.
+            </p>
+          }
           <div class="create-actions">
             <button class="btn-ghost" type="button" (click)="cancelCreate()">Abbrechen</button>
             <button class="btn-primary" type="submit" [disabled]="!newName().trim() || busy()">
@@ -117,7 +130,7 @@
             @if (editing() !== r.vehicle.id) {
               <span class="v-meter">
                 @if (r.locked) {
-                  <span class="badge">Kein Fächer-Layout</span>
+                  <span class="badge">{{ r.lockedReason }}</span>
                 } @else {
                   <span class="v-figures">{{ r.filled }}/{{ r.total }} Fächer · {{ r.pct }}%</span>
                   <span class="v-bar"><span class="v-bar-fill" [style.width.%]="r.pct"></span></span>

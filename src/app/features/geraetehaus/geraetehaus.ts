@@ -13,8 +13,10 @@ interface Row {
   filled: number;
   total: number;
   pct: number;
-  /** The type has no compartment layout yet (ADR-0003) — not loadable. */
+  /** No schematic for the type yet (ADR-0003) — the vehicle can't be loaded. */
   locked: boolean;
+  /** Why it's locked, shown in place of the loadout meter. */
+  lockedReason: string;
 }
 
 /**
@@ -54,6 +56,20 @@ export class Geraetehaus {
 
   readonly types = computed(() => this.library.vehicleTypes());
 
+  /** Types with a renderable layout — a vehicle from these is loadable at once. */
+  readonly loadableTypes = computed(() =>
+    this.types().filter((t) => this.library.typeHasSchematic(t)),
+  );
+  /** Catalog master data: creatable, but not loadable until a schematic lands. */
+  readonly stubTypes = computed(() =>
+    this.types().filter((t) => !this.library.typeHasSchematic(t)),
+  );
+  /** True while the create form points at a type that can't be loaded yet. */
+  readonly newTypeLocked = computed(() => {
+    const id = this.newTypeId();
+    return !!id && !this.library.typeHasSchematic(this.library.typeById(id));
+  });
+
   /** The Author's vehicles with their loadout summary — the workspace list. */
   readonly rows = computed<Row[]>(() =>
     this.library.vehicles().map((vehicle) => {
@@ -69,7 +85,8 @@ export class Geraetehaus {
         filled,
         total,
         pct: total ? Math.min(100, Math.round((filled / total) * 100)) : 0,
-        locked: total === 0,
+        locked: !this.library.hasSchematic(vehicle.id),
+        lockedReason: total === 0 ? 'Kein Fächer-Layout' : 'Schema fehlt',
       };
     }),
   );

@@ -30,6 +30,16 @@ export class Editor {
     this.vehicleId() ? this.library.vehicleById(this.vehicleId()!) : undefined,
   );
 
+  /**
+   * Only vehicles whose type has a schematic can be edited — the catalog types
+   * ship without a compartment layout and the generic renderer is still pending
+   * (ADR-0003). Without this the LF sketch would be drawn for every type.
+   */
+  readonly hasSchematic = computed(() => {
+    const id = this.vehicleId();
+    return !!id && this.library.hasSchematic(id);
+  });
+
   constructor() {
     // Deep-link from the Fuhrpark ("Beladen →"): ?vehicle=<id> opens that truck,
     // otherwise fall back to the starter vehicle.

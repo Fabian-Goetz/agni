@@ -115,6 +115,23 @@ export class LibraryService {
     return this._placements().filter((p) => p.vehicleId === vehicleId);
   }
 
+  /**
+   * Whether a schematic exists to render this type's compartments. v1 only draws
+   * the hand-crafted LfSketch, and the Fahrzeugkatalog types ship as master-data
+   * stubs with an empty layout — the generic metadata renderer is still pending
+   * (ADR-0003). Everything that shows a schematic (Beladung editor, rounds) must
+   * gate on this rather than assume the LF.
+   */
+  typeHasSchematic(type: VehicleType | undefined): boolean {
+    return !!type?.hasCustomSketch && type.compartments.length > 0;
+  }
+
+  /** Whether a Vehicle can be loaded in the editor and drilled in a round. */
+  hasSchematic(vehicleId: string): boolean {
+    const vehicle = this.vehicleById(vehicleId);
+    return !!vehicle && this.typeHasSchematic(this.typeById(vehicle.typeId));
+  }
+
   /** Distinct equipment that has at least one placement on the vehicle. */
   placedEquipment(vehicleId: string): Equipment[] {
     const ids = new Set(this.placementsForVehicle(vehicleId).map((p) => p.equipmentId));
