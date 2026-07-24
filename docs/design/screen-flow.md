@@ -42,9 +42,14 @@ Source of truth: `src/app/app.routes.ts`. All content routes are lazy-loaded.
 | `/signup`  | `Signup`  | —             | shipped       | Create account; may need email confirm. |
 | `/home`    | `Home`    | `authGuard`   | shipped       | Landing / mode select (Spielen · Lernen · Online-Duell) + author entry. |
 | `/games`   | `Games`   | `authGuard`   | shipped       | Game-mode launcher: catalog of games (verfügbar + roadmap). Home In-Person CTA lands here; games start `/select`. See §5.6. |
-| `/select`  | `Select`  | `authGuard`   | shipped (thin)| Per-game setup (starts with Fach-Finder). → grows into **Vorbereiten**. |
+| `/select`  | `Select`  | `authGuard`   | shipped       | Round setup — vehicle chooser + question count (§5.2). |
 | `/play`    | `Play`    | `authGuard`   | shipped       | In-Person **Locate** round loop. |
-| `/editor`  | `Editor`  | `authGuard`   | shipped       | Author loadout editor (Placements). |
+| `/geraetehaus` | `Geraetehaus` | `authGuard` | **proposed** | Content home / hub — Fuhrpark · Geräte-Katalog · Beladung (§7.3). |
+| `/geraetehaus/fuhrpark` | `Fuhrpark` | `authGuard` | **proposed** | Vehicle roster: add (from Type), rename, remove; loadout status. |
+| `/geraetehaus/katalog` | `Katalog` | `authGuard` | **proposed** | Geräte-Katalog: Equipment list + educational detail. |
+| `/geraetehaus/beladung` | `Beladung` | `authGuard` | **proposed** | Read-only vehicle picker → workbench. |
+| `/geraetehaus/beladung/:vehicleId` | `Werkbank` | `authGuard` | **proposed** | Loadout workbench (evolved **Editor**; replaces `/editor`). |
+| `/editor`  | `Editor`  | `authGuard`   | shipped → migrate | Current loadout editor; folds into the Beladung-Werkbank. |
 | `/result`  | —         | `authGuard`   | **proposed**  | Round summary / Ergebnis (see §5.1). |
 | `**` → `/home` | —     | —             | shipped       | Unknown paths fall back to Home. |
 
@@ -275,20 +280,59 @@ flowchart TD
 Participants need **no account** (nickname + code only). Realtime coordination is
 quarantined in the Online PvP session driver.
 
-### 7.3 Library management (author)
+### 7.3 Gerätehaus — content management (author)
+
+The Author's content home (CONTEXT: **Gerätehaus** = user-facing front door to the
+**Library**). Structured around one insight: **two independent source lists and
+the join between them**.
+
+- **Fuhrpark** (Vehicles) and **Geräte-Katalog** (Equipment) are self-standing —
+  a truck exists without its kit, a Gerät without any truck.
+- **Beladung** (Placements) can't exist without both — it *is* Vehicle ×
+  Compartment × Gerät. So it's a **workbench that consumes the two source lists**,
+  not a third parallel silo.
 
 ```mermaid
-flowchart LR
-    home[Home] --> lib[Bibliothek · Fahrzeuge]
-    lib --> vnew[Neues Fahrzeug<br/>from Vehicle Type — clone-on-create]
-    lib --> vdetail[Fahrzeug-Detail]
-    vdetail --> editor[Editor · Beladung]
-    lib --> catalog[Geräte-Katalog]
-    vnew --> vdetail
+flowchart TB
+    home[Home] -->|topbar · Gerätehaus| gh[Gerätehaus hub]
+    gh --> fp[Fuhrpark · Fahrzeuge verwalten]
+    gh --> kat[Geräte-Katalog · Geräte + Lerninfo]
+    gh --> bel[Beladung · Fahrzeug wählen]
+
+    fp -->|+ Neues Fahrzeug · from Type| fpnew[Fahrzeug anlegen<br/>clone-on-create]
+    fp -->|Beladen →| work[Beladung-Werkbank · :vehicle]
+    bel -->|Fahrzeug wählen read-only| work
+    kat -.->|auf N Fahrzeugen verbaut| work
+    work -.->|ⓘ Gerät| kat
+    fpnew --> work
 ```
 
-Clone-on-create (ADR-0001): a new Vehicle copies its Type's DIN loadout, then
-diverges independently. Layout is a Type property, not author-editable in v1.
+**Roles & verbs (the anti-duplication rule):**
+- **Fuhrpark** owns the vehicle **roster** — the *only* place to add (from a
+  Vehicle Type, clone-on-create per ADR-0001), rename, or remove a Vehicle. Cards
+  show loadout status (`18/26 Fächer belegt`) and a **Beladen →** shortcut.
+- **Beladung** never owns a roster. Its landing is a **read-only vehicle picker**
+  ("Welches Fahrzeug beladen?") — same vehicles, no CRUD — then the workbench.
+  Different verb (*beladen* vs *verwalten*), one source of truth for the roster.
+- **Beladung-Werkbank** is the evolved **Editor** (replaces `/editor`):
+  bidirectional Placement editing over the vehicle's schematic. Layout is a Type
+  property, not author-editable in v1.
+- **Geräte-Katalog** owns the shared Equipment list + educational detail (what a
+  Gerät is / how it's used). Vehicle-independent.
+
+**Cross-links keep it cohesive (no silos):** Fuhrpark→Beladung (Beladen), Katalog
+Gerät→"auf N Fahrzeugen"→that truck's Beladung, and in the Werkbank each Gerät
+carries an ⓘ→its Katalog entry.
+
+**ADR-0003 gate:** only the LF renders today. Fuhrpark can list/create any Vehicle
+Type, but non-LF types are marked **"Schema folgt"** and their Beladen/Play entry
+is disabled until the generic schematic renderer lands — never drop the user into
+a broken editor.
+
+**Home entry:** the old Home "Vorbereiten" prep tiles (Beladung bearbeiten +
+single Dienstfahrzeug) are replaced by a single **Gerätehaus** entry in the Home
+topbar — content management is a utility destination, not a body CTA, and one
+entry scales to a fleet where a single-vehicle tile does not.
 
 ### 7.4 Other challenge types
 **Identify**, **Name-loadout**, **True/False** (brief §7) are *presentation +
@@ -328,12 +372,16 @@ wraps any launcher game in the Kahoot loop.
 | 1 | Login | `/login` | [01](./screens/01-anmelden.html) | shipped | Anmelden | Home; → Signup |
 | 1 | Signup | `/signup` | 01 | shipped | Registrieren | Home; → Login |
 | 2 | Home / Mode select | `/home` | [02](./screens/02-startseite.html) | shipped | Spielen | Games; Editor; Login |
-| 2b | Spiele-Übersicht (launcher) | `/games` | [04](./screens/04-spiele-uebersicht.html) | **proposed** | Spiel starten | Vorbereiten; Home |
+| 2b | Spiele-Übersicht (launcher) | `/games` | [04](./screens/04-spiele-uebersicht.html) | shipped | Spiel starten | Vorbereiten; Home |
 | 3 | Vorbereiten (Select) | `/select` | [03](./screens/03-vorbereiten.html) | shipped | Runde starten | Play; Games; Home |
 | 4 | Play · Locate | `/play` | — | shipped | tap compartment | Result (proposed); Home |
 | 5 | Ergebnis | `/result` | — | **proposed** | Nochmal | Play; Vorbereiten; Home |
-| 6 | Editor | `/editor` | — | shipped | tick placements | Home |
-| 7 | Bibliothek | — | — | future | — | Editor; Home |
+| 6 | Gerätehaus (hub) | `/geraetehaus` | [05](./screens/05-geraetehaus.html) | **proposed** | pick an area | Fuhrpark; Katalog; Beladung; Home |
+| 6a | Fuhrpark | `/geraetehaus/fuhrpark` | [06](./screens/06-fuhrpark.html) | **proposed** | Neues Fahrzeug / Beladen | Beladung-Werkbank; Gerätehaus |
+| 6b | Geräte-Katalog | `/geraetehaus/katalog` | [07](./screens/07-geraete-katalog.html) | **proposed** | Gerät bearbeiten | Werkbank; Gerätehaus |
+| 6c | Beladung (picker) | `/geraetehaus/beladung` | [08](./screens/08-beladung.html) | **proposed** | Fahrzeug wählen | Werkbank; Fuhrpark; Gerätehaus |
+| 6d | Beladung-Werkbank | `/geraetehaus/beladung/:id` | — (editor grill) | **proposed** | Fächer bestücken | Katalog; Beladung |
+| 7 | Editor (→ Werkbank) | `/editor` | — | shipped, migrating | tick placements | Home |
 | 8 | Lernen + dashboard | — | — | future | — | Home |
 | 9 | Online PvP (host/join set) | — | — | future | — | Home |
 

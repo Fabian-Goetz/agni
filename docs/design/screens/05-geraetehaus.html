@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agni · Gerätehaus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;600;700&family=Roboto+Mono:wght@400;500&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     AGNI — shared design tokens (see 01-anmelden.html)
+     ============================================================ */
+  :root, :root[data-theme="light"] {
+    --signal:#E5352B; --signal-hi:#C82820; --sodium:#B8791C; --go:#2FA35F;
+    --paper:#191A1C; --muted:#4B4E54; --faint:#9AA0A8;
+    --steel:#D6D1C8; --steel-lo:#E4E0D9;
+    --panel:#FFFFFF; --panel-2:#FBFAF7;
+    --line-2:#D6D1C8;
+    --bay:#F6F4F0;
+    --bg-image:
+      radial-gradient(120% 90% at 22% 6%, #FFFFFF 0%, #F6F4F0 52%, #EFEBE4 100%),
+      linear-gradient(rgba(0,0,0,0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.028) 1px, transparent 1px);
+    --card-bg:#FFFFFF;
+    --card-shadow:0 1px 2px rgba(25,26,28,0.04), 0 20px 44px -34px rgba(25,26,28,0.28);
+    --hole:#FFFFFF; --plate-bg:#FFFFFF;
+    --focus-ring:0 0 0 3px rgba(229,53,43,0.28);
+    --icon:#4E5B6E;
+  }
+  :root[data-theme="dark"] {
+    --signal:#E5352B; --signal-hi:#FF574C; --sodium:#F4B860; --go:#46D07E;
+    --paper:#E8EAED; --muted:#8A94A3; --faint:#5A6473;
+    --steel:#262E3A; --steel-lo:#1E242D;
+    --panel:#161A21; --panel-2:#1B2029;
+    --line-2:#262E3A;
+    --bay:#0E1116;
+    --bg-image:
+      radial-gradient(120% 90% at 22% 8%, #171C25 0%, #0E1116 46%, #0B0E12 100%),
+      linear-gradient(#1E242D 1px, transparent 1px),
+      linear-gradient(90deg, #1E242D 1px, transparent 1px);
+    --card-bg:linear-gradient(180deg,#161A21,#12161D);
+    --card-shadow:0 24px 60px -30px rgba(0,0,0,0.9);
+    --hole:#12161D; --plate-bg:rgba(22,26,33,0.6);
+    --focus-ring:0 0 0 3px rgba(244,184,96,0.4);
+    --icon:#5A6675;
+  }
+  :root {
+    --radius:4px; --maxw:1240px;
+    --font-display:"Roboto Condensed",system-ui,sans-serif;
+    --font-body:"Roboto",system-ui,sans-serif;
+    --font-mono:"Roboto Mono",ui-monospace,monospace;
+  }
+  * { box-sizing:border-box; }
+  html,body { height:100%; }
+  body {
+    margin:0; font-family:var(--font-body); color:var(--paper); line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    background:var(--bay); background-image:var(--bg-image);
+    background-size:100% 100%, 34px 34px, 34px 34px;
+    transition:background-color .25s, color .25s;
+  }
+  .shell {
+    min-height:100%; max-width:var(--maxw); margin:0 auto;
+    padding:clamp(20px,3.2vw,44px) clamp(20px,4vw,56px);
+    display:flex; flex-direction:column; gap:clamp(24px,2.8vw,40px);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .brand { display:flex; align-items:baseline; gap:12px; }
+  .brand .mark {
+    font-family:var(--font-display); font-weight:700; font-size:28px;
+    letter-spacing:0.14em; line-height:1; position:relative; padding-left:19px;
+  }
+  .brand .mark::before {
+    content:""; position:absolute; left:0; top:50%;
+    width:10px; height:10px; transform:translateY(-50%) rotate(45deg); background:var(--signal);
+  }
+  .brand .sub { font-family:var(--font-mono); font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--faint); }
+  .tools { display:flex; align-items:center; gap:14px; }
+  .avatar {
+    width:32px; height:32px; border-radius:var(--radius);
+    background:var(--panel-2); border:1px solid var(--steel);
+    display:grid; place-items:center; font-family:var(--font-display);
+    font-weight:700; color:var(--sodium); font-size:15px;
+  }
+  .theme-toggle {
+    width:38px; height:38px; flex:none; display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--line-2); border-radius:var(--radius);
+    background:var(--plate-bg); color:var(--muted); cursor:pointer; transition:border-color .15s, color .15s;
+  }
+  .theme-toggle:hover { border-color:var(--muted); color:var(--paper); }
+  .theme-toggle svg { width:18px; height:18px; }
+  :root[data-theme="dark"] .theme-toggle .i-sun  { display:block; }
+  :root[data-theme="dark"] .theme-toggle .i-moon { display:none; }
+  :root[data-theme="light"] .theme-toggle .i-sun  { display:none; }
+  :root[data-theme="light"] .theme-toggle .i-moon { display:block; }
+
+  /* ---------- page head ---------- */
+  .back { font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+  .back:hover { color:var(--paper); }
+  .eyebrow { font-family:var(--font-mono); font-size:12px; letter-spacing:0.34em; text-transform:uppercase; color:var(--signal); margin:16px 0 12px; display:flex; align-items:center; gap:12px; }
+  .eyebrow::after { content:""; height:1px; flex:0 0 80px; background:linear-gradient(90deg,var(--signal),transparent); }
+  .page-head h1 { font-family:var(--font-display); font-weight:600; font-size:clamp(32px,4.4vw,50px); line-height:1; letter-spacing:-0.01em; margin:0; }
+  .page-head p { color:var(--muted); font-size:16px; margin:12px 0 0; max-width:60ch; }
+
+  /* ---------- area cards: two source lists + workbench ---------- */
+  .areas { display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(16px,1.6vw,22px); }
+  .area {
+    position:relative; background:var(--card-bg); border:1px solid var(--steel);
+    border-radius:var(--radius); padding:24px; display:flex; flex-direction:column; gap:14px;
+    min-height:210px; text-decoration:none; color:var(--paper); transition:border-color .15s;
+  }
+  .area:hover { border-color:var(--muted); }
+  .area .cap { font-family:var(--font-mono); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--faint); }
+  .area .ico { color:var(--icon); }
+  .area .ico .hole { fill:var(--hole); }
+  .area h2 { font-family:var(--font-display); font-weight:600; font-size:26px; letter-spacing:0.01em; margin:0; }
+  .area .count { font-family:var(--font-mono); font-size:13px; color:var(--sodium); }
+  .area .desc { color:var(--muted); font-size:14px; margin:0; flex:1; }
+  .area .go { font-family:var(--font-mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+
+  .workbench {
+    position:relative; overflow:hidden; background:var(--card-bg);
+    border:1px solid var(--steel); border-radius:var(--radius);
+    padding:26px 28px; display:flex; align-items:center; gap:28px;
+    text-decoration:none; color:var(--paper); transition:border-color .15s;
+  }
+  .workbench:hover { border-color:var(--signal); }
+  .workbench::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--signal); }
+  .workbench .ico { color:var(--sodium); flex:none; }
+  .workbench .ico .hole { fill:var(--hole); }
+  .workbench .wb-body { flex:1; display:flex; flex-direction:column; gap:8px; }
+  .workbench .cap { font-family:var(--font-mono); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--faint); }
+  .workbench h2 { font-family:var(--font-display); font-weight:600; font-size:26px; margin:0; }
+  .workbench .desc { color:var(--muted); font-size:14px; margin:0; }
+  .workbench .last { font-family:var(--font-mono); font-size:12px; color:var(--sodium); }
+  .workbench .cta { font-family:var(--font-display); font-weight:600; font-size:15px; letter-spacing:0.06em; text-transform:uppercase; background:var(--signal); color:#fff; border-radius:var(--radius); padding:13px 20px; white-space:nowrap; }
+
+  /* connector note between sources and workbench */
+  .join-note { font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); display:flex; align-items:center; gap:12px; }
+  .join-note::before, .join-note::after { content:""; height:1px; flex:1; background:var(--steel-lo); }
+
+  /* ---------- footer ---------- */
+  .footer { display:flex; flex-wrap:wrap; gap:10px 22px; margin-top:auto; font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--faint); border-top:1px solid var(--steel-lo); padding-top:18px; }
+  .footer span b { color:var(--muted); font-weight:400; }
+
+  @media (max-width:820px) { .areas { grid-template-columns:1fr; } .workbench { flex-direction:column; align-items:flex-start; } }
+</style>
+</head>
+<body>
+  <div class="shell">
+
+    <header class="topbar">
+      <div class="brand"><div class="mark">AGNI</div><div class="sub">Fahrzeugkunde</div></div>
+      <div class="tools">
+        <button class="theme-toggle" type="button" aria-label="Design umschalten" onclick="__toggleTheme()">
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>
+        </button>
+        <div class="avatar">FK</div>
+      </div>
+    </header>
+
+    <div class="page-head">
+      <a class="back" href="02-startseite.html">← Startseite</a>
+      <p class="eyebrow">Gerätehaus</p>
+      <h1>Dein Gerätehaus.</h1>
+      <p>Deine Fahrzeuge, dein Gerätewissen — und wo was verlastet ist. Hier
+        pflegst du alles, womit die Gruppe später übt.</p>
+    </div>
+
+    <!-- two source lists -->
+    <section class="areas">
+      <a class="area" href="06-fuhrpark.html">
+        <span class="cap">Bestand · Fahrzeuge</span>
+        <span class="ico">
+          <svg width="72" height="44" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+            <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="2"/>
+            <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="20" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="2"/>
+            <circle cx="54" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </span>
+        <h2>Fuhrpark</h2>
+        <span class="count">3 Fahrzeuge</span>
+        <p class="desc">Welche Fahrzeuge stehen in deinem Gerätehaus. Neues Fahrzeug aus einem Typ anlegen, umbenennen, entfernen.</p>
+        <span class="go">Verwalten →</span>
+      </a>
+
+      <a class="area" href="07-geraete-katalog.html">
+        <span class="cap">Wissen · Geräte</span>
+        <span class="ico">
+          <svg width="60" height="44" viewBox="0 0 60 44" fill="none" aria-hidden="true">
+            <rect x="8" y="10" width="20" height="26" rx="1.5" stroke="currentColor" stroke-width="2"/>
+            <rect x="32" y="10" width="20" height="26" rx="1.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="13" y1="17" x2="23" y2="17" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="13" y1="22" x2="23" y2="22" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="37" y1="17" x2="47" y2="17" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="37" y1="22" x2="47" y2="22" stroke="currentColor" stroke-width="1.4"/>
+          </svg>
+        </span>
+        <h2>Geräte-Katalog</h2>
+        <span class="count">128 Geräte · 6 Kategorien</span>
+        <p class="desc">Der gemeinsame Gerätebestand mit Beschreibung und Verwendung — das Nachschlagewerk hinter dem Spiel.</p>
+        <span class="go">Nachschlagen →</span>
+      </a>
+    </section>
+
+    <div class="join-note">Fahrzeug + Gerät zusammenbringen</div>
+
+    <!-- the join: workbench -->
+    <a class="workbench" href="08-beladung.html">
+      <span class="ico">
+        <svg width="88" height="52" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+          <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="2"/>
+          <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="2"/>
+          <rect x="30" y="18" width="14" height="14" stroke="var(--signal)" stroke-width="1.8"/>
+          <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="20" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="2"/>
+          <circle cx="54" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </span>
+      <div class="wb-body">
+        <span class="cap">Werkbank · Beladung</span>
+        <h2>Fahrzeuge beladen</h2>
+        <p class="desc">Fächer bestücken: welches Gerät liegt in welchem Geräteraum. Der Stoff, den das Spiel abfragt.</p>
+        <span class="last">Zuletzt: FF Konstanz LF 20 · 18/26 Fächer belegt</span>
+      </div>
+      <span class="cta">Beladen →</span>
+    </a>
+
+    <footer class="footer">
+      <span><b>Gerätehaus</b> · FF Konstanz</span>
+      <span>Beladung nach <b>DIN 14530-11</b></span>
+      <span>3 Fahrzeuge · 128 Geräte</span>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    })();
+    function __toggleTheme() {
+      var root = document.documentElement;
+      root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+  </script>
+</body>
+</html>

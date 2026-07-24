@@ -36,11 +36,13 @@ seats; etc. Each compartment carries layout metadata (`side`:
 left/right/rear/roof/cabin, plus an order index) driving the schematic.
 Rendering fidelity (generic metadata vs. hand-crafted per-type) — see ADR-0003.
 
-### Equipment (Beladung / Gerät)
+### Equipment (Gerät)
 A **canonical catalog entry** (Motorsäge, Stromerzeuger, Flutlichtstrahler,
-Rettungsschere…), with name, category, optional image. Shared across all
-vehicles so cross-vehicle questions are reliable. Placed into Compartments via
-Placements — never free text.
+Rettungsschere…), with name, category, optional image, and (roadmap) **educational
+detail** — what it is and how it's used. Shared across all vehicles so
+cross-vehicle questions are reliable. Placed into Compartments via Placements —
+never free text. Managed in the **Geräte-Katalog**.
+_(Note: "Beladung" is **not** a synonym for Equipment — see Beladung.)_
 
 ### Placement
 The association **Equipment → Compartment → Vehicle**, with optional **quantity**.
@@ -49,6 +51,13 @@ many vehicles, and in more than one compartment of the same vehicle (e.g. axes
 on the Dach *and* in G1). Instance placements are seeded from the Vehicle Type's
 default DIN loadout, then edited by the Author. Editing is **bidirectional**:
 open a compartment and tick its tools, or pick a tool and assign its compartment.
+
+### Beladung (loadout)
+A single Vehicle's **set of Placements** — what it carries and where. Also the
+editing surface where an Author **combines** Vehicles (from the Fuhrpark) with
+Equipment (from the Geräte-Katalog) by working a vehicle's compartments over its
+schematic. Seeded from the Vehicle Type's DIN default, then edited. Distinct from
+a single **Gerät** (Equipment) — Beladung is the *loading*, not the tool.
 
 ### Round Mode
 The game supports **mixed** round types drawn from one dataset:
@@ -66,7 +75,23 @@ shared read-only starter catalog any Author can clone into their Library
 
 ### Library
 The full set of an Author's own content (Vehicles + Compartments + Equipment +
-Placements). Mode-agnostic. The unit an Author builds and later plays from.
+Placements). Mode-agnostic. The unit an Author builds and later plays from. Its
+user-facing home is the **Gerätehaus**.
+
+### Gerätehaus
+The Author's **content home** — the front door to their Library, named for the
+real fire station where a brigade keeps its trucks and kit. Organises content
+into three **peer** areas, one per editable entity:
+- **Fuhrpark** — the Author's **Vehicles**: which trucks are in the Gerätehaus;
+  add one from a Vehicle Type (clone-on-create), rename, remove.
+- **Geräte-Katalog** — the shared **Equipment** catalog plus **educational
+  detail** (what a Gerät is and how it's used; vehicle-type reference too).
+- **Beladung** — the **Placements**: combine Fuhrpark + Katalog to load each
+  vehicle's compartments.
+
+Game/app **Einstellungen** (preferences, defaults, account) sit **outside** the
+Gerätehaus — content management and app settings are kept apart. _(open: exact
+navigation/connection between the three areas — grilling.)_
 
 ### Game Mode
 The top-layer experience an Author picks when starting to play. All modes share
