@@ -1,4 +1,612 @@
-/* Editor / loadout editor screen styles.
-   Layout and visuals come from Tailwind utility classes in editor.html;
-   add component-scoped rules here only when a utility won't do.
-   See docs/design/design-guidelines.md. */
+/* ============================================================
+   AGNI — design language "C": technical blueprint dossier.
+   Beladung editor (workbench): Geräte list left, vehicle schematic right.
+   Scoped to .editor-screen; theme is local (OS default + toggle), mirroring
+   katalog.scss / home.scss / games.scss. See docs/design/design-guidelines.md.
+   ============================================================ */
+
+fk-editor {
+  display: block;
+  min-height: 100%;
+}
+
+/* ---------- LIGHT (default) ---------- */
+.editor-screen,
+.editor-screen[data-theme='light'] {
+  --paper-bg: #f6f4f0;
+  --ink: #191a1c;
+  --ink-2: #4b4e54;
+  --faint: #9aa0a8;
+  --line: #e4e0d9;
+  --line-2: #d6d1c8;
+  --signal: #e5352b;
+  --signal-hi: #c82820;
+  --sodium: #b8791c;
+  --go: #16a34a;
+
+  --bg-image: radial-gradient(120% 90% at 22% 6%, #ffffff 0%, #f6f4f0 52%, #efebe4 100%),
+    linear-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.028) 1px, transparent 1px);
+
+  --plate-bg: #ffffff;
+  --card-bg: #ffffff;
+  --surface-2: #fbfaf7;
+  --thumb-bg: #f4f1ea;
+  --sel-bg: rgba(244, 184, 96, 0.14);
+  --go-bg: rgba(22, 163, 74, 0.1);
+  --focus-ring: 0 0 0 3px rgba(229, 53, 43, 0.28);
+  --icon: #4e5b6e;
+
+  --radius: 4px;
+  --maxw: 1240px;
+  --font-display: 'Roboto Condensed', system-ui, sans-serif;
+  --font-body: 'Roboto', system-ui, sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, monospace;
+}
+
+/* ---------- DARK ---------- */
+.editor-screen[data-theme='dark'] {
+  --paper-bg: #0e1116;
+  --ink: #e8eaed;
+  --ink-2: #8a94a3;
+  --faint: #5a6473;
+  --line: #1e242d;
+  --line-2: #262e3a;
+  --signal: #e5352b;
+  --signal-hi: #ff574c;
+  --sodium: #f4b860;
+  --go: #22c55e;
+
+  --bg-image: radial-gradient(120% 90% at 22% 8%, #171c25 0%, #0e1116 46%, #0b0e12 100%),
+    linear-gradient(#1e242d 1px, transparent 1px),
+    linear-gradient(90deg, #1e242d 1px, transparent 1px);
+
+  --plate-bg: rgba(22, 26, 33, 0.6);
+  --card-bg: linear-gradient(180deg, #161a21, #12161d);
+  --surface-2: #1b2029;
+  --thumb-bg: rgba(11, 14, 18, 0.5);
+  --sel-bg: rgba(244, 184, 96, 0.12);
+  --go-bg: rgba(34, 197, 94, 0.14);
+  --focus-ring: 0 0 0 3px rgba(244, 184, 96, 0.4);
+  --icon: #5a6675;
+}
+
+.editor-screen {
+  min-height: 100%;
+  color: var(--ink);
+  background: var(--paper-bg);
+  background-image: var(--bg-image);
+  background-size: 100% 100%, 34px 34px, 34px 34px;
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s, color 0.25s;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+.editor-screen .shell {
+  min-height: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: clamp(20px, 3.2vw, 44px) clamp(20px, 4vw, 56px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.2vw, 28px);
+}
+
+/* ---------- top bar ---------- */
+.editor-screen .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.editor-screen .brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.editor-screen .brand .mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  position: relative;
+  padding-left: 19px;
+}
+.editor-screen .brand .mark::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--signal);
+}
+.editor-screen .brand .sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.editor-screen .account {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.editor-screen .account .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--sodium);
+  font-size: 15px;
+}
+.editor-screen .theme-toggle {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--plate-bg);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.editor-screen .theme-toggle:hover {
+  border-color: var(--ink-2);
+  color: var(--ink);
+}
+.editor-screen .theme-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+.editor-screen[data-theme='dark'] .theme-toggle .i-sun { display: block; }
+.editor-screen[data-theme='dark'] .theme-toggle .i-moon { display: none; }
+.editor-screen[data-theme='light'] .theme-toggle .i-sun { display: none; }
+.editor-screen[data-theme='light'] .theme-toggle .i-moon { display: block; }
+
+/* ---------- page head ---------- */
+.editor-screen .back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 15px 9px 11px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--plate-bg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+.editor-screen .back:hover { border-color: var(--ink-2); color: var(--ink); }
+.editor-screen .back:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.editor-screen .back svg { width: 15px; height: 15px; }
+.editor-screen .head-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.editor-screen .page-head h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(32px, 4.4vw, 50px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.editor-screen .tally {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+.editor-screen .loading {
+  color: var(--faint);
+  font-size: 14px;
+}
+
+/* ---------- vehicle switcher ---------- */
+.editor-screen .veh-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+}
+.editor-screen .veh-pick span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.editor-screen .veh-pick select {
+  min-height: 28px;
+  border: none;
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  outline: none;
+}
+
+/* ---------- two-pane ---------- */
+.editor-screen .split {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: clamp(20px, 2.6vw, 36px);
+  align-items: start;
+}
+
+/* ---------- left: Geräte ---------- */
+.editor-screen .list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.editor-screen .list-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.editor-screen .list-head .lh-fach {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--sodium);
+}
+.editor-screen .search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 11px 14px;
+  color: var(--ink-2);
+}
+.editor-screen .search input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+.editor-screen .list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card-bg);
+  max-height: 62vh;
+  overflow-y: auto;
+}
+.editor-screen .row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--line);
+}
+.editor-screen .row:last-child { border-bottom: none; }
+.editor-screen .row.placed { background: var(--go-bg); }
+.editor-screen .row.on { box-shadow: inset 3px 0 0 var(--sodium); }
+
+/* the one write control */
+.editor-screen .r-check {
+  flex: none;
+  width: 46px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-right: 1px solid var(--line);
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.editor-screen .r-check svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.22;
+  transition: opacity 0.12s;
+}
+.editor-screen .r-check:hover:not(:disabled) svg { opacity: 0.55; }
+.editor-screen .r-check:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.editor-screen .r-check:disabled { cursor: not-allowed; }
+.editor-screen .r-check:disabled svg { opacity: 0.1; }
+.editor-screen .row.placed .r-check { color: var(--go); }
+.editor-screen .row.placed .r-check svg { opacity: 1; }
+
+.editor-screen .r-pick {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 14px;
+  min-height: 56px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+}
+.editor-screen .r-pick:hover { background: var(--surface-2); }
+.editor-screen .r-pick:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.editor-screen .r-ico {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--radius);
+  background: var(--thumb-bg);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  color: var(--icon);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.editor-screen .r-body {
+  flex: 1;
+  min-width: 0;
+}
+.editor-screen .r-name {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.editor-screen .r-cat {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  text-transform: uppercase;
+}
+.editor-screen .r-where {
+  flex: none;
+  max-width: 40%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--sodium);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.editor-screen .empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--faint);
+  font-size: 14px;
+}
+
+/* inline create */
+.editor-screen .add {
+  display: flex;
+  gap: 8px;
+}
+.editor-screen .add input {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 10px 13px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+}
+.editor-screen .add input:focus-visible { box-shadow: var(--focus-ring); }
+.editor-screen .add input:disabled { opacity: 0.5; cursor: not-allowed; }
+.editor-screen .btn-ghost {
+  flex: none;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--plate-bg);
+  color: var(--ink-2);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.editor-screen .btn-ghost:hover:not(:disabled) { border-color: var(--ink-2); color: var(--ink); }
+.editor-screen .btn-ghost:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.editor-screen .btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- right: schematic stage ---------- */
+.editor-screen .stage {
+  position: sticky;
+  top: 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 18px;
+  overflow: hidden;
+}
+.editor-screen .stage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--sodium);
+}
+.editor-screen .stage-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.editor-screen .s-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+}
+.editor-screen .s-type {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* The interactive schematics carry their own dark instrument palette, so they
+   sit in a dark inset in both themes rather than fighting the paper. */
+.editor-screen .figure {
+  border: 1px solid #263243;
+  border-radius: var(--radius);
+  background: #0e1420;
+  padding: 12px;
+}
+
+.editor-screen .legend {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.editor-screen .legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.editor-screen .legend b {
+  font-weight: 600;
+  color: var(--ink);
+}
+.editor-screen .legend .k {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 3px;
+}
+.editor-screen .legend .k-open {
+  background: rgba(234, 179, 8, 0.15);
+  border: 2px solid #eab308;
+}
+.editor-screen .legend .k-has {
+  background: #16a34a;
+  border: 2px solid #16a34a;
+}
+.editor-screen .hint {
+  margin: 12px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  color: var(--faint);
+}
+
+/* ---------- notice (type without a layout) ---------- */
+.editor-screen .notice {
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.editor-screen .notice .n-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+.editor-screen .notice .n-body {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+
+/* ---------- footer ---------- */
+.editor-screen .footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.editor-screen .footer span b {
+  color: var(--ink-2);
+  font-weight: 400;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .editor-screen .split {
+    grid-template-columns: 1fr;
+  }
+  /* Phone order: the schematic leads, because tapping a Fach drives the list. */
+  .editor-screen .stage {
+    position: static;
+    order: -1;
+  }
+  .editor-screen .list {
+    max-height: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editor-screen {
+    transition: none;
+  }
+  .editor-screen .r-check svg {
+    transition: none;
+  }
+}

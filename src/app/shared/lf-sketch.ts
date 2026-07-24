@@ -69,8 +69,10 @@ export class LfSketch {
   readonly picked = input<CompartmentId | null>(null);
   readonly correct = input<CompartmentId[]>([]);
   readonly revealed = input(false);
-  /** Editor mode: highlight these Fächer as chosen (tapping toggles via (pick)). */
+  /** Editor: the Fach currently being worked — amber outline. */
   readonly selected = input<CompartmentId[]>([]);
+  /** Editor: Fächer that carry the active Gerät — green fill ("it lives here"). */
+  readonly marked = input<CompartmentId[]>([]);
   readonly pick = output<CompartmentId>();
 
   readonly zones: Zone[] = [
@@ -99,17 +101,23 @@ export class LfSketch {
       if (c === this.picked()) return '#dc2626';
       return '#1c2634';
     }
-    return this.selected().includes(c) ? '#16a34a' : '#1c2634';
+    if (this.marked().includes(c)) return '#15803d';
+    if (this.selected().includes(c)) return '#2b2517';
+    return '#1c2634';
   }
 
   private highlighted(c: CompartmentId): boolean {
     return this.revealed()
       ? this.correct().includes(c) || c === this.picked()
-      : this.selected().includes(c);
+      : this.selected().includes(c) || this.marked().includes(c);
   }
 
   stroke(c: CompartmentId): string {
-    return this.highlighted(c) ? '#ffffff' : '#3a4a5e';
+    if (this.revealed()) return this.highlighted(c) ? '#ffffff' : '#3a4a5e';
+    // The worked Fach wins the outline, so it stays findable inside a green run.
+    if (this.selected().includes(c)) return '#eab308';
+    if (this.marked().includes(c)) return '#22c55e';
+    return '#3a4a5e';
   }
 
   strokeW(c: CompartmentId): number {

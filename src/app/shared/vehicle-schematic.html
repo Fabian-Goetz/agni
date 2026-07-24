@@ -4,6 +4,7 @@
     [correct]="correct()"
     [revealed]="revealed()"
     [selected]="selected()"
+    [marked]="marked()"
     (pick)="pick.emit($event)"
   />
 } @else {
@@ -13,6 +14,7 @@
     [correct]="correct()"
     [revealed]="revealed()"
     [selected]="selected()"
+    [marked]="marked()"
     (pick)="pick.emit($event)"
   />
 }

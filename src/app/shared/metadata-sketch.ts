@@ -23,8 +23,10 @@ export class MetadataSketch {
   readonly picked = input<CompartmentId | null>(null);
   readonly correct = input<CompartmentId[]>([]);
   readonly revealed = input(false);
-  /** Editor mode: highlight these Fächer as chosen (tapping toggles via (pick)). */
+  /** Editor: the Fach currently being worked — amber outline. */
   readonly selected = input<CompartmentId[]>([]);
+  /** Editor: Fächer that carry the active Gerät — green fill ("it lives here"). */
+  readonly marked = input<CompartmentId[]>([]);
   readonly pick = output<CompartmentId>();
 
   readonly layout = computed(() => schematicLayout(this.compartments()));
@@ -39,8 +41,11 @@ export class MetadataSketch {
       if (c === this.picked()) return `${BASE} border-white bg-destructive text-white`;
       return `${BASE} border-edge bg-input text-subtle`;
     }
-    return this.selected().includes(c)
-      ? `${BASE} border-white bg-go text-ink`
-      : `${BASE} border-edge bg-input text-foreground hover:border-muted-foreground`;
+    const open = this.selected().includes(c);
+    const carries = this.marked().includes(c);
+    if (open && carries) return `${BASE} border-warn bg-go text-ink`;
+    if (open) return `${BASE} border-warn bg-warn/15 text-foreground`;
+    if (carries) return `${BASE} border-go bg-go/25 text-foreground`;
+    return `${BASE} border-edge bg-input text-foreground hover:border-muted-foreground`;
   }
 }

@@ -19,8 +19,11 @@ in-progress migration, not an accident (tracked in [screen-flow §5.5](./screen-
 
 | System | Where | Status |
 |--------|-------|--------|
-| **"C" blueprint** (this doc) — Roboto, light/dark, per-screen root-class tokens | `login`, `home` (shipped); mockups `01`–`03` | **target** |
-| **Firetruck** — dark-only spartan/shadcn tokens in `src/styles.css` (`bg-background`, `text-primary`, …) | `select`, `play`, `editor` | **legacy, to migrate** |
+| **"C" blueprint** (this doc) — Roboto, light/dark, per-screen root-class tokens | `login`/`signup`, `home`, `games`, `select`, `geraetehaus`, `katalog`, `fahrzeugkatalog`, `editor` | **target** |
+| **Firetruck** — dark-only spartan/shadcn tokens in `src/styles.css` (`bg-background`, `text-primary`, …) | `play` | **legacy, to migrate** |
+
+The interactive schematics (`fk-lf-sketch`, `fk-metadata-sketch`) keep the
+firetruck instrument palette on purpose — see the **schematic stage** in §6.
 
 New screens use the "C" language. When you touch a legacy screen for visual work,
 migrate it rather than deepening the firetruck styling. The firetruck palette in
@@ -140,6 +143,25 @@ Class names are the shared vocabulary; canonical CSS is `login.scss`.
   are ≥44px `<button>`s, so unlike the SVG sketches it is keyboard-operable.
   Same state vocabulary as the blueprint figure. Screens never choose a renderer
   themselves — they embed `fk-vehicle-schematic`, which dispatches on the type.
+- **Workbench split** (`.split` = `1fr 420px`, list left / sticky panel right,
+  one column below 900px) — the shape for *editing a relation between two lists*.
+  The Geräte-Katalog uses it read-only (list → detail); the Beladung editor uses it
+  live: **Geräte list left, vehicle schematic right, no mode switch**, each side
+  highlighting into the other. On phones the schematic takes `order: -1` and leads,
+  because tapping a Fach is what gives the list its context.
+- **Schematic stage** (`.stage` / `.figure`) — the sodium-topped panel that frames
+  an interactive schematic. `.figure` stays a **dark inset in both themes**: the
+  sketch renderers carry the firetruck instrument palette internally (green/amber/
+  red zone states), so on paper-light they read as a dashboard display rather than
+  clashing half-lit artwork. A `.legend` (colour key) and one mono `.hint` line
+  spell out what a tap does — the interaction is not self-evident.
+- **Write-check row** (`.row` = `.r-check` + `.r-pick`) — a list row with **two
+  affordances**: a leading check button that writes (green + filled when the fact
+  holds, `aria-pressed`, disabled with a `title` when there is nothing to write
+  into), and the row body that only *selects*. Use it when a list is both a
+  picker and an editing surface — the pair keeps "look at this" from ever
+  silently meaning "change this". Nest no buttons: they are siblings in a flex
+  `div`, each ≥44px.
 - **Card** (`.card`) — the primary surface. `--card-bg`, `--card-shadow`, a
   full-width `--signal` **top rule** (`::before`, 3px) that reads as a brand edge
   — *not* a progress/tab indicator (that ambiguity was explicitly removed).
@@ -251,4 +273,5 @@ values, this doc for intent and vocabulary.
 | 2026-07-24 | Migrated `home` (mode-select) to "C" from `screens/02-startseite`; added the mode-grid (`.modes`/`.mode`, available/locked states) and prepare-row (`.prep`/`.tile`) patterns; moved `home` to target in §0. Token block still copied per-screen — extraction to a shared partial is now actionable (two "C" screens shipped). |
 | 2026-07-24 | Added §7a **Layout & hierarchy principles** (one focal action, say-it-once, content-over-chrome, no duplicate controls, tappable nav, scannable rows, descending reading order). Rebuilt the Gerätehaus hub against them: single H1 (no eyebrow), ghost back-chip, one signal action (Beladen) with "+ Fahrzeug" demoted to ghost + inline create, per-row `⋯` manage menu, quiet reference strip. |
 | 2026-07-24 | Added the **metadata schematic** (§6): a compartment-metadata CSS grid that draws any vehicle type without hand-drawn artwork, behind the `fk-vehicle-schematic` dispatcher. Unlocks HLF 20 / TLF 3000 / TSF-W for Beladung and rounds. Zones are buttons — the first keyboard-operable schematic (§8). |
+| 2026-07-24 | Rebuilt the **Beladung editor as a "C" workbench** (§0 → target): topbar + footer for consistency with the other screens, and a **workbench split** (§6) with the Geräte-Katalog left and the vehicle schematic right. Bidirectional Placement editing is now **simultaneous, not modal** — tap a Fach and its Geräte sort to the top with a green check; tap a Gerät and every Fach carrying it turns green on the schematic. Added the **schematic stage** and **write-check row** patterns (§6), a second schematic highlight channel (`marked` = carries the active Gerät, amber `selected` = the worked Fach), a search field over the ~370 seeded Geräte, and a legend + hint line. Schematic taps never write, so tracing a Gerät cannot place it by accident. |
 | 2026-07-24 | Rolled §7a across the app. **Shared back-chip pattern** (bordered ghost + arrow icon, ≥44px) now on games/katalog/fahrzeugkatalog/select (C: `.back` SCSS block) and play/editor (firetruck: Tailwind chip). **Dropped page-identity-repeating eyebrows** on katalog/fahrzeugkatalog (deleted) and games ("Spielen"); **quieted** select's info-carrying eyebrow to `--faint` (no red rule). **Reserved red for the one focal action:** games' 2nd game CTA → ghost (Fach-Finder keeps the red), signup brand H1 `text-primary`→`text-foreground`. **De-duped labels:** roadmap game cards dropped the `Bald` status that doubled their `In Planung` badge; footers dropped bold self-names. Home dropped the loud "Willkommen zurück" greeting + possessive. **Not done here:** the firetruck→"C" migration of select/play/editor (tracked separately, §0/§5.5) — only hierarchy tweaks applied. |

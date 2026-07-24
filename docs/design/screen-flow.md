@@ -44,12 +44,13 @@ Source of truth: `src/app/app.routes.ts`. All content routes are lazy-loaded.
 | `/games`   | `Games`   | `authGuard`   | shipped       | Game-mode launcher: catalog of games (verfügbar + roadmap). Home In-Person CTA lands here; games start `/select`. See §5.6. |
 | `/select`  | `Select`  | `authGuard`   | shipped       | Round setup — vehicle chooser + question count (§5.2). |
 | `/play`    | `Play`    | `authGuard`   | shipped       | In-Person **Locate** round loop. |
-| `/geraetehaus` | `Geraetehaus` | `authGuard` | **proposed** | Content home / hub — Fuhrpark · Geräte-Katalog · Beladung (§7.3). |
-| `/geraetehaus/fuhrpark` | `Fuhrpark` | `authGuard` | **proposed** | Vehicle roster: add (from Type), rename, remove; loadout status. |
-| `/geraetehaus/katalog` | `Katalog` | `authGuard` | **proposed** | Geräte-Katalog: Equipment list + educational detail. |
-| `/geraetehaus/beladung` | `Beladung` | `authGuard` | **proposed** | Read-only vehicle picker → workbench. |
+| `/geraetehaus` | `Geraetehaus` | `authGuard` | shipped | Content home / hub — vehicle workspace (the roster) + Katalog/Fahrzeugkatalog reference strip (§7.3). |
+| `/geraetehaus/katalog` | `Katalog` | `authGuard` | shipped | Geräte-Katalog: Equipment list + educational detail. |
+| `/geraetehaus/fahrzeugkatalog` | `Fahrzeugkatalog` | `authGuard` | shipped | Vehicle-Type master data (Ordnungsnummer 10–90) as reference. |
+| ~~`/geraetehaus/fuhrpark`~~ | `Fuhrpark` | — | **dropped** (`ee9a9c8`) | Standalone roster; duplicated the hub's own workspace, so it was folded into `/geraetehaus`. |
+| `/geraetehaus/beladung` | `Beladung` | `authGuard` | **proposed** | Read-only vehicle picker → workbench. Not built: the hub's per-row **Beladen →** deep-links into the editor instead. |
 | `/geraetehaus/beladung/:vehicleId` | `Werkbank` | `authGuard` | **proposed** | Loadout workbench (evolved **Editor**; replaces `/editor`). |
-| `/editor`  | `Editor`  | `authGuard`   | shipped → migrate | Current loadout editor; folds into the Beladung-Werkbank. |
+| `/editor`  | `Editor`  | `authGuard`   | shipped → migrate | Loadout workbench: Geräte left, schematic right, **bidirectional highlighting**; folds into the Beladung-Werkbank. Deep-linked as `?vehicle=<id>`. |
 | `/result`  | —         | `authGuard`   | **proposed**  | Round summary / Ergebnis (see §5.1). |
 | `**` → `/home` | —     | —             | shipped       | Unknown paths fall back to Home. |
 
@@ -294,29 +295,38 @@ the join between them**.
 
 ```mermaid
 flowchart TB
-    home[Home] -->|topbar · Gerätehaus| gh[Gerätehaus hub]
-    gh --> fp[Fuhrpark · Fahrzeuge verwalten]
+    home[Home] -->|topbar · Gerätehaus| gh[Gerätehaus hub<br/>Fahrzeug-Workspace = Fuhrpark]
+    gh -->|+ Fahrzeug · from Type| ghnew[Fahrzeug anlegen<br/>clone-on-create, inline]
+    gh -->|Beladen →| work[Beladung-Editor · ?vehicle=id<br/>Geräte ↔ Schema, zwei Spalten]
     gh --> kat[Geräte-Katalog · Geräte + Lerninfo]
-    gh --> bel[Beladung · Fahrzeug wählen]
+    gh --> fkat[Fahrzeugkatalog · Typ-Referenz]
 
-    fp -->|+ Neues Fahrzeug · from Type| fpnew[Fahrzeug anlegen<br/>clone-on-create]
-    fp -->|Beladen →| work[Beladung-Werkbank · :vehicle]
-    bel -->|Fahrzeug wählen read-only| work
+    ghnew --> work
     kat -.->|auf N Fahrzeugen verbaut| work
     work -.->|ⓘ Gerät| kat
-    fpnew --> work
 ```
 
 **Roles & verbs (the anti-duplication rule):**
-- **Fuhrpark** owns the vehicle **roster** — the *only* place to add (from a
-  Vehicle Type, clone-on-create per ADR-0001), rename, or remove a Vehicle. Cards
-  show loadout status (`18/26 Fächer belegt`) and a **Beladen →** shortcut.
-- **Beladung** never owns a roster. Its landing is a **read-only vehicle picker**
-  ("Welches Fahrzeug beladen?") — same vehicles, no CRUD — then the workbench.
-  Different verb (*beladen* vs *verwalten*), one source of truth for the roster.
-- **Beladung-Werkbank** is the evolved **Editor** (replaces `/editor`):
-  bidirectional Placement editing over the vehicle's schematic. Layout is a Type
-  property, not author-editable in v1.
+- The **hub's workspace zone** owns the vehicle **roster** — the *only* place to
+  add (from a Vehicle Type, clone-on-create per ADR-0001), rename, or remove a
+  Vehicle. Rows show loadout status and a **Beladen →** shortcut. There is no
+  separate Fuhrpark screen: a standalone roster page repeated the hub's own
+  primary content, so it was folded in (`ee9a9c8`) — **the hub *is* the Fuhrpark**.
+- **Beladung** never owns a roster. The planned landing is a **read-only vehicle
+  picker** ("Welches Fahrzeug beladen?") — same vehicles, no CRUD — then the
+  workbench. Today the hub's per-row **Beladen →** deep-links straight into the
+  editor, which keeps the different verb (*beladen* vs *verwalten*) without a
+  second list to maintain.
+- **Beladung-Werkbank** is the evolved **Editor** (replaces `/editor`). The
+  **workbench itself shipped ahead of the route move**: a two-pane split with the
+  Geräte-Katalog left and the vehicle schematic right, where bidirectional
+  Placement editing runs **without a mode switch** — tap a **Fach** and its Geräte
+  sort to the top of the list with a green check; tap a **Gerät** and every Fach
+  carrying it turns green on the schematic (one Gerät may sit in several, which is
+  what this makes visible). Only a row's check button writes; schematic taps just
+  move the focus, so tracing a Gerät can't place it by accident. Layout stays a
+  Type property, not author-editable in v1. **Still owed by the move:** the
+  `/geraetehaus/beladung` picker and the ⓘ Gerät → Katalog cross-link.
 - **Geräte-Katalog** owns the shared Equipment list + educational detail (what a
   Gerät is / how it's used). Vehicle-independent.
 
@@ -324,10 +334,12 @@ flowchart TB
 Gerät→"auf N Fahrzeugen"→that truck's Beladung, and in the Werkbank each Gerät
 carries an ⓘ→its Katalog entry.
 
-**ADR-0003 gate:** only the LF renders today. Fuhrpark can list/create any Vehicle
-Type, but non-LF types are marked **"Schema folgt"** and their Beladen/Play entry
-is disabled until the generic schematic renderer lands — never drop the user into
-a broken editor.
+**ADR-0003 gate:** the generic metadata renderer has landed (`de2a3d6`), so every
+type carrying a compartment layout is loadable and playable — the LF through
+`LfSketch`, HLF 20 / TLF 3000 / TSF-W through metadata boxes. What stays gated is
+narrower: the Fahrzeugkatalog **master-data stubs** with no compartments at all.
+The hub still lists and creates them, but marks those rows locked and disables
+Beladen/Play — never drop the user into an empty editor.
 
 **Home entry:** the old Home "Vorbereiten" prep tiles (Beladung bearbeiten +
 single Dienstfahrzeug) are replaced by a single **Gerätehaus** entry in the Home
@@ -376,12 +388,13 @@ wraps any launcher game in the Kahoot loop.
 | 3 | Vorbereiten (Select) | `/select` | [03](./screens/03-vorbereiten.html) | shipped | Runde starten | Play; Games; Home |
 | 4 | Play · Locate | `/play` | — | shipped | tap compartment | Result (proposed); Home |
 | 5 | Ergebnis | `/result` | — | **proposed** | Nochmal | Play; Vorbereiten; Home |
-| 6 | Gerätehaus (hub) | `/geraetehaus` | [05](./screens/05-geraetehaus.html) | **proposed** | pick an area | Fuhrpark; Katalog; Beladung; Home |
-| 6a | Fuhrpark | `/geraetehaus/fuhrpark` | [06](./screens/06-fuhrpark.html) | **proposed** | Neues Fahrzeug / Beladen | Beladung-Werkbank; Gerätehaus |
-| 6b | Geräte-Katalog | `/geraetehaus/katalog` | [07](./screens/07-geraete-katalog.html) | **proposed** | Gerät bearbeiten | Werkbank; Gerätehaus |
-| 6c | Beladung (picker) | `/geraetehaus/beladung` | [08](./screens/08-beladung.html) | **proposed** | Fahrzeug wählen | Werkbank; Fuhrpark; Gerätehaus |
-| 6d | Beladung-Werkbank | `/geraetehaus/beladung/:id` | — (editor grill) | **proposed** | Fächer bestücken | Katalog; Beladung |
-| 7 | Editor (→ Werkbank) | `/editor` | — | shipped, migrating | tick placements | Home |
+| 6 | Gerätehaus (hub) | `/geraetehaus` | [05](./screens/05-geraetehaus.html) | shipped | Beladen (per vehicle row) | Editor; Katalog; Fahrzeugkatalog; Home |
+| 6a | ~~Fuhrpark~~ | ~~`/geraetehaus/fuhrpark`~~ | [06](./screens/06-fuhrpark.html) | **dropped** — roster lives on the hub | — | — |
+| 6b | Geräte-Katalog | `/geraetehaus/katalog` | [07](./screens/07-geraete-katalog.html) | shipped | Gerät bearbeiten | Gerätehaus |
+| 6b′ | Fahrzeugkatalog | `/geraetehaus/fahrzeugkatalog` | — | shipped | Typ nachschlagen | Gerätehaus |
+| 6c | Beladung (picker) | `/geraetehaus/beladung` | [08](./screens/08-beladung.html) | **proposed** | Fahrzeug wählen | Werkbank; Gerätehaus |
+| 6d | Beladung-Werkbank | `/geraetehaus/beladung/:id` | — (editor grill) | **proposed** — editing itself shipped in 7 | Fächer bestücken | Katalog; Beladung |
+| 7 | Editor (→ Werkbank) | `/editor` | — | shipped, migrating | Fach bestücken (Liste ↔ Schema) | Gerätehaus |
 | 8 | Lernen + dashboard | — | — | future | — | Home |
 | 9 | Online PvP (host/join set) | — | — | future | — | Home |
 
