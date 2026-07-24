@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agni · Spiele</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;600;700&family=Roboto+Mono:wght@400;500&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     AGNI — shared design tokens (see 01-anmelden.html)
+     ============================================================ */
+  :root, :root[data-theme="light"] {
+    --signal:#E5352B; --signal-hi:#C82820; --sodium:#B8791C; --go:#2FA35F;
+    --paper:#191A1C; --muted:#4B4E54; --faint:#9AA0A8;
+    --steel:#D6D1C8; --steel-lo:#E4E0D9;
+    --panel:#FFFFFF; --panel-2:#FBFAF7;
+    --line-2:#D6D1C8;
+    --bay:#F6F4F0;
+    --bg-image:
+      radial-gradient(120% 90% at 22% 6%, #FFFFFF 0%, #F6F4F0 52%, #EFEBE4 100%),
+      linear-gradient(rgba(0,0,0,0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.028) 1px, transparent 1px);
+    --card-bg:#FFFFFF;
+    --card-shadow:0 1px 2px rgba(25,26,28,0.04), 0 20px 44px -34px rgba(25,26,28,0.28);
+    --hole:#FFFFFF; --hatch:rgba(0,0,0,0.035); --plate-bg:#FFFFFF;
+    --available-border:#E7C6C2;
+    --focus-ring:0 0 0 3px rgba(229,53,43,0.28);
+    --icon:#4E5B6E;
+  }
+  :root[data-theme="dark"] {
+    --signal:#E5352B; --signal-hi:#FF574C; --sodium:#F4B860; --go:#46D07E;
+    --paper:#E8EAED; --muted:#8A94A3; --faint:#5A6473;
+    --steel:#262E3A; --steel-lo:#1E242D;
+    --panel:#161A21; --panel-2:#1B2029;
+    --line-2:#262E3A;
+    --bay:#0E1116;
+    --bg-image:
+      radial-gradient(120% 90% at 22% 8%, #171C25 0%, #0E1116 46%, #0B0E12 100%),
+      linear-gradient(#1E242D 1px, transparent 1px),
+      linear-gradient(90deg, #1E242D 1px, transparent 1px);
+    --card-bg:linear-gradient(180deg,#161A21,#12161D);
+    --card-shadow:0 24px 60px -30px rgba(0,0,0,0.9);
+    --hole:#12161D; --hatch:rgba(90,100,115,0.05); --plate-bg:rgba(22,26,33,0.6);
+    --available-border:#3A2422;
+    --focus-ring:0 0 0 3px rgba(244,184,96,0.4);
+    --icon:#5A6675;
+  }
+  :root {
+    --radius:4px; --maxw:1240px;
+    --font-display:"Roboto Condensed",system-ui,sans-serif;
+    --font-body:"Roboto",system-ui,sans-serif;
+    --font-mono:"Roboto Mono",ui-monospace,monospace;
+  }
+  * { box-sizing:border-box; }
+  html,body { height:100%; }
+  body {
+    margin:0; font-family:var(--font-body); color:var(--paper); line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    background:var(--bay);
+    background-image:var(--bg-image);
+    background-size:100% 100%, 34px 34px, 34px 34px;
+    transition:background-color .25s, color .25s;
+  }
+  .shell {
+    min-height:100%; max-width:var(--maxw); margin:0 auto;
+    padding:clamp(20px,3.2vw,44px) clamp(20px,4vw,56px);
+    display:flex; flex-direction:column; gap:clamp(24px,2.8vw,40px);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .brand { display:flex; align-items:baseline; gap:12px; }
+  .brand .mark {
+    font-family:var(--font-display); font-weight:700; font-size:28px;
+    letter-spacing:0.14em; line-height:1; position:relative; padding-left:19px;
+  }
+  .brand .mark::before {
+    content:""; position:absolute; left:0; top:50%;
+    width:10px; height:10px; transform:translateY(-50%) rotate(45deg);
+    background:var(--signal);
+  }
+  .brand .sub {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.28em;
+    text-transform:uppercase; color:var(--faint);
+  }
+  .avatar {
+    width:32px; height:32px; border-radius:var(--radius);
+    background:var(--panel-2); border:1px solid var(--steel);
+    display:grid; place-items:center; font-family:var(--font-display);
+    font-weight:700; color:var(--sodium); font-size:15px;
+  }
+  .tools { display:flex; align-items:center; gap:14px; }
+
+  /* theme toggle */
+  .theme-toggle {
+    width:38px; height:38px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--line-2); border-radius:var(--radius);
+    background:var(--plate-bg); color:var(--muted); cursor:pointer;
+    transition:border-color .15s, color .15s;
+  }
+  .theme-toggle:hover { border-color:var(--muted); color:var(--paper); }
+  .theme-toggle:focus-visible { outline:none; box-shadow:var(--focus-ring); }
+  .theme-toggle svg { width:18px; height:18px; }
+  :root[data-theme="dark"] .theme-toggle .i-sun  { display:block; }
+  :root[data-theme="dark"] .theme-toggle .i-moon { display:none; }
+  :root[data-theme="light"] .theme-toggle .i-sun  { display:none; }
+  :root[data-theme="light"] .theme-toggle .i-moon { display:block; }
+
+  /* ---------- page head ---------- */
+  .back {
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--muted); text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .back:hover { color:var(--paper); }
+  .eyebrow {
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.34em;
+    text-transform:uppercase; color:var(--signal); margin:16px 0 12px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .eyebrow::after {
+    content:""; height:1px; flex:0 0 80px;
+    background:linear-gradient(90deg,var(--signal),transparent);
+  }
+  .page-head h1 {
+    font-family:var(--font-display); font-weight:600;
+    font-size:clamp(32px,4.4vw,50px); line-height:1; letter-spacing:-0.01em; margin:0;
+  }
+  .page-head p { color:var(--muted); font-size:16px; margin:12px 0 0; max-width:60ch; }
+
+  /* ---------- section label ---------- */
+  .sec-label {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.24em;
+    text-transform:uppercase; color:var(--faint);
+    display:flex; align-items:center; gap:12px; margin-bottom:16px;
+  }
+  .sec-label::after { content:""; height:1px; flex:1; background:var(--steel-lo); }
+  .sec-label .count { color:var(--muted); }
+
+  /* ---------- game grids ---------- */
+  .games { display:grid; gap:clamp(16px,1.6vw,22px); }
+  .games.avail { grid-template-columns:repeat(2,1fr); }
+  .games.soon  { grid-template-columns:repeat(3,1fr); }
+
+  .game {
+    position:relative; overflow:hidden;
+    background:var(--card-bg);
+    border:1px solid var(--steel); border-radius:var(--radius);
+    padding:22px 22px 24px; display:flex; flex-direction:column; gap:14px;
+  }
+  .game .status {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.2em;
+    text-transform:uppercase; display:inline-flex; align-items:center; gap:8px;
+    color:var(--faint);
+  }
+  .game .status .dot { width:7px; height:7px; border-radius:50%; background:var(--faint); }
+  .game .icon { color:var(--icon); }
+  .game .icon svg { display:block; }
+  .game .icon .hole { fill:var(--hole); }
+  .game h2 {
+    font-family:var(--font-display); font-weight:600; font-size:24px;
+    letter-spacing:0.01em; margin:0;
+  }
+  .game .desc { color:var(--muted); font-size:14px; margin:0; flex:1; }
+  .game .meta {
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.06em;
+    color:var(--faint); text-transform:uppercase;
+  }
+
+  /* available games */
+  .games.avail .game { min-height:250px; border-color:var(--available-border); }
+  .games.avail .game .status { color:var(--go); }
+  .games.avail .game .status .dot { background:var(--go); box-shadow:0 0 8px var(--go); }
+  .games.avail .game .icon { color:var(--sodium); }
+  .games.avail .game:hover { border-color:var(--signal); }
+  /* the recommended/primary game carries the signal brand edge */
+  .games.avail .game.primary::before {
+    content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--signal);
+  }
+
+  .cta {
+    margin-top:2px;
+    font-family:var(--font-display); font-weight:600; font-size:15px;
+    letter-spacing:0.06em; text-transform:uppercase;
+    background:var(--signal); color:#fff; border:1px solid transparent;
+    border-radius:var(--radius); padding:12px 16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    transition:background .15s, transform .06s; text-decoration:none;
+  }
+  .cta:hover { background:var(--signal-hi); }
+  .cta:active { transform:translateY(1px); }
+  .cta:focus-visible { outline:none; box-shadow:var(--focus-ring); }
+
+  /* roadmap games */
+  .games.soon .game { min-height:180px; opacity:0.75; gap:10px; padding:18px; }
+  .games.soon .game::after {
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(-45deg, transparent 0 9px, var(--hatch) 9px 10px);
+  }
+  .games.soon .game h2 { font-size:20px; }
+  .games.soon .game .badge {
+    font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--faint);
+    border:1px dashed var(--steel); border-radius:var(--radius);
+    padding:7px 10px; text-align:center; align-self:flex-start;
+  }
+
+  /* ---------- footer ---------- */
+  .footer {
+    display:flex; flex-wrap:wrap; gap:10px 22px; margin-top:auto;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--faint);
+    border-top:1px solid var(--steel-lo); padding-top:18px;
+  }
+  .footer span b { color:var(--muted); font-weight:400; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px) {
+    .games.avail { grid-template-columns:1fr; }
+    .games.soon  { grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:560px) {
+    .games.soon { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+
+    <header class="topbar">
+      <div class="brand"><div class="mark">AGNI</div><div class="sub">Fahrzeugkunde</div></div>
+      <div class="tools">
+        <button class="theme-toggle" type="button" aria-label="Design umschalten" onclick="__toggleTheme()">
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>
+        </button>
+        <div class="avatar">FK</div>
+      </div>
+    </header>
+
+    <div class="page-head">
+      <a class="back" href="#">← Startseite</a>
+      <p class="eyebrow">Spielen</p>
+      <h1>Wähle ein Spiel.</h1>
+      <p>Jedes Spiel schult einen Teil des Handwerks — vom Griff ins richtige Fach bis zum
+        Druck am Strahlrohr. Am Fahrzeug oder allein.</p>
+    </div>
+
+    <!-- AVAILABLE -->
+    <section>
+      <div class="sec-label">Verfügbar <span class="count">· 2 Spiele</span></div>
+      <div class="games avail">
+
+        <!-- Fach-Finder (primary) -->
+        <article class="game primary">
+          <span class="status"><span class="dot"></span>Verfügbar</span>
+          <div class="icon">
+            <svg width="72" height="44" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+              <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 17 L20 15 L20 24 L8 24 Z" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="20" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="2"/>
+              <circle cx="54" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <h2>Fach-Finder</h2>
+          <p class="desc">Ein Gerät wird gezeigt — tippe das richtige Fach, dann deck auf. Der Klassiker der Fahrzeugkunde.</p>
+          <span class="meta">Am Fahrzeug · Solo oder Gruppe</span>
+          <a class="cta" href="#">Starten →</a>
+        </article>
+
+        <!-- Gerät holen -->
+        <article class="game">
+          <span class="status"><span class="dot"></span>Verfügbar</span>
+          <div class="icon">
+            <svg width="72" height="44" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+              <path d="M22 12 L22 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="2"/>
+              <rect x="40" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="60" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 23 L18 23 M13 18 L18 23 L13 28" stroke="var(--signal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2>Gerät holen</h2>
+          <p class="desc">Ansage: ein Gerät. Wer bringt es zuerst? Staffellauf gegen die Uhr, direkt am Fahrzeug.</p>
+          <span class="meta">Am Fahrzeug · Gruppe · auf Zeit</span>
+          <a class="cta" href="#">Starten →</a>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section>
+      <div class="sec-label">In Planung <span class="count">· bald mehr</span></div>
+      <div class="games soon">
+
+        <article class="game">
+          <span class="status"><span class="dot"></span>Bald</span>
+          <div class="icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <circle cx="20" cy="21" r="13" stroke="currentColor" stroke-width="2"/>
+              <line x1="20" y1="4" x2="20" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="14" y1="4" x2="26" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="20" y1="21" x2="27" y2="15" stroke="var(--signal)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h2>Beladungs-Blitz</h2>
+          <p class="desc">60 Sekunden, so viele Fächer wie möglich richtig.</p>
+          <span class="meta">Solo · Speed · Bestenliste</span>
+          <div class="badge">In Planung</div>
+        </article>
+
+        <article class="game">
+          <span class="status"><span class="dot"></span>Bald</span>
+          <div class="icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <path d="M6 30 A16 16 0 0 1 34 30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="6" y1="30" x2="9" y2="27" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="34" y1="30" x2="31" y2="27" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="20" y1="14" x2="20" y2="17" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="20" y1="30" x2="27" y2="21" stroke="var(--signal)" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="20" cy="30" r="2.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <h2>Druckrechnen</h2>
+          <p class="desc">Reibungsverlust, Höhenunterschied, Ausgangsdruck — bis zum Relaisbetrieb.</p>
+          <span class="meta">Solo · Wasserförderung</span>
+          <div class="badge">In Planung</div>
+        </article>
+
+        <article class="game">
+          <span class="status"><span class="dot"></span>Bald</span>
+          <div class="icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <path d="M20 6 C24 14 30 16 30 24 a10 10 0 0 1 -20 0 c0 -5 3 -7 5 -10 c1 3 3 4 3 7" stroke="var(--signal)" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2>Löschmittel</h2>
+          <p class="desc">Welche Brandklasse? Welches Löschmittel? Nie Wasser auf Fett.</p>
+          <span class="meta">Solo · Brennen &amp; Löschen</span>
+          <div class="badge">In Planung</div>
+        </article>
+
+        <article class="game">
+          <span class="status"><span class="dot"></span>Bald</span>
+          <div class="icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <rect x="8" y="16" width="16" height="10" rx="1" stroke="currentColor" stroke-width="2"/>
+              <path d="M24 19 L32 17 L32 25 L24 23 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <line x1="8" y1="26" x2="8" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h2>Armaturen</h2>
+          <p class="desc">Verteiler, Standrohr, Strahlrohr — erkennen und benennen.</p>
+          <span class="meta">Solo · Gerätekunde</span>
+          <div class="badge">In Planung</div>
+        </article>
+
+        <article class="game">
+          <span class="status"><span class="dot"></span>Bald</span>
+          <div class="icon">
+            <svg width="46" height="40" viewBox="0 0 56 40" fill="none" aria-hidden="true">
+              <path d="M6 14 L6 30 L50 30 L50 18 L44 14 Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 14 L6 30 L20 30 L20 16 L15 14 Z" stroke="currentColor" stroke-width="2"/>
+              <circle cx="18" cy="30" r="5" class="hole" stroke="currentColor" stroke-width="2"/>
+              <circle cx="42" cy="30" r="5" class="hole" stroke="currentColor" stroke-width="2"/>
+              <text x="34" y="26" text-anchor="middle" font-family="var(--font-display)" font-size="16" font-weight="700" fill="var(--signal)">?</text>
+            </svg>
+          </div>
+          <h2>Fahrzeug-ABC</h2>
+          <p class="desc">LF, HLF, TLF, DLK — welcher Typ, welche Besatzung?</p>
+          <span class="meta">Solo · Fahrzeugkunde</span>
+          <div class="badge">In Planung</div>
+        </article>
+
+        <article class="game">
+          <span class="status"><span class="dot"></span>Bald</span>
+          <div class="icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <path d="M13 12 C4 16 4 24 13 28 C22 32 26 20 18 18 C12 16.5 12 24 20 26" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2>Knotenkunde</h2>
+          <p class="desc">Mastwurf, Zimmermannsschlag &amp; Co. — auf Zeit knüpfen.</p>
+          <span class="meta">Am Fahrzeug · Knoten</span>
+          <div class="badge">In Planung</div>
+        </article>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span><b>v1</b> · Spielen</span>
+      <span>Beladung nach <b>DIN 14530-11</b></span>
+      <span>Angemeldet · <b>FF Konstanz</b></span>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    })();
+    function __toggleTheme() {
+      var root = document.documentElement;
+      root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+  </script>
+</body>
+</html>

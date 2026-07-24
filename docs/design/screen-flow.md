@@ -40,8 +40,9 @@ Source of truth: `src/app/app.routes.ts`. All content routes are lazy-loaded.
 | `/` → `/home` | —      | —             | shipped       | Redirect to landing. |
 | `/login`   | `Login`   | —             | shipped       | Email/password + Google sign-in. |
 | `/signup`  | `Signup`  | —             | shipped       | Create account; may need email confirm. |
-| `/home`    | `Home`    | `authGuard`   | shipped       | Landing / Game-Mode select + author entry. |
-| `/select`  | `Select`  | `authGuard`   | shipped (thin)| Pick a Vehicle, then start In-Person. → grows into **Vorbereiten**. |
+| `/home`    | `Home`    | `authGuard`   | shipped       | Landing / mode select (Spielen · Lernen · Online-Duell) + author entry. |
+| `/games`   | `Games`   | `authGuard`   | **proposed**  | Game-mode launcher: catalog of games (verfügbar + roadmap). See §5.6. |
+| `/select`  | `Select`  | `authGuard`   | shipped (thin)| Per-game setup (starts with Fach-Finder). → grows into **Vorbereiten**. |
 | `/play`    | `Play`    | `authGuard`   | shipped       | In-Person **Locate** round loop. |
 | `/editor`  | `Editor`  | `authGuard`   | shipped       | Author loadout editor (Placements). |
 | `/result`  | —         | `authGuard`   | **proposed**  | Round summary / Ergebnis (see §5.1). |
@@ -168,6 +169,31 @@ unpredictable (e.g. from `/play`, Back does not return to `/select`). Policy:
   explicit in-app back/primary buttons, which every screen already has. Treat
   browser-Back as best-effort; never require it for a flow to work.
 
+### 5.6 Introduce the Game-mode launcher — **P2 (new)**
+Game mode is a *container of games*, not a single game (see
+[game-catalog](./game-catalog.md)). The games are heterogeneous — a schematic
+game (Fach-Finder) has a vehicle and compartments; a calc game (Druckrechnen) has
+neither — so game selection cannot stay a "Fragetyp" chip on one Locate-shaped
+setup screen (as `03-vorbereiten` currently models it). Promote it to its own
+screen:
+
+- **Reframe Home's first card** from "In-Person" (a *context*) to **"Spielen"**
+  (the *mode*). In-person vs solo becomes a per-game property surfaced as card
+  meta, not a top-level mode. Home stays three peer modes (ADR-0004): Spielen,
+  Lernen, Online-Duell.
+- **New `/games` launcher** (mockup [`04`](./screens/04-spiele-uebersicht.html)) —
+  mirrors Home's own available/locked card language: a **Verfügbar** section
+  (rich cards with a "Starten →" CTA; the recommended game carries the `--signal`
+  top rule) plus a denser **In Planung** roadmap grid (hatched, "In Planung"
+  badge). Communicates the roadmap and keeps the `Home → pick → setup → play`
+  rhythm even while few games are live.
+- **`03-vorbereiten` drops its "Fragetyp" chip block** — the game is chosen
+  upstream now — and becomes the *Fach-Finder* setup: the template other
+  schematic games reuse. Calc/quiz games get a sibling setup variant (no vehicle
+  block). All variants still converge on Play → Ergebnis (§5.1).
+- **One-game guard:** never show the launcher with a single playable game *and* no
+  roadmap worth seeing — but here the roadmap itself is the reason to keep it.
+
 ### 5.5 Resolve the design-language split — **cross-cutting, track it**
 The auth screen now uses the light/dark **"C" blueprint** language (Roboto,
 `.auth-screen` tokens), while Home/Select/Play/Editor still use the dark
@@ -265,14 +291,38 @@ step-progression + timer overlay to Play, still ending on Ergebnis.
 
 ---
 
+### 7.5 Game mode as a game catalog (near-term — see §5.6)
+
+The launcher wraps the existing single-game flow rather than replacing it:
+
+```mermaid
+flowchart TD
+    home[Home · Spielen] --> games[Spiele-Übersicht · launcher]
+    games -- "Fach-Finder" --> prep[Vorbereiten · Fach-Finder]
+    games -- "Gerät holen" --> prepR[Vorbereiten · Gerät holen]
+    games -. "Druckrechnen / Löschmittel / …" .-> soon[/In Planung/]:::gap
+    games -- "← Startseite" --> home
+
+    prep --> play[Play] --> result[Ergebnis]
+    prepR --> playR[Play · Relais/Timer] --> result
+
+    classDef gap fill:#3b1f1f,stroke:#ef4444,color:#fca5a5;
+```
+
+Each game maps to an engine (schematic / calc / quiz / sequence / physical) per the
+catalog; a game is *content + rule config* on an engine, so new games slot into the
+launcher and reuse a setup template without new plumbing. Online-Duell (§7.2) later
+wraps any launcher game in the Kahoot loop.
+
 ## 8. Screen inventory
 
 | # | Screen | Route | Mockup | Status | Primary action | Exits |
 |---|--------|-------|--------|--------|----------------|-------|
 | 1 | Login | `/login` | [01](./screens/01-anmelden.html) | shipped | Anmelden | Home; → Signup |
 | 1 | Signup | `/signup` | 01 | shipped | Registrieren | Home; → Login |
-| 2 | Home / Mode select | `/home` | [02](./screens/02-startseite.html) | shipped | In-Person starten | Select; Editor; Login |
-| 3 | Vorbereiten (now Select) | `/select` | [03](./screens/03-vorbereiten.html) | partial | Runde starten | Play; Home |
+| 2 | Home / Mode select | `/home` | [02](./screens/02-startseite.html) | shipped | Spielen | Games; Editor; Login |
+| 2b | Spiele-Übersicht (launcher) | `/games` | [04](./screens/04-spiele-uebersicht.html) | **proposed** | Spiel starten | Vorbereiten; Home |
+| 3 | Vorbereiten (now Select) | `/select` | [03](./screens/03-vorbereiten.html) | partial | Runde starten | Play; Games; Home |
 | 4 | Play · Locate | `/play` | — | shipped | tap compartment | Result (proposed); Home |
 | 5 | Ergebnis | `/result` | — | **proposed** | Nochmal | Play; Vorbereiten; Home |
 | 6 | Editor | `/editor` | — | shipped | tick placements | Home |
@@ -300,3 +350,4 @@ decision behind a flow is non-obvious or contested, record it as an
 | Date | Change |
 |------|--------|
 | 2026-07-24 | Initial version: documented v1 flow, identified the missing round-result screen and thin Select, proposed target flow + roadmap subgraphs. |
+| 2026-07-24 | Added Game-mode launcher (§5.6, §7.5, mockup `04`): reframe Home card In-Person→Spielen, promote game selection out of Vorbereiten into a `/games` catalog. Route map + inventory updated. |
