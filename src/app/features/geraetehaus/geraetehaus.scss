@@ -1,19 +1,19 @@
 /* ============================================================
    AGNI — design language "C": technical blueprint dossier.
-   Home / mode-select, ported from docs/design/screens/02-startseite.html.
-   Scoped to .home-screen so the generic class names don't leak; theme is
-   local to this screen (OS default + toggle), mirroring login.scss.
+   Gerätehaus hub, ported from docs/design/screens/05-geraetehaus.html.
+   Scoped to .geraetehaus-screen; theme is local (OS default + toggle),
+   mirroring home.scss / katalog.scss. Two source areas + Beladung workbench.
    See docs/design/design-guidelines.md for the shared language.
    ============================================================ */
 
-fk-home {
+fk-geraetehaus {
   display: block;
   min-height: 100%;
 }
 
 /* ---------- LIGHT (default) ---------- */
-.home-screen,
-.home-screen[data-theme='light'] {
+.geraetehaus-screen,
+.geraetehaus-screen[data-theme='light'] {
   --paper-bg: #f6f4f0;
   --ink: #191a1c;
   --ink-2: #4b4e54;
@@ -34,10 +34,8 @@ fk-home {
   --card-shadow: 0 1px 2px rgba(25, 26, 28, 0.04), 0 20px 44px -34px rgba(25, 26, 28, 0.28);
   --surface-2: #fbfaf7;
   --focus-ring: 0 0 0 3px rgba(229, 53, 43, 0.28);
-  --link: var(--signal);
 
   --icon: #4e5b6e;
-  --available-border: #e7c6c2;
   --hatch: rgba(0, 0, 0, 0.035);
   --hole: #ffffff;
 
@@ -49,7 +47,7 @@ fk-home {
 }
 
 /* ---------- DARK ---------- */
-.home-screen[data-theme='dark'] {
+.geraetehaus-screen[data-theme='dark'] {
   --paper-bg: #0e1116;
   --ink: #e8eaed;
   --ink-2: #8a94a3;
@@ -70,15 +68,13 @@ fk-home {
   --card-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.9);
   --surface-2: #1b2029;
   --focus-ring: 0 0 0 3px rgba(244, 184, 96, 0.4);
-  --link: var(--sodium);
 
   --icon: #5a6675;
-  --available-border: #3a2422;
   --hatch: rgba(90, 100, 115, 0.05);
   --hole: #12161d;
 }
 
-.home-screen {
+.geraetehaus-screen {
   min-height: 100%;
   color: var(--ink);
   background: var(--paper-bg);
@@ -96,29 +92,29 @@ fk-home {
   }
 }
 
-.home-screen .shell {
+.geraetehaus-screen .shell {
   min-height: 100dvh;
   max-width: var(--maxw);
   margin: 0 auto;
   padding: clamp(20px, 3.2vw, 44px) clamp(20px, 4vw, 56px);
   display: flex;
   flex-direction: column;
-  gap: clamp(26px, 3vw, 44px);
+  gap: clamp(24px, 2.8vw, 40px);
 }
 
 /* ---------- top bar ---------- */
-.home-screen .topbar {
+.geraetehaus-screen .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
 }
-.home-screen .brand {
+.geraetehaus-screen .brand {
   display: flex;
   align-items: baseline;
   gap: 12px;
 }
-.home-screen .brand .mark {
+.geraetehaus-screen .brand .mark {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 30px;
@@ -127,7 +123,7 @@ fk-home {
   position: relative;
   padding-left: 20px;
 }
-.home-screen .brand .mark::before {
+.geraetehaus-screen .brand .mark::before {
   content: '';
   position: absolute;
   left: 0;
@@ -137,7 +133,7 @@ fk-home {
   transform: translateY(-50%) rotate(45deg);
   background: var(--signal);
 }
-.home-screen .brand .sub {
+.geraetehaus-screen .brand .sub {
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.28em;
@@ -145,32 +141,12 @@ fk-home {
   color: var(--faint);
 }
 
-.home-screen .account {
+.geraetehaus-screen .account {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
 }
-.home-screen .account .nav-link {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-  text-decoration: none;
-  border: 1px solid var(--line-2);
-  border-radius: var(--radius);
-  padding: 9px 13px;
-}
-.home-screen .account .nav-link:hover {
-  border-color: var(--ink-2);
-  color: var(--ink);
-}
-.home-screen .account .user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.home-screen .account .avatar {
+.geraetehaus-screen .account .avatar {
   width: 32px;
   height: 32px;
   border-radius: var(--radius);
@@ -183,32 +159,9 @@ fk-home {
   color: var(--sodium);
   font-size: 15px;
 }
-.home-screen .account .who {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-.home-screen .account .who .email {
-  font-size: 13px;
-  color: var(--ink);
-}
-.home-screen .account .who button {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--faint);
-  background: none;
-  border: 0;
-  padding: 0;
-  text-align: left;
-  cursor: pointer;
-}
-.home-screen .account .who button:hover {
-  color: var(--signal-hi);
-}
 
 /* theme toggle */
-.home-screen .theme-toggle {
+.geraetehaus-screen .theme-toggle {
   width: 38px;
   height: 38px;
   flex: none;
@@ -222,198 +175,156 @@ fk-home {
   cursor: pointer;
   transition: border-color 0.15s, color 0.15s;
 }
-.home-screen .theme-toggle:hover {
+.geraetehaus-screen .theme-toggle:hover {
   border-color: var(--ink-2);
   color: var(--ink);
 }
-.home-screen .theme-toggle:focus-visible {
+.geraetehaus-screen .theme-toggle:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
 }
-.home-screen .theme-toggle svg {
+.geraetehaus-screen .theme-toggle svg {
   width: 18px;
   height: 18px;
 }
-.home-screen[data-theme='dark'] .theme-toggle .i-sun {
+.geraetehaus-screen[data-theme='dark'] .theme-toggle .i-sun {
   display: block;
 }
-.home-screen[data-theme='dark'] .theme-toggle .i-moon {
+.geraetehaus-screen[data-theme='dark'] .theme-toggle .i-moon {
   display: none;
 }
-.home-screen[data-theme='light'] .theme-toggle .i-sun {
+.geraetehaus-screen[data-theme='light'] .theme-toggle .i-sun {
   display: none;
 }
-.home-screen[data-theme='light'] .theme-toggle .i-moon {
+.geraetehaus-screen[data-theme='light'] .theme-toggle .i-moon {
   display: block;
 }
 
 /* ---------- page header ---------- */
-.home-screen .eyebrow {
+.geraetehaus-screen .back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.geraetehaus-screen .back:hover {
+  color: var(--ink);
+}
+.geraetehaus-screen .eyebrow {
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.34em;
   text-transform: uppercase;
   color: var(--signal);
-  margin: 0 0 14px;
+  margin: 16px 0 12px;
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.home-screen .eyebrow::after {
+.geraetehaus-screen .eyebrow::after {
   content: '';
   height: 1px;
   flex: 0 0 80px;
   background: linear-gradient(90deg, var(--signal), transparent);
 }
-.home-screen .page-head h1 {
+.geraetehaus-screen .page-head h1 {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(34px, 4.6vw, 54px);
+  font-size: clamp(32px, 4.4vw, 50px);
   line-height: 1;
   letter-spacing: -0.01em;
   margin: 0;
 }
-.home-screen .page-head p {
+.geraetehaus-screen .page-head p {
   color: var(--ink-2);
   font-size: 16px;
   margin: 12px 0 0;
-  max-width: 56ch;
+  max-width: 60ch;
 }
 
-/* ---------- mode grid ---------- */
-.home-screen .modes {
+/* ---------- area cards ---------- */
+.geraetehaus-screen .areas {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: clamp(16px, 1.6vw, 22px);
 }
-.home-screen .mode {
+.geraetehaus-screen .area {
   position: relative;
   overflow: hidden;
   background: var(--card-bg);
   border: 1px solid var(--line-2);
   border-radius: var(--radius);
-  padding: 24px 24px 26px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  min-height: 290px;
+  gap: 14px;
+  min-height: 210px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.15s;
 }
-.home-screen .mode .status {
+.geraetehaus-screen a.area:hover {
+  border-color: var(--signal);
+}
+.geraetehaus-screen .area .cap {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   color: var(--faint);
 }
-.home-screen .mode .status .dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--faint);
-}
-.home-screen .mode .icon {
+.geraetehaus-screen .area .ico {
   color: var(--icon);
 }
-.home-screen .mode .icon svg {
+.geraetehaus-screen .area .ico svg {
   display: block;
 }
-.home-screen .mode .icon .wheel {
+.geraetehaus-screen .area .ico .hole {
   fill: var(--hole);
 }
-.home-screen .mode h2 {
+.geraetehaus-screen .area h2 {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 27px;
+  font-size: 26px;
   letter-spacing: 0.01em;
   margin: 0;
 }
-.home-screen .mode .desc {
+.geraetehaus-screen .area .count {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--sodium);
+}
+.geraetehaus-screen .area .desc {
   color: var(--ink-2);
-  font-size: 14.5px;
+  font-size: 14px;
   margin: 0;
   flex: 1;
 }
-.home-screen .mode .meta {
+.geraetehaus-screen .area .go {
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--faint);
+  font-size: 12px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: var(--ink-2);
 }
 
-/* available mode = In-Person */
-.home-screen .mode.available {
-  border-color: var(--available-border);
-}
-.home-screen .mode.available::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--signal);
-}
-.home-screen .mode.available .status {
-  color: var(--go);
-}
-.home-screen .mode.available .status .dot {
-  background: var(--go);
-  box-shadow: 0 0 8px var(--go);
-}
-.home-screen .mode.available .icon {
-  color: var(--sodium);
-}
-.home-screen .mode.available:hover {
-  border-color: var(--signal);
-}
-
-.home-screen .mode .cta {
-  margin-top: 2px;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  background: var(--signal);
-  color: #fff;
-  border: 1px solid transparent;
-  border-radius: var(--radius);
-  padding: 12px 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: background 0.15s, transform 0.06s;
-  text-decoration: none;
-}
-.home-screen .mode .cta:hover {
-  background: var(--signal-hi);
-}
-.home-screen .mode .cta:active {
-  transform: translateY(1px);
-}
-.home-screen .mode .cta:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-/* locked modes = roadmap */
-.home-screen .mode.locked {
+/* locked area = roadmap (Fuhrpark) */
+.geraetehaus-screen .area.locked {
   opacity: 0.72;
 }
-.home-screen .mode.locked::after {
+.geraetehaus-screen .area.locked::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
   background: repeating-linear-gradient(-45deg, transparent 0 9px, var(--hatch) 9px 10px);
 }
-.home-screen .mode.locked .badge {
+.geraetehaus-screen .area.locked .badge {
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.14em;
@@ -425,8 +336,106 @@ fk-home {
   text-align: center;
 }
 
+/* connector note between sources and workbench */
+.geraetehaus-screen .join-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.geraetehaus-screen .join-note::before,
+.geraetehaus-screen .join-note::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+}
+
+/* ---------- workbench (Beladung) ---------- */
+.geraetehaus-screen .workbench {
+  position: relative;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 26px 28px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.15s;
+}
+.geraetehaus-screen .workbench:hover {
+  border-color: var(--signal);
+}
+.geraetehaus-screen .workbench::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--signal);
+}
+.geraetehaus-screen .workbench .ico {
+  color: var(--sodium);
+  flex: none;
+}
+.geraetehaus-screen .workbench .ico svg {
+  display: block;
+}
+.geraetehaus-screen .workbench .ico .hole {
+  fill: var(--hole);
+}
+.geraetehaus-screen .workbench .wb-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.geraetehaus-screen .workbench .cap {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.geraetehaus-screen .workbench h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  margin: 0;
+}
+.geraetehaus-screen .workbench .desc {
+  color: var(--ink-2);
+  font-size: 14px;
+  margin: 0;
+}
+.geraetehaus-screen .workbench .last {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sodium);
+}
+.geraetehaus-screen .workbench .cta {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--signal);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 13px 20px;
+  white-space: nowrap;
+}
+
 /* ---------- footer ---------- */
-.home-screen .footer {
+.geraetehaus-screen .footer {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 22px;
@@ -439,22 +448,23 @@ fk-home {
   border-top: 1px solid var(--line);
   padding-top: 18px;
 }
-.home-screen .footer span b {
+.geraetehaus-screen .footer span b {
   color: var(--ink-2);
   font-weight: 400;
 }
 
 /* ---------- responsive ---------- */
-@media (max-width: 900px) {
-  .home-screen .modes {
+@media (max-width: 820px) {
+  .geraetehaus-screen .areas {
     grid-template-columns: 1fr;
   }
-  .home-screen .account .who .email {
-    display: none;
+  .geraetehaus-screen .workbench {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .home-screen {
+  .geraetehaus-screen {
     transition: none;
   }
 }

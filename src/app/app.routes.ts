@@ -13,6 +13,17 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./features/games/games').then((m) => m.Games),
   },
+  {
+    path: 'geraetehaus',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/geraetehaus/geraetehaus').then((m) => m.Geraetehaus),
+  },
+  {
+    path: 'geraetehaus/katalog',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/katalog/katalog').then((m) => m.Katalog),
+  },
   { path: 'login', loadComponent: () => import('./features/auth/login').then((m) => m.Login) },
   { path: 'signup', loadComponent: () => import('./features/auth/signup').then((m) => m.Signup) },
   {

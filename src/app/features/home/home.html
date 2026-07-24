@@ -6,6 +6,7 @@
         <div class="sub">Fahrzeugkunde</div>
       </div>
       <div class="account">
+        <a class="nav-link" routerLink="/geraetehaus">Gerätehaus</a>
         @if (showAccount && auth.user(); as u) {
           <div class="user">
             <div class="avatar">{{ initials() }}</div>
@@ -150,52 +151,6 @@
         <span class="meta">Mehrspieler · Live · Rangliste</span>
         <div class="badge">In Planung</div>
       </article>
-    </section>
-
-    <!-- PREPARE -->
-    <section>
-      <div class="prep-label">Vorbereiten</div>
-      <div class="prep">
-        <a class="tile" routerLink="/editor">
-          <span class="t-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M4 20 L4 16 L15 5 L19 9 L8 20 Z"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linejoin="round"
-              />
-              <line x1="13" y1="7" x2="17" y2="11" stroke="currentColor" stroke-width="1.8" />
-            </svg>
-          </span>
-          <div class="t-body">
-            <strong>Beladung bearbeiten</strong>
-            <span>Fächer und Geräte deiner Fahrzeuge pflegen.</span>
-          </div>
-          <span class="t-go">→</span>
-        </a>
-
-        @if (vehicle(); as v) {
-          <a class="tile veh" routerLink="/editor">
-            <span class="t-icon">
-              <svg width="60" height="34" viewBox="0 0 72 44" fill="none" aria-hidden="true">
-                <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="1.6" />
-                <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="1.6" />
-                <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2" />
-                <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2" />
-                <circle cx="20" cy="34" r="6" class="wheel" stroke="currentColor" stroke-width="1.6" />
-                <circle cx="54" cy="34" r="6" class="wheel" stroke="currentColor" stroke-width="1.6" />
-              </svg>
-            </span>
-            <div class="t-body">
-              <span class="t-badge">Dienstfahrzeug</span>
-              <strong>{{ v.name }}</strong>
-              <span>{{ compartmentCount() }} Geräteräume · {{ placedCount() }} Geräte platziert</span>
-            </div>
-            <span class="t-go">→</span>
-          </a>
-        }
-      </div>
     </section>
 
     <footer class="footer">
