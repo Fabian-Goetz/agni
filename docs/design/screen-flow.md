@@ -41,7 +41,7 @@ Source of truth: `src/app/app.routes.ts`. All content routes are lazy-loaded.
 | `/login`   | `Login`   | —             | shipped       | Email/password + Google sign-in. |
 | `/signup`  | `Signup`  | —             | shipped       | Create account; may need email confirm. |
 | `/home`    | `Home`    | `authGuard`   | shipped       | Landing / mode select (Spielen · Lernen · Online-Duell) + author entry. |
-| `/games`   | `Games`   | `authGuard`   | **proposed**  | Game-mode launcher: catalog of games (verfügbar + roadmap). See §5.6. |
+| `/games`   | `Games`   | `authGuard`   | shipped       | Game-mode launcher: catalog of games (verfügbar + roadmap). Home In-Person CTA lands here; games start `/select`. See §5.6. |
 | `/select`  | `Select`  | `authGuard`   | shipped (thin)| Per-game setup (starts with Fach-Finder). → grows into **Vorbereiten**. |
 | `/play`    | `Play`    | `authGuard`   | shipped       | In-Person **Locate** round loop. |
 | `/editor`  | `Editor`  | `authGuard`   | shipped       | Author loadout editor (Placements). |

@@ -145,3 +145,4 @@ and, if it introduces a new engine or store contract, an ADR.
 | Date | Change |
 |------|--------|
 | 2026-07-24 | Initial brainstorm: 5 mechanic families, ~5 engines, ~20 games, v1 shortlist, open questions. |
+| 2026-07-24 | `/games` launcher shipped (`features/games`, ported from mockup 04). Home In-Person CTA now lands here; Fach-Finder + Gerät holen start `/select`, roadmap games shown as "In Planung". |
