@@ -242,9 +242,10 @@
     padding: clamp(26px, 2.4vw, 36px); box-shadow: var(--card-shadow);
     position: relative; overflow: hidden;
   }
+  /* full-width accent rule — reads as a brand edge, not progress */
   .card::before {
     content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--signal) 0 38%, var(--line-2) 38%);
+    background: var(--signal);
   }
   .card h1 {
     font-family: var(--font-display); font-weight: 600; font-size: 27px;
@@ -448,7 +449,7 @@
           </button>
         </form>
 
-        <div class="offline"><span class="dot"></span> Offline-fähig · auch ohne Konto lokal spielbar</div>
+        <div class="offline"><span class="dot"></span> Offline-fähig</div>
         <p class="foot-note">Noch kein Konto? <a href="#">Registrieren</a></p>
       </section>
 
