@@ -118,6 +118,20 @@ Layered so Game Modes are a swappable top layer, not a fork (ADR-0004):
     immediate fast-follow, toggled by config (ADR-0002).
   - **No realtime/session infra in v1** — built when Online PvP arrives.
 
+## Frontend conventions
+- **Component files split three ways.** Every component lives as `name.ts` +
+  `name.html` + `name.scss`, wired with `templateUrl` / `styleUrl` — never inline
+  `template`/`styles`. Keep the existing no-suffix naming (`login.ts`, not
+  `login.component.ts`). Most screens carry their layout as Tailwind utility
+  classes in the template and a near-empty `.scss`; that is fine — the file
+  exists for consistency and as the home for the occasional component-scoped rule.
+- **Design first.** When building or restyling a screen, work from the design
+  system, not ad-hoc styling: the screen mockups in `docs/design/screens/`, the
+  visual language in [`docs/design/design-guidelines.md`](docs/design/design-guidelines.md),
+  and the screen/flow map in [`docs/design/screen-flow.md`](docs/design/screen-flow.md).
+  Reuse the documented tokens, typography, and component patterns; if a screen
+  needs something new, add it to the guidelines in the same PR.
+
 ## Scope
 - **v1:**
   - In-Person mode, single device, offline-capable.
