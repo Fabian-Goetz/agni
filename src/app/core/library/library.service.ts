@@ -44,13 +44,19 @@ export class LibraryService {
 
   constructor() {
     // Under Supabase the Library is per-owner: when the signed-in user changes
-    // (sign in as someone else, sign out), drop the cached Library so the next
-    // load fetches the new owner's rows and never leaks the previous user's data.
+    // (initial session restore, sign in as someone else, sign out), drop the
+    // cached Library so it never leaks the previous user's rows. This also covers
+    // the initial null→user restore — where a component's early ensureLoaded()
+    // may have raced the async auth restore — by re-loading for the current user
+    // so reference data (equipment/types) isn't left wiped at [].
     if (USE_SUPABASE) {
       let prev: string | null | undefined;
       effect(() => {
         const uid = this.auth.user()?.id ?? null;
-        if (prev !== undefined && uid !== prev) this.reset();
+        if (prev !== undefined && uid !== prev) {
+          this.reset();
+          if (uid) void this.ensureLoaded();
+        }
         prev = uid;
       });
     }
