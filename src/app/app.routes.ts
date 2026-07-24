@@ -20,11 +20,6 @@ export const routes: Routes = [
       import('./features/geraetehaus/geraetehaus').then((m) => m.Geraetehaus),
   },
   {
-    path: 'geraetehaus/fuhrpark',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/fuhrpark/fuhrpark').then((m) => m.Fuhrpark),
-  },
-  {
     path: 'geraetehaus/katalog',
     canActivate: [authGuard],
     loadComponent: () => import('./features/katalog/katalog').then((m) => m.Katalog),
