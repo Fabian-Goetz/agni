@@ -250,7 +250,7 @@ fk-geraetehaus {
 /* ---------- area cards ---------- */
 .geraetehaus-screen .areas {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: clamp(16px, 1.6vw, 22px);
 }
 .geraetehaus-screen .area {
@@ -454,6 +454,11 @@ fk-geraetehaus {
 }
 
 /* ---------- responsive ---------- */
+@media (max-width: 1080px) and (min-width: 821px) {
+  .geraetehaus-screen .areas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 @media (max-width: 820px) {
   .geraetehaus-screen .areas {
     grid-template-columns: 1fr;

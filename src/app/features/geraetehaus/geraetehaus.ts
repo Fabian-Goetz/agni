@@ -33,6 +33,7 @@ export class Geraetehaus {
   );
 
   readonly vehicleCount = computed(() => this.library.vehicles().length);
+  readonly vehicleTypeCount = computed(() => this.library.vehicleTypes().length);
   readonly equipmentCount = computed(() => this.library.equipment().length);
   readonly categoryCount = computed(
     () => new Set(this.library.equipment().map((e) => e.category).filter(Boolean)).size,

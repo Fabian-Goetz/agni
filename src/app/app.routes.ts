@@ -29,6 +29,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./features/katalog/katalog').then((m) => m.Katalog),
   },
+  {
+    path: 'geraetehaus/fahrzeugkatalog',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/fahrzeugkatalog/fahrzeugkatalog').then((m) => m.Fahrzeugkatalog),
+  },
   { path: 'login', loadComponent: () => import('./features/auth/login').then((m) => m.Login) },
   { path: 'signup', loadComponent: () => import('./features/auth/signup').then((m) => m.Signup) },
   {
