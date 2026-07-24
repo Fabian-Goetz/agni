@@ -1,6 +1,6 @@
-import { Component, ViewEncapsulation, computed, inject, signal } from '@angular/core';
+import { Component, ViewEncapsulation, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { LibraryService } from '../../core/library/library.service';
 import { USE_SUPABASE } from '../../core/content/supabase.config';
@@ -34,6 +34,7 @@ export class Fuhrpark {
   readonly auth = inject(AuthService);
   readonly library = inject(LibraryService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   readonly showAccount = USE_SUPABASE;
 
   /** Local light/dark theme for the screen — defaults to the OS preference. */
@@ -86,6 +87,20 @@ export class Fuhrpark {
 
   constructor() {
     void this.library.ensureLoaded();
+
+    // Deep-linked from the Gerätehaus "+ Fahrzeug" action — open the create form.
+    if (this.route.snapshot.queryParamMap.get('new') !== null) {
+      this.creating.set(true);
+    }
+
+    // Default the type dropdown to the first type once the Library has loaded
+    // (types() is empty during the async load, so we can't set it eagerly).
+    effect(() => {
+      if (this.creating() && !this.newTypeId()) {
+        const first = this.types()[0]?.id;
+        if (first) this.newTypeId.set(first);
+      }
+    });
   }
 
   toggleTheme(): void {

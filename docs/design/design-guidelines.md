@@ -165,6 +165,42 @@ Class names are the shared vocabulary; canonical CSS is `login.scss`.
 
 ---
 
+## 7a. Layout & hierarchy principles
+
+The rules that keep a screen calm and scannable. When a screen feels "cluttered"
+or "you don't know where to look", it's almost always one of these being broken.
+
+1. **One focal action per context.** `--signal` red marks the *single* primary
+   action a user is most likely to take here — nothing else competes for it.
+   Everything secondary is a `.btn-ghost` (bordered neutral). Two red buttons on
+   one screen is a bug: the eye can't choose. On the Gerätehaus, red = **Beladen**
+   (the recurring task); "+ Fahrzeug" is secondary → ghost.
+2. **Say a thing once.** Never repeat the page's identity in both an eyebrow and
+   the H1 (`GERÄTEHAUS` + "Dein Gerätehaus." is one label too many). One title per
+   screen; drop possessives ("Dein") and decorative kickers when the H1 already
+   names the place.
+3. **Content over chrome.** A section doesn't need a labelled header if its
+   content is self-evident. A list of vehicles with an "+ Fahrzeug" button and
+   "Beladen" actions announces itself — no `DEIN ARBEITSBEREICH · …` eyebrow
+   needed. Reserve mono section-labels for genuinely ambiguous groupings, and keep
+   them quiet (`--faint`, no red gradient rule). Aim for **at most one** loud label
+   before the user hits real content.
+4. **No two controls with the same effect.** If a link and a button go to the same
+   place, delete one. Distinct affordance ⇒ distinct outcome.
+5. **Navigation must look tappable.** Back/return is a real, bordered control
+   (`.btn-ghost` sized ≥44px with an arrow), not 11px mono text lost against the
+   background.
+6. **Scannable rows = identity + one primary action; bury the rest.** A list row
+   shows what it is and its one main verb (Beladen). Secondary per-item actions
+   (rename, delete) live behind a `⋯` menu, revealed on demand — present but not
+   adding weight. Never print the same value twice in a row (show the type only
+   when it differs from the name).
+7. **Establish a clear reading order top-to-bottom:** title → primary work
+   (your vehicles) → secondary/reference (catalogs). Visual weight (size, contrast,
+   color) must descend in that same order.
+
+---
+
 ## 8. Accessibility & responsive
 
 - **Touch targets ≥44px**; controls usable one-handed and with gloves.
@@ -206,3 +242,5 @@ values, this doc for intent and vocabulary.
 |------|--------|
 | 2026-07-24 | Initial version: captured the "C" blueprint language from `screens/01–03` and the shipped `login` component; recorded the firetruck→C migration status. |
 | 2026-07-24 | Migrated `home` (mode-select) to "C" from `screens/02-startseite`; added the mode-grid (`.modes`/`.mode`, available/locked states) and prepare-row (`.prep`/`.tile`) patterns; moved `home` to target in §0. Token block still copied per-screen — extraction to a shared partial is now actionable (two "C" screens shipped). |
+| 2026-07-24 | Added §7a **Layout & hierarchy principles** (one focal action, say-it-once, content-over-chrome, no duplicate controls, tappable nav, scannable rows, descending reading order). Rebuilt the Gerätehaus hub against them: single H1 (no eyebrow), ghost back-chip, one signal action (Beladen) with "+ Fahrzeug" demoted to ghost + inline create, per-row `⋯` manage menu, quiet reference strip. |
+| 2026-07-24 | Rolled §7a across the app. **Shared back-chip pattern** (bordered ghost + arrow icon, ≥44px) now on games/katalog/fahrzeugkatalog/select (C: `.back` SCSS block) and play/editor (firetruck: Tailwind chip). **Dropped page-identity-repeating eyebrows** on katalog/fahrzeugkatalog (deleted) and games ("Spielen"); **quieted** select's info-carrying eyebrow to `--faint` (no red rule). **Reserved red for the one focal action:** games' 2nd game CTA → ghost (Fach-Finder keeps the red), signup brand H1 `text-primary`→`text-foreground`. **De-duped labels:** roadmap game cards dropped the `Bald` status that doubled their `In Planung` badge; footers dropped bold self-names. Home dropped the loud "Willkommen zurück" greeting + possessive. **Not done here:** the firetruck→"C" migration of select/play/editor (tracked separately, §0/§5.5) — only hierarchy tweaks applied. |

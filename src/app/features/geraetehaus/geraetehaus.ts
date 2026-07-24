@@ -1,18 +1,31 @@
 import { Component, ViewEncapsulation, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { LibraryService } from '../../core/library/library.service';
 import { USE_SUPABASE } from '../../core/content/supabase.config';
+import { Vehicle } from '../../core/models/vehicle';
+
+/** A vehicle plus the derived loadout summary shown in the workspace list. */
+interface Row {
+  vehicle: Vehicle;
+  typeName: string;
+  filled: number;
+  total: number;
+  pct: number;
+  /** The type has no compartment layout yet (ADR-0003) — not loadable. */
+  locked: boolean;
+}
 
 /**
- * Gerätehaus hub — the equipment-management landing (screen-flow §7, ported from
- * docs/design/screens/05-geraetehaus.html). Two source areas (Fuhrpark, Geräte-
- * Katalog) and the Beladung "workbench" that joins them. Fuhrpark management is
- * roadmap for now, so its card is shown locked ("In Planung").
+ * Gerätehaus hub — the equipment-management landing (screen-flow §7). Two zones:
+ * the workspace ("Deine Fahrzeuge") where the Author loads each vehicle — the
+ * primary task, merging the fleet roster with the Beladung entry point — and the
+ * Nachschlagen reference strip (Geräte- + Fahrzeug-Katalog) demoted below it.
  */
 @Component({
   selector: 'fk-geraetehaus',
-  imports: [RouterLink],
+  imports: [RouterLink, FormsModule],
   encapsulation: ViewEncapsulation.None,
   templateUrl: './geraetehaus.html',
   styleUrl: './geraetehaus.scss',
@@ -39,20 +52,38 @@ export class Geraetehaus {
     () => new Set(this.library.equipment().map((e) => e.category).filter(Boolean)).size,
   );
 
-  /** First vehicle in the Library — summarised on the Beladung workbench card. */
-  readonly vehicle = computed(() => this.library.vehicles()[0]);
-  readonly vehicleType = computed(() => {
-    const v = this.vehicle();
-    return v ? this.library.typeById(v.typeId) : undefined;
-  });
-  readonly compartmentCount = computed(() => {
-    const v = this.vehicle();
-    return v ? this.library.compartmentsForVehicle(v.id).length : 0;
-  });
-  readonly placedCount = computed(() => {
-    const v = this.vehicle();
-    return v ? this.library.placedEquipment(v.id).length : 0;
-  });
+  readonly types = computed(() => this.library.vehicleTypes());
+
+  /** The Author's vehicles with their loadout summary — the workspace list. */
+  readonly rows = computed<Row[]>(() =>
+    this.library.vehicles().map((vehicle) => {
+      const compartments = this.library.compartmentsForVehicle(vehicle.id);
+      const placed = new Set(
+        this.library.placementsForVehicle(vehicle.id).map((p) => p.compartmentId),
+      );
+      const total = compartments.length;
+      const filled = compartments.filter((c) => placed.has(c.id)).length;
+      return {
+        vehicle,
+        typeName: this.library.typeById(vehicle.typeId)?.name ?? vehicle.typeId,
+        filled,
+        total,
+        pct: total ? Math.min(100, Math.round((filled / total) * 100)) : 0,
+        locked: total === 0,
+      };
+    }),
+  );
+
+  // ---- inline create form ------------------------------------------------
+  readonly creating = signal(false);
+  readonly newName = signal('');
+  readonly newTypeId = signal('');
+  readonly busy = signal(false);
+
+  // ---- per-row menu + inline rename --------------------------------------
+  readonly menuOpen = signal<string | null>(null);
+  readonly editing = signal<string | null>(null);
+  readonly editName = signal('');
 
   /** Two-letter avatar mark derived from the signed-in e-mail. */
   readonly initials = computed(() => {
@@ -68,6 +99,63 @@ export class Geraetehaus {
 
   toggleTheme(): void {
     this.theme.update((t) => (t === 'dark' ? 'light' : 'dark'));
+  }
+
+  // ---- create ------------------------------------------------------------
+  startCreate(): void {
+    this.newName.set('');
+    this.newTypeId.set(this.types()[0]?.id ?? '');
+    this.menuOpen.set(null);
+    this.editing.set(null);
+    this.creating.set(true);
+  }
+
+  cancelCreate(): void {
+    this.creating.set(false);
+  }
+
+  async create(): Promise<void> {
+    const name = this.newName().trim();
+    const typeId = this.newTypeId();
+    if (!name || !typeId || this.busy()) return;
+    this.busy.set(true);
+    try {
+      await this.library.createVehicleFromType(name, typeId);
+      this.creating.set(false);
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  // ---- row menu / rename / delete ----------------------------------------
+  toggleMenu(id: string): void {
+    this.menuOpen.update((m) => (m === id ? null : id));
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(null);
+  }
+
+  startRename(v: Vehicle): void {
+    this.editing.set(v.id);
+    this.editName.set(v.name);
+    this.menuOpen.set(null);
+  }
+
+  cancelRename(): void {
+    this.editing.set(null);
+  }
+
+  async saveRename(id: string): Promise<void> {
+    const name = this.editName().trim();
+    if (name) await this.library.renameVehicle(id, name);
+    this.editing.set(null);
+  }
+
+  async remove(v: Vehicle): Promise<void> {
+    this.menuOpen.set(null);
+    if (!confirm(`„${v.name}" wirklich aus dem Fuhrpark entfernen?`)) return;
+    await this.library.deleteVehicle(v.id);
   }
 
   async signOut(): Promise<void> {

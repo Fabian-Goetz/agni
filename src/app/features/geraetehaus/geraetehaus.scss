@@ -202,236 +202,485 @@ fk-geraetehaus {
 
 /* ---------- page header ---------- */
 .geraetehaus-screen .back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 15px 9px 11px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--plate-bg);
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-2);
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  transition: border-color 0.15s, color 0.15s;
 }
 .geraetehaus-screen .back:hover {
+  border-color: var(--ink-2);
   color: var(--ink);
 }
-.geraetehaus-screen .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--signal);
-  margin: 16px 0 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.geraetehaus-screen .back:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
-.geraetehaus-screen .eyebrow::after {
-  content: '';
-  height: 1px;
-  flex: 0 0 80px;
-  background: linear-gradient(90deg, var(--signal), transparent);
+.geraetehaus-screen .back svg {
+  width: 15px;
+  height: 15px;
 }
 .geraetehaus-screen .page-head h1 {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(32px, 4.4vw, 50px);
+  font-size: clamp(34px, 4.6vw, 52px);
   line-height: 1;
   letter-spacing: -0.01em;
   margin: 0;
 }
-.geraetehaus-screen .page-head p {
+.geraetehaus-screen .page-head .lede {
   color: var(--ink-2);
   font-size: 16px;
   margin: 12px 0 0;
-  max-width: 60ch;
+  max-width: 54ch;
 }
 
-/* ---------- area cards ---------- */
-.geraetehaus-screen .areas {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(16px, 1.6vw, 22px);
-}
-.geraetehaus-screen .area {
-  position: relative;
-  overflow: hidden;
-  background: var(--card-bg);
-  border: 1px solid var(--line-2);
+/* ---------- shared buttons ---------- */
+.geraetehaus-screen .btn-primary,
+.geraetehaus-screen .btn-ghost {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 11px 18px;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.geraetehaus-screen .btn-primary {
+  background: var(--signal);
+  color: #fff;
+}
+.geraetehaus-screen .btn-primary:hover:not(:disabled) {
+  background: var(--signal-hi);
+}
+.geraetehaus-screen .btn-ghost {
+  background: var(--plate-bg);
+  border-color: var(--line-2);
+  color: var(--ink);
+}
+.geraetehaus-screen .btn-ghost:hover:not(:disabled) {
+  border-color: var(--ink-2);
+}
+.geraetehaus-screen .btn-ghost.sm {
+  font-size: 12px;
+  padding: 8px 12px;
+}
+.geraetehaus-screen .btn-primary:disabled,
+.geraetehaus-screen .btn-ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.geraetehaus-screen .btn-primary:focus-visible,
+.geraetehaus-screen .btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.geraetehaus-screen .btn-icon {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+.geraetehaus-screen .btn-icon:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.geraetehaus-screen .btn-icon:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ---------- fleet: your vehicles ---------- */
+.geraetehaus-screen .fleet {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  min-height: 210px;
-  text-decoration: none;
-  color: var(--ink);
-  transition: border-color 0.15s;
 }
-.geraetehaus-screen a.area:hover {
-  border-color: var(--signal);
+.geraetehaus-screen .fleet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
-.geraetehaus-screen .area .cap {
+.geraetehaus-screen .fleet-label {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--faint);
 }
-.geraetehaus-screen .area .ico {
-  color: var(--icon);
-}
-.geraetehaus-screen .area .ico svg {
-  display: block;
-}
-.geraetehaus-screen .area .ico .hole {
-  fill: var(--hole);
-}
-.geraetehaus-screen .area h2 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 26px;
-  letter-spacing: 0.01em;
-  margin: 0;
-}
-.geraetehaus-screen .area .count {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--sodium);
-}
-.geraetehaus-screen .area .desc {
+.geraetehaus-screen .fleet-label em {
+  font-style: normal;
   color: var(--ink-2);
-  font-size: 14px;
-  margin: 0;
-  flex: 1;
-}
-.geraetehaus-screen .area .go {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-2);
+  margin-left: 4px;
 }
 
-/* locked area = roadmap (Fuhrpark) */
-.geraetehaus-screen .area.locked {
-  opacity: 0.72;
-}
-.geraetehaus-screen .area.locked::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(-45deg, transparent 0 9px, var(--hatch) 9px 10px);
-}
-.geraetehaus-screen .area.locked .badge {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint);
-  border: 1px dashed var(--line-2);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  text-align: center;
-}
-
-/* connector note between sources and workbench */
-.geraetehaus-screen .join-note {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.geraetehaus-screen .join-note::before,
-.geraetehaus-screen .join-note::after {
-  content: '';
-  height: 1px;
-  flex: 1;
-  background: var(--line);
-}
-
-/* ---------- workbench (Beladung) ---------- */
-.geraetehaus-screen .workbench {
-  position: relative;
-  overflow: hidden;
+/* inline create form */
+.geraetehaus-screen .create {
   background: var(--card-bg);
   border: 1px solid var(--line-2);
   border-radius: var(--radius);
-  padding: 26px 28px;
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  text-decoration: none;
-  color: var(--ink);
-  transition: border-color 0.15s;
-}
-.geraetehaus-screen .workbench:hover {
-  border-color: var(--signal);
-}
-.geraetehaus-screen .workbench::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--signal);
-}
-.geraetehaus-screen .workbench .ico {
-  color: var(--sodium);
-  flex: none;
-}
-.geraetehaus-screen .workbench .ico svg {
-  display: block;
-}
-.geraetehaus-screen .workbench .ico .hole {
-  fill: var(--hole);
-}
-.geraetehaus-screen .workbench .wb-body {
-  flex: 1;
+  box-shadow: var(--card-shadow);
+  padding: 20px clamp(20px, 2.2vw, 28px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 }
-.geraetehaus-screen .workbench .cap {
+.geraetehaus-screen .create-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.geraetehaus-screen .fld {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.geraetehaus-screen .fld span {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--faint);
 }
-.geraetehaus-screen .workbench h2 {
+.geraetehaus-screen .fld input,
+.geraetehaus-screen .fld select {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 11px 13px;
+}
+.geraetehaus-screen .fld input:focus,
+.geraetehaus-screen .fld select:focus {
+  outline: none;
+  border-color: var(--signal);
+  box-shadow: var(--focus-ring);
+}
+.geraetehaus-screen .create-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.geraetehaus-screen .fleet-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+/* vehicle row */
+.geraetehaus-screen .vehicle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 26px);
+  padding: 18px clamp(20px, 2.2vw, 28px);
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+}
+.geraetehaus-screen .vehicle:first-child {
+  border-top: 0;
+}
+.geraetehaus-screen .vehicle .ico {
+  color: var(--icon);
+  flex: none;
+}
+.geraetehaus-screen .vehicle .ico svg {
+  display: block;
+}
+.geraetehaus-screen .vehicle .ico .hole {
+  fill: var(--hole);
+}
+.geraetehaus-screen .vehicle .v-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.geraetehaus-screen .vehicle h2 {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 26px;
+  font-size: 22px;
+  letter-spacing: 0.01em;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.geraetehaus-screen .workbench .desc {
-  color: var(--ink-2);
-  font-size: 14px;
-  margin: 0;
-}
-.geraetehaus-screen .workbench .last {
+.geraetehaus-screen .vehicle .v-type {
   font-family: var(--font-mono);
   font-size: 12px;
+  letter-spacing: 0.08em;
   color: var(--sodium);
 }
-.geraetehaus-screen .workbench .cta {
+.geraetehaus-screen .vehicle .v-meter {
+  flex: none;
+  width: clamp(120px, 15vw, 180px);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.geraetehaus-screen .vehicle .v-figures {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.geraetehaus-screen .vehicle .v-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  overflow: hidden;
+}
+.geraetehaus-screen .vehicle .v-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--go);
+  transition: width 0.25s;
+}
+.geraetehaus-screen .vehicle .v-actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.geraetehaus-screen .vehicle .v-cta {
+  flex: none;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   background: var(--signal);
   color: #fff;
   border-radius: var(--radius);
-  padding: 13px 20px;
+  padding: 10px 16px;
   white-space: nowrap;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+.geraetehaus-screen a.v-cta:hover {
+  background: var(--signal-hi);
+}
+.geraetehaus-screen a.v-cta:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* per-row manage menu */
+.geraetehaus-screen .vehicle .menu {
+  position: relative;
+}
+.geraetehaus-screen .vehicle .dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+.geraetehaus-screen .vehicle .dropdown button {
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  padding: 11px 14px;
+  cursor: pointer;
+}
+.geraetehaus-screen .vehicle .dropdown button:hover {
+  background: var(--surface-2);
+}
+.geraetehaus-screen .vehicle .dropdown button.danger {
+  color: var(--signal);
+}
+
+/* inline rename */
+.geraetehaus-screen .vehicle .rename {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.geraetehaus-screen .vehicle .rename input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--signal);
+  border-radius: var(--radius);
+  padding: 8px 11px;
+}
+.geraetehaus-screen .vehicle .rename input:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* locked vehicle = type has no compartment layout (ADR-0003) */
+.geraetehaus-screen .vehicle.locked {
+  opacity: 0.66;
+}
+.geraetehaus-screen .vehicle .badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  border: 1px dashed var(--line-2);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  text-align: center;
+}
+.geraetehaus-screen .vehicle .v-cta.disabled {
+  background: var(--surface-2);
+  color: var(--faint);
+  border: 1px solid var(--line-2);
+}
+
+/* backdrop that closes an open row menu on outside click */
+.geraetehaus-screen .menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+}
+
+/* empty state */
+.geraetehaus-screen .empty {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2vw, 28px);
+  padding: 32px clamp(20px, 2.2vw, 28px);
+}
+.geraetehaus-screen .empty > div {
+  flex: 1;
+  min-width: 0;
+}
+.geraetehaus-screen .empty h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+.geraetehaus-screen .empty .desc {
+  color: var(--ink-2);
+  font-size: 14px;
+  margin: 0;
+  max-width: 52ch;
+}
+.geraetehaus-screen .empty .btn-primary {
+  flex: none;
+}
+
+/* ---------- reference strip ---------- */
+.geraetehaus-screen .reference {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+.geraetehaus-screen .ref-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.geraetehaus-screen .ref-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(14px, 1.4vw, 20px);
+}
+.geraetehaus-screen .ref-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.15s;
+}
+.geraetehaus-screen a.ref-card:hover {
+  border-color: var(--ink-2);
+}
+.geraetehaus-screen .ref-card .ico {
+  color: var(--icon);
+  flex: none;
+}
+.geraetehaus-screen .ref-card .ico svg {
+  display: block;
+}
+.geraetehaus-screen .ref-card .ico .hole {
+  fill: var(--hole);
+}
+.geraetehaus-screen .ref-card .ref-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.geraetehaus-screen .ref-card h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  margin: 0;
+}
+.geraetehaus-screen .ref-card .count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.geraetehaus-screen .ref-card .go {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--faint);
+  flex: none;
+}
+.geraetehaus-screen a.ref-card:hover .go {
+  color: var(--signal);
 }
 
 /* ---------- footer ---------- */
@@ -454,18 +703,33 @@ fk-geraetehaus {
 }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1080px) and (min-width: 821px) {
-  .geraetehaus-screen .areas {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 @media (max-width: 820px) {
-  .geraetehaus-screen .areas {
+  .geraetehaus-screen .ref-grid {
     grid-template-columns: 1fr;
   }
-  .geraetehaus-screen .workbench {
-    flex-direction: column;
-    align-items: flex-start;
+  .geraetehaus-screen .create-fields {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .geraetehaus-screen .vehicle,
+  .geraetehaus-screen .empty {
+    flex-wrap: wrap;
+  }
+  .geraetehaus-screen .vehicle .v-body,
+  .geraetehaus-screen .empty > div {
+    flex: 1 1 auto;
+  }
+  .geraetehaus-screen .vehicle .ico {
+    display: none;
+  }
+  .geraetehaus-screen .vehicle .v-meter {
+    flex: 1 1 100%;
+    width: auto;
+    order: 3;
+  }
+  .geraetehaus-screen .vehicle .v-actions {
+    order: 2;
   }
 }
 @media (prefers-reduced-motion: reduce) {
