@@ -1,0 +1,45 @@
+<main class="mx-auto flex min-h-full max-w-md flex-col gap-4 px-4 py-5">
+  <header class="flex items-center justify-between text-sm">
+    <button type="button" class="text-muted-foreground" (click)="quit()">← Beenden</button>
+    <span class="font-semibold">
+      {{ session.correctCount() }} / {{ session.asked() }} richtig
+    </span>
+  </header>
+
+  @if (session.current(); as c) {
+    <section class="rounded-lg border border-border bg-card px-4 py-4 text-center">
+      <p class="text-xs uppercase tracking-wide text-muted-foreground">Wohin gehört</p>
+      <p class="mt-1 text-2xl font-black text-primary">{{ c.subject.name }}</p>
+      @if (c.subject.category) {
+        <p class="mt-1 text-xs text-muted-foreground">{{ c.subject.category }}</p>
+      }
+    </section>
+
+    <fk-lf-sketch
+      [picked]="session.picked()"
+      [correct]="c.correct"
+      [revealed]="session.revealed()"
+      (pick)="pick($event)"
+    />
+
+    @if (session.revealed()) {
+      <section class="text-center">
+        @if (session.lastWasCorrect()) {
+          <p class="text-lg font-bold text-go">✅ Richtig!</p>
+        } @else {
+          <p class="text-lg font-bold text-primary">
+            ❌ Daneben — richtig ist {{ correctLabel() }}
+          </p>
+        }
+        <button hlmBtn size="xl" class="mt-3 w-full" (click)="session.next()">Weiter →</button>
+      </section>
+    } @else {
+      <p class="text-center text-sm text-muted-foreground">Fach antippen …</p>
+    }
+  } @else {
+    <section class="mt-10 text-center">
+      <p class="text-lg font-semibold">Keine Gegenstände zum Üben.</p>
+      <button hlmBtn variant="outline" class="mt-4" (click)="quit()">Zurück</button>
+    </section>
+  }
+</main>
