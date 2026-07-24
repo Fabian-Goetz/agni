@@ -232,35 +232,34 @@ fk-games {
 
 /* ---------- page header ---------- */
 .games-screen .back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 9px 15px 9px 11px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--plate-bg);
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-2);
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  transition: border-color 0.15s, color 0.15s;
 }
 .games-screen .back:hover {
+  border-color: var(--ink-2);
   color: var(--ink);
 }
-.games-screen .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--signal);
-  margin: 16px 0 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.games-screen .back:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
-.games-screen .eyebrow::after {
-  content: '';
-  height: 1px;
-  flex: 0 0 80px;
-  background: linear-gradient(90deg, var(--signal), transparent);
+.games-screen .back svg {
+  width: 15px;
+  height: 15px;
 }
 .games-screen .page-head h1 {
   font-family: var(--font-display);
@@ -426,6 +425,16 @@ fk-games {
 .games-screen .cta:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+/* secondary game action — neutral so the primary game keeps the one red CTA */
+.games-screen .cta.ghost {
+  background: var(--plate-bg);
+  border-color: var(--line-2);
+  color: var(--ink);
+}
+.games-screen .cta.ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--ink-2);
 }
 
 /* roadmap games */

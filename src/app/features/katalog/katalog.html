@@ -27,8 +27,10 @@
     </header>
 
     <div class="page-head">
-      <a class="back" routerLink="/home">← Startseite</a>
-      <p class="eyebrow">Gerätehaus · Geräte-Katalog</p>
+      <a class="back" routerLink="/geraetehaus">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+        Gerätehaus
+      </a>
       <div class="head-row">
         <h1>Geräte-Katalog.</h1>
         <span class="tally">{{ library.equipment().length }} Geräte · {{ categories().length - 1 }} Kategorien</span>
@@ -121,7 +123,7 @@
     </div>
 
     <footer class="footer">
-      <span><b>Geräte-Katalog</b> · gemeinsam über alle Fahrzeuge</span>
+      <span>Das Nachschlagewerk · gemeinsam über alle Fahrzeuge</span>
       <span>Wissen &amp; Verwendung fürs Lernen</span>
       <span>Beladung nach <b>DIN 14530</b></span>
     </footer>

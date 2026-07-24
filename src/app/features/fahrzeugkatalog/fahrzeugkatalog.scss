@@ -188,36 +188,25 @@ fk-fahrzeugkatalog {
 
 /* ---------- page head ---------- */
 .fzkatalog-screen .back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 15px 9px 11px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--plate-bg);
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-2);
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  transition: border-color 0.15s, color 0.15s;
 }
-.fzkatalog-screen .back:hover {
-  color: var(--ink);
-}
-.fzkatalog-screen .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--signal);
-  margin: 16px 0 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.fzkatalog-screen .eyebrow::after {
-  content: '';
-  height: 1px;
-  flex: 0 0 80px;
-  background: linear-gradient(90deg, var(--signal), transparent);
-}
+.fzkatalog-screen .back:hover { border-color: var(--ink-2); color: var(--ink); }
+.fzkatalog-screen .back:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.fzkatalog-screen .back svg { width: 15px; height: 15px; }
 .fzkatalog-screen .head-row {
   display: flex;
   align-items: baseline;
