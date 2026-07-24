@@ -1,36 +1,76 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Agni · Runde vorbereiten</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Saira+Condensed:wght@500;600;700&family=Saira:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;600;700&family=Roboto+Mono:wght@400;500&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   /* ============================================================
      AGNI — shared design tokens (see 01-anmelden.html)
      ============================================================ */
-  :root {
-    --bay:#0E1116; --bay-2:#0B0E12; --panel:#161A21; --panel-2:#1B2029;
+  /* LIGHT (default) — old token names kept as aliases so component
+     rules below keep working across both themes */
+  :root, :root[data-theme="light"] {
+    --signal:#E5352B; --signal-hi:#C82820; --sodium:#B8791C; --go:#2FA35F;
+    --paper:#191A1C; --muted:#4B4E54; --faint:#9AA0A8;
+    --steel:#D6D1C8; --steel-lo:#E4E0D9;
+    --panel:#FFFFFF; --panel-2:#FBFAF7;
+    --line-2:#D6D1C8;
+    --bay:#F6F4F0;
+    --bg-image:
+      radial-gradient(120% 90% at 22% 6%, #FFFFFF 0%, #F6F4F0 52%, #EFEBE4 100%),
+      linear-gradient(rgba(0,0,0,0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.028) 1px, transparent 1px);
+    --card-bg:#FFFFFF;
+    --hole:#FFFFFF; --hatch:rgba(0,0,0,0.035); --plate-bg:#FFFFFF;
+    --focus-ring:0 0 0 3px rgba(229,53,43,0.28);
+    /* blueprint — ink on paper */
+    --blue:#7A8699; --blue-lo:#C3C9D2;
+    --bp-fill:rgba(122,134,153,0.08); --bp-glass:rgba(122,134,153,0.14);
+    --bp-wheel:#ECE9E3; --bp-lead:#B8BEC7;
+    --bp-sel-fill:rgba(184,121,28,0.10); --bp-sel-r:rgba(184,121,28,0.5);
+    --thumb-bg:#F4F1EA;
+  }
+  /* DARK */
+  :root[data-theme="dark"] {
+    --signal:#E5352B; --signal-hi:#FF574C; --sodium:#F4B860; --go:#46D07E;
+    --paper:#E8EAED; --muted:#8A94A3; --faint:#5A6473;
     --steel:#262E3A; --steel-lo:#1E242D;
-    --signal:#E5352B; --signal-hi:#FF574C; --sodium:#F4B860;
-    --paper:#E8EAED; --muted:#8A94A3; --faint:#5A6473; --go:#46D07E;
+    --panel:#161A21; --panel-2:#1B2029;
+    --line-2:#262E3A;
+    --bay:#0E1116;
+    --bg-image:
+      radial-gradient(120% 90% at 22% 8%, #171C25 0%, #0E1116 46%, #0B0E12 100%),
+      linear-gradient(#1E242D 1px, transparent 1px),
+      linear-gradient(90deg, #1E242D 1px, transparent 1px);
+    --card-bg:linear-gradient(180deg,#161A21,#12161D);
+    --hole:#12161D; --hatch:rgba(90,100,115,0.05); --plate-bg:rgba(22,26,33,0.6);
+    --focus-ring:0 0 0 3px rgba(244,184,96,0.4);
+    /* blueprint — light on graphite */
+    --blue:#3A4658; --blue-lo:#313B4A;
+    --bp-fill:rgba(38,46,58,0.35); --bp-glass:rgba(58,70,88,0.4);
+    --bp-wheel:#12161D; --bp-lead:#3A4658;
+    --bp-sel-fill:rgba(244,184,96,0.10); --bp-sel-r:rgba(244,184,96,0.5);
+    --thumb-bg:rgba(11,14,18,0.5);
+  }
+  :root {
     --radius:4px; --maxw:1240px;
-    --font-display:"Saira Condensed",system-ui,sans-serif;
-    --font-body:"Saira",system-ui,sans-serif;
-    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+    --font-display:"Roboto Condensed",system-ui,sans-serif;
+    --font-body:"Roboto",system-ui,sans-serif;
+    --font-mono:"Roboto Mono",ui-monospace,monospace;
   }
   * { box-sizing:border-box; }
   html,body { height:100%; }
   body {
     margin:0; font-family:var(--font-body); color:var(--paper); line-height:1.5;
     -webkit-font-smoothing:antialiased;
-    background:
-      radial-gradient(120% 90% at 22% 8%, #171C25 0%, var(--bay) 46%, var(--bay-2) 100%),
-      linear-gradient(var(--steel-lo) 1px, transparent 1px),
-      linear-gradient(90deg, var(--steel-lo) 1px, transparent 1px);
+    background:var(--bay);
+    background-image:var(--bg-image);
     background-size:100% 100%, 34px 34px, 34px 34px;
+    transition:background-color .25s, color .25s;
   }
   .shell {
     min-height:100%; max-width:var(--maxw); margin:0 auto;
@@ -48,7 +88,7 @@
   .brand .mark::before {
     content:""; position:absolute; left:0; top:50%;
     width:10px; height:10px; transform:translateY(-50%) rotate(45deg);
-    background:var(--signal); box-shadow:0 0 16px 1px rgba(229,53,43,0.55);
+    background:var(--signal);
   }
   .brand .sub {
     font-family:var(--font-mono); font-size:11px; letter-spacing:0.28em;
@@ -60,6 +100,22 @@
     display:grid; place-items:center; font-family:var(--font-display);
     font-weight:700; color:var(--sodium); font-size:15px;
   }
+
+  /* theme toggle */
+  .theme-toggle {
+    width:38px; height:38px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--line-2); border-radius:var(--radius);
+    background:var(--plate-bg); color:var(--muted); cursor:pointer;
+    transition:border-color .15s, color .15s;
+  }
+  .theme-toggle:hover { border-color:var(--muted); color:var(--paper); }
+  .theme-toggle:focus-visible { outline:none; box-shadow:var(--focus-ring); }
+  .theme-toggle svg { width:18px; height:18px; }
+  :root[data-theme="dark"] .theme-toggle .i-sun  { display:block; }
+  :root[data-theme="dark"] .theme-toggle .i-moon { display:none; }
+  :root[data-theme="light"] .theme-toggle .i-sun  { display:none; }
+  :root[data-theme="light"] .theme-toggle .i-moon { display:block; }
 
   /* ---------- page head ---------- */
   .back {
@@ -98,7 +154,7 @@
   /* vehicle card (selected) */
   .veh-card {
     display:flex; align-items:center; gap:20px;
-    background:linear-gradient(180deg,var(--panel),#12161D);
+    background:var(--card-bg);
     border:1px solid var(--sodium); border-radius:var(--radius);
     padding:16px 20px; position:relative;
   }
@@ -139,7 +195,7 @@
   .chip.type.on .tick { background:var(--signal); border-color:var(--signal); box-shadow:0 0 8px rgba(229,53,43,0.6); }
   .chip.locked {
     cursor:not-allowed; color:var(--faint); border-style:dashed;
-    background:repeating-linear-gradient(-45deg, transparent 0 8px, rgba(90,100,115,0.05) 8px 9px);
+    background:repeating-linear-gradient(-45deg, transparent 0 8px, var(--hatch) 8px 9px);
   }
   .chip.locked .soon {
     font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
@@ -170,13 +226,13 @@
   /* ---------- briefing panel ---------- */
   .briefing {
     position:sticky; top:24px;
-    background:linear-gradient(180deg,var(--panel),#12161D);
+    background:var(--card-bg);
     border:1px solid var(--steel); border-radius:var(--radius);
     padding:24px; overflow:hidden; position:relative;
   }
   .briefing::before {
     content:""; position:absolute; top:0; left:0; right:0; height:3px;
-    background:linear-gradient(90deg,var(--signal) 0 44%,var(--steel) 44%);
+    background:var(--signal);
   }
   .briefing .b-cap {
     font-family:var(--font-mono); font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
@@ -184,7 +240,7 @@
   }
   .briefing .bp {
     border:1px solid var(--steel-lo); border-radius:var(--radius);
-    background:rgba(11,14,18,0.5); padding:12px; margin-bottom:20px;
+    background:var(--thumb-bg); padding:12px; margin-bottom:20px;
   }
   .briefing .bp svg { width:100%; height:auto; display:block; }
 
@@ -207,21 +263,21 @@
   }
   .start:hover { background:var(--signal-hi); }
   .start:active { transform:translateY(1px); }
-  .start:focus-visible { outline:none; box-shadow:0 0 0 3px rgba(244,184,96,0.4); }
+  .start:focus-visible { outline:none; box-shadow:var(--focus-ring); }
   .est { text-align:center; font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--faint); margin-top:12px; text-transform:uppercase; }
 
   /* blueprint svg */
-  .bp-line{fill:none;stroke:#3A4658;stroke-width:1.3;}
-  .bp-fill{fill:rgba(38,46,58,0.35);stroke:#3A4658;stroke-width:1.3;}
-  .bp-rib{stroke:#313B4A;stroke-width:1;}
-  .bp-glass{fill:rgba(58,70,88,0.4);stroke:#3A4658;stroke-width:1.2;}
-  .bp-wheel{fill:#12161D;stroke:#3A4658;stroke-width:1.4;}
-  .bp-hub{fill:none;stroke:#3A4658;stroke-width:1.2;}
-  .bp-lead{stroke:#3A4658;stroke-width:1;stroke-dasharray:2 3;}
+  .bp-line{fill:none;stroke:var(--blue);stroke-width:1.3;}
+  .bp-fill{fill:var(--bp-fill);stroke:var(--blue);stroke-width:1.3;}
+  .bp-rib{stroke:var(--blue-lo);stroke-width:1;}
+  .bp-glass{fill:var(--bp-glass);stroke:var(--blue);stroke-width:1.2;}
+  .bp-wheel{fill:var(--bp-wheel);stroke:var(--blue);stroke-width:1.4;}
+  .bp-hub{fill:none;stroke:var(--blue);stroke-width:1.2;}
+  .bp-lead{stroke:var(--bp-lead);stroke-width:1;stroke-dasharray:2 3;}
   .bp-tag{font-family:var(--font-mono);font-size:13px;fill:var(--muted);}
   /* selected compartments glow */
-  .bp-sel{fill:rgba(244,184,96,0.10);stroke:var(--sodium);stroke-width:1.6;}
-  .bp-sel-r{stroke:rgba(244,184,96,0.5);stroke-width:1;}
+  .bp-sel{fill:var(--bp-sel-fill);stroke:var(--sodium);stroke-width:1.6;}
+  .bp-sel-r{stroke:var(--bp-sel-r);stroke-width:1;}
   .bp-tag-sel{fill:var(--sodium);}
   .bp-off .bp-rib,.bp-off{opacity:0.4;}
 
@@ -246,7 +302,13 @@
 
     <header class="topbar">
       <div class="brand"><div class="mark">AGNI</div><div class="sub">Fahrzeugkunde</div></div>
-      <div class="avatar">FK</div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <button class="theme-toggle" type="button" aria-label="Design umschalten" onclick="__toggleTheme()">
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>
+        </button>
+        <div class="avatar">FK</div>
+      </div>
     </header>
 
     <div class="page-head">
@@ -271,8 +333,8 @@
                 <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="1.6"/>
                 <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2"/>
                 <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2"/>
-                <circle cx="20" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="1.6"/>
-                <circle cx="54" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="20" cy="34" r="6" style="fill:var(--hole)" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="54" cy="34" r="6" style="fill:var(--hole)" stroke="currentColor" stroke-width="1.6"/>
               </svg>
             </span>
             <div class="vinfo">
@@ -395,5 +457,17 @@
     </footer>
 
   </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    })();
+    function __toggleTheme() {
+      var root = document.documentElement;
+      root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+  </script>
 </body>
 </html>

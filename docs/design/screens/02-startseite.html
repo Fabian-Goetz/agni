@@ -1,36 +1,68 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Agni · Startseite</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Saira+Condensed:wght@500;600;700&family=Saira:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;600;700&family=Roboto+Mono:wght@400;500&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   /* ============================================================
      AGNI — shared design tokens (see 01-anmelden.html)
      ============================================================ */
-  :root {
-    --bay:#0E1116; --bay-2:#0B0E12; --panel:#161A21; --panel-2:#1B2029;
+  /* LIGHT (default) — old token names kept as aliases so component
+     rules below keep working across both themes */
+  :root, :root[data-theme="light"] {
+    --signal:#E5352B; --signal-hi:#C82820; --sodium:#B8791C; --go:#2FA35F;
+    --paper:#191A1C; --muted:#4B4E54; --faint:#9AA0A8;
+    --steel:#D6D1C8; --steel-lo:#E4E0D9;
+    --panel:#FFFFFF; --panel-2:#FBFAF7;
+    --line-2:#D6D1C8;
+    --bay:#F6F4F0;
+    --bg-image:
+      radial-gradient(120% 90% at 22% 6%, #FFFFFF 0%, #F6F4F0 52%, #EFEBE4 100%),
+      linear-gradient(rgba(0,0,0,0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.028) 1px, transparent 1px);
+    --card-bg:#FFFFFF;
+    --card-shadow:0 1px 2px rgba(25,26,28,0.04), 0 20px 44px -34px rgba(25,26,28,0.28);
+    --hole:#FFFFFF; --hatch:rgba(0,0,0,0.035); --plate-bg:#FFFFFF;
+    --available-border:#E7C6C2;
+    --focus-ring:0 0 0 3px rgba(229,53,43,0.28);
+  }
+  /* DARK */
+  :root[data-theme="dark"] {
+    --signal:#E5352B; --signal-hi:#FF574C; --sodium:#F4B860; --go:#46D07E;
+    --paper:#E8EAED; --muted:#8A94A3; --faint:#5A6473;
     --steel:#262E3A; --steel-lo:#1E242D;
-    --signal:#E5352B; --signal-hi:#FF574C; --sodium:#F4B860;
-    --paper:#E8EAED; --muted:#8A94A3; --faint:#5A6473; --go:#46D07E;
+    --panel:#161A21; --panel-2:#1B2029;
+    --line-2:#262E3A;
+    --bay:#0E1116;
+    --bg-image:
+      radial-gradient(120% 90% at 22% 8%, #171C25 0%, #0E1116 46%, #0B0E12 100%),
+      linear-gradient(#1E242D 1px, transparent 1px),
+      linear-gradient(90deg, #1E242D 1px, transparent 1px);
+    --card-bg:linear-gradient(180deg,#161A21,#12161D);
+    --card-shadow:0 24px 60px -30px rgba(0,0,0,0.9);
+    --hole:#12161D; --hatch:rgba(90,100,115,0.05); --plate-bg:rgba(22,26,33,0.6);
+    --available-border:#3A2422;
+    --focus-ring:0 0 0 3px rgba(244,184,96,0.4);
+  }
+  :root {
     --radius:4px; --maxw:1240px;
-    --font-display:"Saira Condensed",system-ui,sans-serif;
-    --font-body:"Saira",system-ui,sans-serif;
-    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+    --font-display:"Roboto Condensed",system-ui,sans-serif;
+    --font-body:"Roboto",system-ui,sans-serif;
+    --font-mono:"Roboto Mono",ui-monospace,monospace;
   }
   * { box-sizing:border-box; }
   html,body { height:100%; }
   body {
     margin:0; font-family:var(--font-body); color:var(--paper); line-height:1.5;
     -webkit-font-smoothing:antialiased;
-    background:
-      radial-gradient(120% 90% at 22% 8%, #171C25 0%, var(--bay) 46%, var(--bay-2) 100%),
-      linear-gradient(var(--steel-lo) 1px, transparent 1px),
-      linear-gradient(90deg, var(--steel-lo) 1px, transparent 1px);
+    background:var(--bay);
+    background-image:var(--bg-image);
     background-size:100% 100%, 34px 34px, 34px 34px;
+    transition:background-color .25s, color .25s;
   }
   .shell {
     min-height:100%; max-width:var(--maxw); margin:0 auto;
@@ -48,7 +80,7 @@
   .brand .mark::before {
     content:""; position:absolute; left:0; top:50%;
     width:11px; height:11px; transform:translateY(-50%) rotate(45deg);
-    background:var(--signal); box-shadow:0 0 16px 1px rgba(229,53,43,0.55);
+    background:var(--signal);
   }
   .brand .sub {
     font-family:var(--font-mono); font-size:11px; letter-spacing:0.28em;
@@ -59,7 +91,7 @@
     font-family:var(--font-mono); font-size:11px; letter-spacing:0.18em;
     text-transform:uppercase; color:var(--muted); text-decoration:none;
     border:1px solid var(--steel); border-radius:var(--radius);
-    padding:8px 12px; background:rgba(22,26,33,0.6);
+    padding:8px 12px; background:var(--plate-bg);
   }
   .account .lib:hover { border-color:var(--muted); }
   .account .user { display:flex; align-items:center; gap:10px; }
@@ -76,6 +108,22 @@
     color:var(--faint); text-decoration:none;
   }
   .account .who a:hover { color:var(--signal-hi); }
+
+  /* theme toggle */
+  .theme-toggle {
+    width:38px; height:38px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--line-2); border-radius:var(--radius);
+    background:var(--plate-bg); color:var(--muted); cursor:pointer;
+    transition:border-color .15s, color .15s;
+  }
+  .theme-toggle:hover { border-color:var(--muted); color:var(--paper); }
+  .theme-toggle:focus-visible { outline:none; box-shadow:var(--focus-ring); }
+  .theme-toggle svg { width:18px; height:18px; }
+  :root[data-theme="dark"] .theme-toggle .i-sun  { display:block; }
+  :root[data-theme="dark"] .theme-toggle .i-moon { display:none; }
+  :root[data-theme="light"] .theme-toggle .i-sun  { display:none; }
+  :root[data-theme="light"] .theme-toggle .i-moon { display:block; }
 
   /* ---------- page header ---------- */
   .eyebrow {
@@ -100,7 +148,7 @@
   }
   .mode {
     position:relative; overflow:hidden;
-    background:linear-gradient(180deg,var(--panel),#12161D);
+    background:var(--card-bg);
     border:1px solid var(--steel); border-radius:var(--radius);
     padding:24px 24px 26px; display:flex; flex-direction:column; gap:16px;
     min-height:290px;
@@ -124,10 +172,10 @@
   }
 
   /* available mode = In-Person */
-  .mode.available { border-color:#3A2422; }
+  .mode.available { border-color:var(--available-border); }
   .mode.available::before {
     content:""; position:absolute; top:0; left:0; right:0; height:3px;
-    background:linear-gradient(90deg,var(--signal) 0 44%,var(--steel) 44%);
+    background:var(--signal);
   }
   .mode.available .status { color:var(--go); }
   .mode.available .status .dot { background:var(--go); box-shadow:0 0 8px var(--go); }
@@ -145,13 +193,13 @@
   }
   .mode .cta:hover { background:var(--signal-hi); }
   .mode .cta:active { transform:translateY(1px); }
-  .mode .cta:focus-visible { outline:none; box-shadow:0 0 0 3px rgba(244,184,96,0.4); }
+  .mode .cta:focus-visible { outline:none; box-shadow:var(--focus-ring); }
 
   /* locked modes = roadmap */
   .mode.locked { opacity:0.72; }
   .mode.locked::after {
     content:""; position:absolute; inset:0; pointer-events:none;
-    background:repeating-linear-gradient(-45deg, transparent 0 9px, rgba(90,100,115,0.05) 9px 10px);
+    background:repeating-linear-gradient(-45deg, transparent 0 9px, var(--hatch) 9px 10px);
   }
   .mode.locked .badge {
     font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em;
@@ -170,7 +218,7 @@
   .prep { display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,1.6vw,22px); }
   .tile {
     display:flex; align-items:center; gap:18px; text-decoration:none;
-    background:linear-gradient(180deg,var(--panel),#12161D);
+    background:var(--card-bg);
     border:1px solid var(--steel); border-radius:var(--radius);
     padding:18px 22px; color:var(--paper); transition:border-color .15s;
   }
@@ -224,6 +272,10 @@
             <a href="#">Abmelden</a>
           </div>
         </div>
+        <button class="theme-toggle" type="button" aria-label="Design umschalten" onclick="__toggleTheme()">
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>
+        </button>
       </div>
     </header>
 
@@ -249,8 +301,8 @@
             <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5"/>
             <line x1="30" y1="22" x2="44" y2="22" stroke="currentColor" stroke-width="1"/>
             <line x1="30" y1="26" x2="44" y2="26" stroke="currentColor" stroke-width="1"/>
-            <circle cx="20" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="2"/>
-            <circle cx="54" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="2"/>
+            <circle cx="20" cy="34" r="6" style="fill:var(--hole)" stroke="currentColor" stroke-width="2"/>
+            <circle cx="54" cy="34" r="6" style="fill:var(--hole)" stroke="currentColor" stroke-width="2"/>
           </svg>
         </div>
         <h2>In-Person</h2>
@@ -323,8 +375,8 @@
               <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="1.6"/>
               <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2"/>
               <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2"/>
-              <circle cx="20" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="1.6"/>
-              <circle cx="54" cy="34" r="6" fill="#12161D" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="20" cy="34" r="6" style="fill:var(--hole)" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="54" cy="34" r="6" style="fill:var(--hole)" stroke="currentColor" stroke-width="1.6"/>
             </svg>
           </span>
           <div class="t-body">
@@ -344,5 +396,17 @@
     </footer>
 
   </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    })();
+    function __toggleTheme() {
+      var root = document.documentElement;
+      root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+  </script>
 </body>
 </html>
