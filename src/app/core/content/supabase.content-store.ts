@@ -30,12 +30,34 @@ export class SupabaseContentStore implements ContentStore {
   async loadEquipment(): Promise<Equipment[]> {
     const { data, error } = await this.db.from('equipment').select('*');
     if (error) throw error;
-    return (data ?? []).map((r) => ({ id: r.id, name: r.name, category: r.category ?? undefined }));
+    return (data ?? []).map((r) => ({
+      id: r.id,
+      name: r.name,
+      category: r.category ?? undefined,
+      subcategory: r.subcategory ?? undefined,
+      synonyms: r.synonyms ?? undefined,
+      kurzzeichen: r.kurzzeichen ?? undefined,
+      beschreibung: r.beschreibung ?? undefined,
+      verwendung: r.verwendung ?? undefined,
+      dinRef: r.din_ref ?? undefined,
+      istBehaelter: r.ist_behaelter ?? undefined,
+      typischerContainer: r.typischer_container ?? undefined,
+    }));
   }
   async addEquipment(equipment: Equipment): Promise<void> {
-    const { error } = await this.db
-      .from('equipment')
-      .upsert({ id: equipment.id, name: equipment.name, category: equipment.category ?? null });
+    const { error } = await this.db.from('equipment').upsert({
+      id: equipment.id,
+      name: equipment.name,
+      category: equipment.category ?? null,
+      subcategory: equipment.subcategory ?? null,
+      synonyms: equipment.synonyms ?? null,
+      kurzzeichen: equipment.kurzzeichen ?? null,
+      beschreibung: equipment.beschreibung ?? null,
+      verwendung: equipment.verwendung ?? null,
+      din_ref: equipment.dinRef ?? null,
+      ist_behaelter: equipment.istBehaelter ?? null,
+      typischer_container: equipment.typischerContainer ?? null,
+    });
     if (error) throw error;
   }
 

@@ -17,6 +17,7 @@ create table if not exists vehicle_types (
 alter table vehicle_types enable row level security;
 
 -- Everyone (authenticated) may read the shared catalog; nobody writes via anon key.
+drop policy if exists vehicle_types_read on vehicle_types;
 create policy vehicle_types_read on vehicle_types
   for select using (true);
 
@@ -32,6 +33,17 @@ create table if not exists equipment (
   name     text not null,
   category text
 );
+
+-- Catalog metadata for the Geräte-Katalog (synonyms + educational was/wozu).
+-- Idempotent so an existing project can gain the columns without a rebuild.
+alter table equipment add column if not exists subcategory         text;
+alter table equipment add column if not exists synonyms            text[];
+alter table equipment add column if not exists kurzzeichen          text;
+alter table equipment add column if not exists beschreibung         text;
+alter table equipment add column if not exists verwendung           text;
+alter table equipment add column if not exists din_ref              text;
+alter table equipment add column if not exists ist_behaelter        boolean;
+alter table equipment add column if not exists typischer_container  text;
 
 create table if not exists vehicles (
   id       text primary key,
@@ -58,22 +70,29 @@ alter table placements enable row level security;
 
 -- Equipment: shared seed (owner_id null) is world-readable; own custom items too.
 -- Writes stay owner-scoped, so the shared catalog is immutable via the anon key.
+drop policy if exists equipment_read on equipment;
 create policy equipment_read on equipment
   for select using (owner_id is null or owner_id = auth.uid());
+drop policy if exists equipment_insert on equipment;
 create policy equipment_insert on equipment
   for insert with check (owner_id = auth.uid());
+drop policy if exists equipment_update on equipment;
 create policy equipment_update on equipment
   for update using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+drop policy if exists equipment_delete on equipment;
 create policy equipment_delete on equipment
   for delete using (owner_id = auth.uid());
 
 -- "Own your Library": each owner sees and mutates only their own rows.
+drop policy if exists vehicles_owner on vehicles;
 create policy vehicles_owner on vehicles
   for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+drop policy if exists placements_owner on placements;
 create policy placements_owner on placements
   for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
 
 -- ---------------------------------------------------------------------------
 -- Seed the shared reference data (vehicle types + DIN equipment catalog) by
--- running docs/supabase/seed.sql next. It is generated from core/seed/seed-lf.ts
--- so the app's local seed and the database stay identical.
+-- running docs/supabase/seed.sql next. Both seed.sql and core/seed/seed-lf.ts are
+-- generated from docs/research/*.csv (npm run gen:seed), so the app's local seed
+-- and the database stay identical.

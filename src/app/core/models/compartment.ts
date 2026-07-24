@@ -16,7 +16,15 @@ export const LF_COMPARTMENT_IDS = [
   'Dach',
 ] as const;
 
-export type CompartmentId = (typeof LF_COMPARTMENT_IDS)[number];
+/** The LF's specific zone ids (hand-crafted LfSketch). */
+export type LfCompartmentId = (typeof LF_COMPARTMENT_IDS)[number];
+
+/**
+ * A compartment id. Widened to `string` so vehicle types beyond the LF can carry
+ * their own compartment layouts (ADR-0003 generic renderer). The LF renderer
+ * still works against the concrete `LF_COMPARTMENT_IDS` set above.
+ */
+export type CompartmentId = string;
 
 /** Which face of the vehicle a compartment sits on — drives the generic renderer. */
 export const SIDES = ['left', 'right', 'roof', 'cabin', 'rear'] as const;
