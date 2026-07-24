@@ -1,37 +1,209 @@
-<main class="mx-auto flex min-h-full max-w-lg flex-col gap-6 px-5 py-10">
-  <header class="text-center">
-    <h1 class="text-3xl font-black tracking-tight text-primary">Agni</h1>
-    <p class="mt-0.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-      Fahrzeugkunde
-    </p>
-    <p class="mt-2 text-sm text-muted-foreground">
-      Wo liegt was auf dem Fahrzeug? Tippen, aufdecken, nachschauen.
-    </p>
-  </header>
+<div class="home-screen" [attr.data-theme]="theme()">
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">AGNI</div>
+        <div class="sub">Fahrzeugkunde</div>
+      </div>
+      <div class="account">
+        @if (showAccount && auth.user(); as u) {
+          <div class="user">
+            <div class="avatar">{{ initials() }}</div>
+            <div class="who">
+              <span class="email">{{ u.email }}</span>
+              <button type="button" (click)="signOut()">Abmelden</button>
+            </div>
+          </div>
+        }
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="Design umschalten"
+          (click)="toggleTheme()"
+        >
+          <svg
+            class="i-moon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+          </svg>
+          <svg
+            class="i-sun"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="4.2" />
+            <path
+              d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"
+            />
+          </svg>
+        </button>
+      </div>
+    </header>
 
-  @if (showAccount && auth.user(); as u) {
-    <div class="flex items-center justify-center gap-3 text-xs text-muted-foreground">
-      <span class="truncate">{{ u.email }}</span>
-      <button type="button" class="font-semibold text-primary" (click)="signOut()">
-        Abmelden
-      </button>
+    <div class="page-head">
+      <p class="eyebrow">Willkommen zurück</p>
+      <h1>Wähle deinen Modus.</h1>
+      <p>
+        Eine Bibliothek, drei Wege zu üben. Starte am Fahrzeug, wiederhole allein oder tritt
+        gegeneinander an.
+      </p>
     </div>
-  }
 
-  <section class="flex flex-col gap-3">
-    <a hlmBtn size="xl" routerLink="/select">🚒 In-Person Spiel starten</a>
-    <a hlmBtn variant="outline" size="xl" routerLink="/editor">🧰 Beladung bearbeiten</a>
-  </section>
+    <!-- MODE GRID -->
+    <section class="modes">
+      <!-- In-Person (available) -->
+      <article class="mode available">
+        <span class="status"><span class="dot"></span>Verfügbar</span>
+        <div class="icon">
+          <svg width="72" height="44" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+            <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="2" />
+            <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="2" />
+            <path d="M8 17 L20 15 L20 24 L8 24 Z" stroke="currentColor" stroke-width="1.5" />
+            <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5" />
+            <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.5" />
+            <line x1="30" y1="22" x2="44" y2="22" stroke="currentColor" stroke-width="1" />
+            <line x1="30" y1="26" x2="44" y2="26" stroke="currentColor" stroke-width="1" />
+            <circle cx="20" cy="34" r="6" class="wheel" stroke="currentColor" stroke-width="2" />
+            <circle cx="54" cy="34" r="6" class="wheel" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </div>
+        <h2>In-Person</h2>
+        <p class="desc">
+          Die Gruppe steht am Fahrzeug, ein Gerät wird gezeigt, ihr tippt das richtige Fach — dann
+          greift ihr zu.
+        </p>
+        <span class="meta">1 Gerät · Gruppe · offline</span>
+        <a class="cta" routerLink="/select">Spiel starten →</a>
+      </article>
 
-  <section class="mt-4">
-    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-      Bald verfügbar
-    </p>
-    <ul class="flex flex-col gap-2 text-sm text-muted-foreground">
-      <li class="rounded-md border border-border/60 bg-card/50 px-4 py-3">🎓 Lernmodus (solo)</li>
-      <li class="rounded-md border border-border/60 bg-card/50 px-4 py-3">
-        ⚔️ Online-Quiz (PvP, Kahoot-Style)
-      </li>
-    </ul>
-  </section>
-</main>
+      <!-- Learning (roadmap) -->
+      <article class="mode locked">
+        <span class="status"><span class="dot"></span>Bald</span>
+        <div class="icon">
+          <svg width="52" height="44" viewBox="0 0 52 44" fill="none" aria-hidden="true">
+            <line x1="6" y1="6" x2="6" y2="38" stroke="currentColor" stroke-width="2" />
+            <line x1="6" y1="38" x2="46" y2="38" stroke="currentColor" stroke-width="2" />
+            <path
+              d="M10 30 L20 22 L30 26 L44 10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="20" cy="22" r="2.5" fill="currentColor" />
+            <circle cx="30" cy="26" r="2.5" fill="currentColor" />
+            <circle cx="44" cy="10" r="2.5" fill="currentColor" />
+          </svg>
+        </div>
+        <h2>Lernen</h2>
+        <p class="desc">
+          Allein und im eigenen Tempo. Agni merkt sich, was noch sitzt und was du wiederholen
+          solltest.
+        </p>
+        <span class="meta">Einzeln · Fortschritt · Wiederholung</span>
+        <div class="badge">In Planung</div>
+      </article>
+
+      <!-- Online PvP (roadmap) -->
+      <article class="mode locked">
+        <span class="status"><span class="dot"></span>Bald</span>
+        <div class="icon">
+          <svg width="56" height="44" viewBox="0 0 56 44" fill="none" aria-hidden="true">
+            <rect x="4" y="10" width="24" height="26" rx="2" stroke="currentColor" stroke-width="2" />
+            <rect
+              x="28"
+              y="10"
+              width="24"
+              height="26"
+              rx="2"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <path
+              d="M30 16 L26 24 L30 24 L26 30"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <line x1="9" y1="16" x2="19" y2="16" stroke="currentColor" stroke-width="1.5" />
+            <line x1="9" y1="20" x2="16" y2="20" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        </div>
+        <h2>Online-Duell</h2>
+        <p class="desc">
+          Mehrere Geräte, ein Code. Gleiche Frage für alle, Countdown und Live-Rangliste —
+          Kahoot-Stil.
+        </p>
+        <span class="meta">Mehrspieler · Live · Rangliste</span>
+        <div class="badge">In Planung</div>
+      </article>
+    </section>
+
+    <!-- PREPARE -->
+    <section>
+      <div class="prep-label">Vorbereiten</div>
+      <div class="prep">
+        <a class="tile" routerLink="/editor">
+          <span class="t-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 20 L4 16 L15 5 L19 9 L8 20 Z"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              />
+              <line x1="13" y1="7" x2="17" y2="11" stroke="currentColor" stroke-width="1.8" />
+            </svg>
+          </span>
+          <div class="t-body">
+            <strong>Beladung bearbeiten</strong>
+            <span>Fächer und Geräte deiner Fahrzeuge pflegen.</span>
+          </div>
+          <span class="t-go">→</span>
+        </a>
+
+        @if (vehicle(); as v) {
+          <a class="tile veh" routerLink="/editor">
+            <span class="t-icon">
+              <svg width="60" height="34" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+                <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="1.6" />
+                <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="1.6" />
+                <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2" />
+                <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2" />
+                <circle cx="20" cy="34" r="6" class="wheel" stroke="currentColor" stroke-width="1.6" />
+                <circle cx="54" cy="34" r="6" class="wheel" stroke="currentColor" stroke-width="1.6" />
+              </svg>
+            </span>
+            <div class="t-body">
+              <span class="t-badge">Dienstfahrzeug</span>
+              <strong>{{ v.name }}</strong>
+              <span>{{ compartmentCount() }} Geräteräume · {{ placedCount() }} Geräte platziert</span>
+            </div>
+            <span class="t-go">→</span>
+          </a>
+        }
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span><b>v1</b> · In-Person-Modus</span>
+      <span>Beladung nach <b>DIN 14530-11</b></span>
+      @if (vehicleType(); as t) {
+        <span>Fahrzeugtyp · <b>{{ t.name }}</b></span>
+      }
+    </footer>
+  </div>
+</div>

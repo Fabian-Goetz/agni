@@ -19,8 +19,8 @@ in-progress migration, not an accident (tracked in [screen-flow §5.5](./screen-
 
 | System | Where | Status |
 |--------|-------|--------|
-| **"C" blueprint** (this doc) — Roboto, light/dark, `.auth-screen` tokens | `login` (shipped); mockups `01`–`03` | **target** |
-| **Firetruck** — dark-only spartan/shadcn tokens in `src/styles.css` (`bg-background`, `text-primary`, …) | `home`, `select`, `play`, `editor` | **legacy, to migrate** |
+| **"C" blueprint** (this doc) — Roboto, light/dark, per-screen root-class tokens | `login`, `home` (shipped); mockups `01`–`03` | **target** |
+| **Firetruck** — dark-only spartan/shadcn tokens in `src/styles.css` (`bg-background`, `text-primary`, …) | `select`, `play`, `editor` | **legacy, to migrate** |
 
 New screens use the "C" language. When you touch a legacy screen for visual work,
 migrate it rather than deepening the firetruck styling. The firetruck palette in
@@ -205,3 +205,4 @@ values, this doc for intent and vocabulary.
 | Date | Change |
 |------|--------|
 | 2026-07-24 | Initial version: captured the "C" blueprint language from `screens/01–03` and the shipped `login` component; recorded the firetruck→C migration status. |
+| 2026-07-24 | Migrated `home` (mode-select) to "C" from `screens/02-startseite`; added the mode-grid (`.modes`/`.mode`, available/locked states) and prepare-row (`.prep`/`.tile`) patterns; moved `home` to target in §0. Token block still copied per-screen — extraction to a shared partial is now actionable (two "C" screens shipped). |
