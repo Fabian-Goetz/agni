@@ -86,7 +86,7 @@
             Fahrzeugkunde.
           </p>
           <span class="meta">Am Fahrzeug · Solo oder Gruppe</span>
-          <a class="cta" routerLink="/select">Starten →</a>
+          <a class="cta" routerLink="/select" [queryParams]="{ game: 'fach-finder' }">Starten →</a>
         </article>
 
         <!-- Gerät holen -->
@@ -111,7 +111,7 @@
             Ansage: ein Gerät. Wer bringt es zuerst? Staffellauf gegen die Uhr, direkt am Fahrzeug.
           </p>
           <span class="meta">Am Fahrzeug · Gruppe · auf Zeit</span>
-          <a class="cta" routerLink="/select">Starten →</a>
+          <a class="cta" routerLink="/select" [queryParams]="{ game: 'geraet-holen' }">Starten →</a>
         </article>
       </div>
     </section>

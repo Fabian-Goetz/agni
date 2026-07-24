@@ -143,15 +143,22 @@ Distinguish "round finished" from "vehicle has no equipment" (a real empty/error
 state that should surface back on Vorbereiten, not as a result of 0/0).
 
 ### 5.2 Grow `Select` into `Vorbereiten` — **P2**
-Today `/select` is a bare vehicle list that jumps straight into `/play`. The
-mockup [`03-vorbereiten.html`](./screens/03-vorbereiten.html) envisions a real
-round-setup surface: vehicle **+** (future) challenge types **+** item count.
-- Keep it as the single setup screen; rename the concept to **Vorbereiten**.
-- **Single-vehicle shortcut:** when the Library has exactly one vehicle and there
-  is nothing else to configure, pre-select it — but still show the screen as the
-  "ready?" confirmation rather than silently skipping (keeps a predictable
-  Home → setup → play rhythm and a place for round length).
+**Shipped.** `/select` is now a lean **chooser**, not a configurator: pick the
+Vehicle (card when the fleet is one, list when it's several) + question count,
+then start.
+- **Deliberately excluded:** the mockup [`03`](./screens/03-vorbereiten.html) also
+  drew per-round **compartment scope** and **ordering** controls. Both were cut —
+  they turn a "grab the tablet, drill at the truck" entry point into a
+  power-user configurator, and scoping which compartments are in play edges into
+  Editor/Library territory. Question count is the only round knob here in v1.
+- **Single-vehicle case:** the one Vehicle is pre-selected and the screen stands
+  as a "ready?" confirmation (title *"Bereit?"*) rather than silently skipping —
+  keeps a predictable Home → game → setup → Play rhythm and a home for count. The
+  fleet is expected to grow, so the chooser earns its place (title flips to
+  *"Fahrzeug wählen."* at ≥2 vehicles).
 - As challenge types (§7) arrive, they slot in here without a new screen.
+- Empty state: a Vehicle with no Placements disables Start and points to the
+  Editor, rather than launching a 0/0 round.
 
 ### 5.3 Preserve the requested URL through login — **P3**
 `authGuard` returns `/login` and login always lands on `/home`, so a deep link to
@@ -322,7 +329,7 @@ wraps any launcher game in the Kahoot loop.
 | 1 | Signup | `/signup` | 01 | shipped | Registrieren | Home; → Login |
 | 2 | Home / Mode select | `/home` | [02](./screens/02-startseite.html) | shipped | Spielen | Games; Editor; Login |
 | 2b | Spiele-Übersicht (launcher) | `/games` | [04](./screens/04-spiele-uebersicht.html) | **proposed** | Spiel starten | Vorbereiten; Home |
-| 3 | Vorbereiten (now Select) | `/select` | [03](./screens/03-vorbereiten.html) | partial | Runde starten | Play; Games; Home |
+| 3 | Vorbereiten (Select) | `/select` | [03](./screens/03-vorbereiten.html) | shipped | Runde starten | Play; Games; Home |
 | 4 | Play · Locate | `/play` | — | shipped | tap compartment | Result (proposed); Home |
 | 5 | Ergebnis | `/result` | — | **proposed** | Nochmal | Play; Vorbereiten; Home |
 | 6 | Editor | `/editor` | — | shipped | tick placements | Home |
@@ -351,3 +358,5 @@ decision behind a flow is non-obvious or contested, record it as an
 |------|--------|
 | 2026-07-24 | Initial version: documented v1 flow, identified the missing round-result screen and thin Select, proposed target flow + roadmap subgraphs. |
 | 2026-07-24 | Added Game-mode launcher (§5.6, §7.5, mockup `04`): reframe Home card In-Person→Spielen, promote game selection out of Vorbereiten into a `/games` catalog. Route map + inventory updated. |
+| 2026-07-24 | Built `/select` round setup (mockup `03`), carrying the launcher's `?game=` through to a fixed-length round; Play gained an end summary (`Nochmal`/`Startseite`), so `/result` stays proposed for now. |
+| 2026-07-24 | Scoped `/select` down to a **chooser** (vehicle + question count): cut the mockup's compartment-scope and ordering controls — they made the game entry point a configurator and leaked Editor concerns. Recorded in §5.2. |

@@ -1,28 +1,41 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { LibraryService } from '../library/library.service';
-import { LocatePicker } from '../challenge/locate-picker';
 import { generateLocate, isCorrect, LocateChallenge } from '../challenge/challenge';
-import { randomSelect } from '../util/random';
+import { shuffle } from '../util/random';
+import { Equipment } from '../models/equipment';
 import { CompartmentId } from '../models/compartment';
+import { RoundConfig } from './round-config';
 
 /**
  * In-Person Game Mode session driver (ADR-0004): single device, author-paced,
- * Locate challenges over one Vehicle. Unscored beyond a light end tally.
+ * Locate challenges over one Vehicle. A round runs a fixed queue of subjects —
+ * every placed item once, shuffled, capped at the chosen question count — and
+ * keeps a light tally for the end summary.
  */
 @Injectable({ providedIn: 'root' })
 export class InPersonSessionStore {
   private readonly library = inject(LibraryService);
 
-  private readonly _vehicleId = signal<string | null>(null);
+  private readonly _config = signal<RoundConfig | null>(null);
+  private queue: Equipment[] = [];
+  private cursor = 0;
+
   private readonly _current = signal<LocateChallenge | null>(null);
   private readonly _picked = signal<CompartmentId | null>(null);
   private readonly _asked = signal(0);
   private readonly _correct = signal(0);
+  private readonly _total = signal(0);
+  private readonly _finished = signal(false);
 
+  readonly config = this._config.asReadonly();
   readonly current = this._current.asReadonly();
   readonly picked = this._picked.asReadonly();
   readonly asked = this._asked.asReadonly();
   readonly correctCount = this._correct.asReadonly();
+  /** Number of questions the round will ask in total. */
+  readonly total = this._total.asReadonly();
+  /** True once the queue is exhausted — Play shows the end summary. */
+  readonly finished = this._finished.asReadonly();
 
   readonly revealed = computed(() => this._picked() !== null);
   readonly lastWasCorrect = computed(() => {
@@ -31,35 +44,45 @@ export class InPersonSessionStore {
     return c !== null && p !== null && isCorrect(c, p);
   });
 
-  private picker = new LocatePicker(randomSelect);
-
-  /** Begin a session on a vehicle and deal the first challenge. */
-  start(vehicleId: string): void {
-    this._vehicleId.set(vehicleId);
-    this.picker = new LocatePicker(randomSelect);
+  /** Begin a round from a setup config and deal the first challenge. */
+  start(config: RoundConfig): void {
+    this._config.set(config);
+    const pool = shuffle(this.library.placedEquipment(config.vehicleId));
+    this.queue = config.limit === null ? pool : pool.slice(0, config.limit);
+    this.cursor = 0;
     this._asked.set(0);
     this._correct.set(0);
+    this._total.set(this.queue.length);
+    this._finished.set(false);
     this.next();
   }
 
-  /** Deal the next challenge. */
+  /** Replay the same round with a freshly shuffled queue. */
+  restart(): void {
+    const config = this._config();
+    if (config) this.start(config);
+  }
+
+  /** Deal the next challenge, or finish the round when the queue is empty. */
   next(): void {
-    const vehicleId = this._vehicleId();
-    if (!vehicleId) return;
-    const subject = this.picker.pick(this.library.placedEquipment(vehicleId));
-    if (!subject) {
+    const config = this._config();
+    if (!config) return;
+    if (this.cursor >= this.queue.length) {
       this._current.set(null);
+      this._picked.set(null);
+      this._finished.set(true);
       return;
     }
+    const subject = this.queue[this.cursor++];
     const compartmentIds = this.library
-      .compartmentsForVehicle(vehicleId)
+      .compartmentsForVehicle(config.vehicleId)
       .map((c) => c.id);
     this._picked.set(null);
     this._current.set(
       generateLocate({
         subject,
-        vehicleId,
-        placements: this.library.placementsForVehicle(vehicleId),
+        vehicleId: config.vehicleId,
+        placements: this.library.placementsForVehicle(config.vehicleId),
         compartmentIds,
       }),
     );

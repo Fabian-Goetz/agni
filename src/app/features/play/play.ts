@@ -21,7 +21,7 @@ export class Play {
   constructor() {
     // If the session was never started (e.g. deep link/refresh), bounce to select.
     effect(() => {
-      if (this.session.current() === null && this.session.asked() === 0) {
+      if (this.session.current() === null && this.session.asked() === 0 && !this.session.finished()) {
         this.router.navigate(['/select'], { replaceUrl: true });
       }
     });
@@ -29,6 +29,10 @@ export class Play {
 
   pick(c: CompartmentId): void {
     this.session.pick(c);
+  }
+
+  again(): void {
+    this.session.restart();
   }
 
   quit(): void {

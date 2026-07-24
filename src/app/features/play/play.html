@@ -1,12 +1,25 @@
 <main class="mx-auto flex min-h-full max-w-md flex-col gap-4 px-4 py-5">
   <header class="flex items-center justify-between text-sm">
     <button type="button" class="text-muted-foreground" (click)="quit()">← Beenden</button>
-    <span class="font-semibold">
-      {{ session.correctCount() }} / {{ session.asked() }} richtig
-    </span>
+    @if (!session.finished()) {
+      <span class="text-muted-foreground">Frage {{ session.asked() }} / {{ session.total() }}</span>
+    }
+    <span class="font-semibold">{{ session.correctCount() }} richtig</span>
   </header>
 
-  @if (session.current(); as c) {
+  @if (session.finished()) {
+    <section class="mt-8 flex flex-col items-center gap-4 text-center">
+      <p class="text-xs uppercase tracking-wide text-muted-foreground">Runde beendet</p>
+      <p class="text-4xl font-black text-primary">
+        {{ session.correctCount() }} / {{ session.total() }}
+      </p>
+      <p class="text-sm text-muted-foreground">Fächer richtig getroffen</p>
+      <div class="mt-4 flex w-full flex-col gap-3">
+        <button hlmBtn size="xl" class="w-full" (click)="again()">Nochmal →</button>
+        <button hlmBtn variant="outline" size="xl" class="w-full" (click)="quit()">Startseite</button>
+      </div>
+    </section>
+  } @else if (session.current(); as c) {
     <section class="rounded-lg border border-border bg-card px-4 py-4 text-center">
       <p class="text-xs uppercase tracking-wide text-muted-foreground">Wohin gehört</p>
       <p class="mt-1 text-2xl font-black text-primary">{{ c.subject.name }}</p>
