@@ -1,62 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ViewEncapsulation, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
-import { HlmButton } from '../../shared/ui/hlm-button.directive';
 
 /** Author sign-in: email + password, or Google OAuth. Sign-up lives at /signup. */
 @Component({
   selector: 'fk-login',
-  imports: [FormsModule, RouterLink, HlmButton],
-  template: `
-    <main class="mx-auto flex min-h-full max-w-sm flex-col justify-center gap-6 px-6 py-10">
-      <header class="text-center">
-        <h1 class="text-3xl font-black tracking-tight text-primary">Agni</h1>
-        <p class="mt-2 text-sm text-muted-foreground">Anmelden, um deine Beladung zu laden.</p>
-      </header>
-
-      <form class="flex flex-col gap-3" (ngSubmit)="submit()">
-        <input
-          type="email"
-          name="email"
-          autocomplete="email"
-          placeholder="E-Mail"
-          class="rounded-md border border-border bg-input px-3 py-2.5 text-sm"
-          [(ngModel)]="email"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          autocomplete="current-password"
-          placeholder="Passwort"
-          class="rounded-md border border-border bg-input px-3 py-2.5 text-sm"
-          [(ngModel)]="password"
-          required
-        />
-
-        @if (error()) {
-          <p class="text-sm font-medium text-primary">{{ error() }}</p>
-        }
-
-        <button hlmBtn size="xl" type="submit" [disabled]="busy() || !email().trim() || !password()">
-          Anmelden
-        </button>
-      </form>
-
-      <div class="flex items-center gap-3 text-xs text-muted-foreground">
-        <span class="h-px flex-1 bg-border"></span>oder<span class="h-px flex-1 bg-border"></span>
-      </div>
-
-      <button hlmBtn variant="outline" size="xl" [disabled]="busy()" (click)="google()">
-        Mit Google anmelden
-      </button>
-
-      <a routerLink="/signup" class="text-center text-sm text-muted-foreground">
-        Noch kein Konto? <span class="font-semibold text-primary">Registrieren</span>
-      </a>
-    </main>
-  `,
+  imports: [FormsModule, RouterLink],
+  encapsulation: ViewEncapsulation.None,
+  templateUrl: './login.html',
+  styleUrl: './login.scss',
 })
 export class Login {
   private readonly auth = inject(AuthService);
@@ -66,6 +19,19 @@ export class Login {
   readonly password = signal('');
   readonly error = signal('');
   readonly busy = signal(false);
+
+  /** Local light/dark theme for the auth screen — defaults to the OS preference. */
+  readonly theme = signal<'light' | 'dark'>(
+    typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light',
+  );
+
+  toggleTheme(): void {
+    this.theme.update((t) => (t === 'dark' ? 'light' : 'dark'));
+  }
 
   async submit(): Promise<void> {
     const email = this.email().trim();
