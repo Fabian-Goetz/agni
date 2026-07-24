@@ -13,10 +13,8 @@ interface Row {
   filled: number;
   total: number;
   pct: number;
-  /** No schematic for the type yet (ADR-0003) — the vehicle can't be loaded. */
+  /** Type has no compartment layout to draw (ADR-0003) — can't be loaded. */
   locked: boolean;
-  /** Why it's locked, shown in place of the loadout meter. */
-  lockedReason: string;
 }
 
 /**
@@ -86,7 +84,6 @@ export class Geraetehaus {
         total,
         pct: total ? Math.min(100, Math.round((filled / total) * 100)) : 0,
         locked: !this.library.hasSchematic(vehicle.id),
-        lockedReason: total === 0 ? 'Kein Fächer-Layout' : 'Schema fehlt',
       };
     }),
   );

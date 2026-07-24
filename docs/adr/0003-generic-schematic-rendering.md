@@ -30,9 +30,22 @@ one of two ways, interchangeably:
 The Challenge engine and Session driver only ever see zone ids; they are blind to
 which source produced them (upholds ADR-0004 layering).
 
-**v1:** ships one Vehicle Type — the author's LF — rendered with the hand-crafted
-`LfSketch` reused from the sibling `feuerwehr-activity`. The metadata-box path is
-built as the documented fallback for future types.
+**v1:** ships both paths. The author's LF keeps the hand-crafted `LfSketch`
+reused from the sibling `feuerwehr-activity`; every other type with a compartment
+layout — HLF 20, TLF 3000, TSF-W — is drawn by the metadata renderer
+(`MetadataSketch`), a top-down CSS grid derived from `side` + `order`. Screens
+embed neither directly: `VehicleSchematic` dispatches on the type's
+`hasCustomSketch`, so a truck can be promoted to bespoke artwork later without
+touching a caller.
+
+`order` is a **front→rear rank within a side**, not a global sequence — the
+renderer lays each flank out by it, so encoding source order draws the truck
+backwards. The seed generator derives it from the DIN Geräteraum number
+(G1/G2 front … G5/G6 rear).
+
+Types without any compartments — the Fahrzeugkatalog master-data stubs — have
+nothing to draw and stay gated (`LibraryService.typeHasSchematic`): creatable as
+Vehicles, but not loadable or playable until a layout is authored.
 
 ## Consequences
 - **+** High fidelity where it matters (the LF) without committing to draw every
@@ -42,5 +55,9 @@ built as the documented fallback for future types.
 - **+** Layout edits (future) reflect immediately for metadata-driven types.
 - **−** Hand-crafted types need an SVG whose regions are kept in sync with the
   type's compartment ids.
+- **−** Generic boxes are schematic, not photographic: they convey *which side,
+  how far back*, not what the Geräteraum looks like. Acceptable for drilling the
+  DIN numbering; a type whose spatial layout is the teaching point (DLK, RW)
+  still earns bespoke artwork.
 - Photo+hotspot mode remains a compatible future add-on over the same zone
   contract.

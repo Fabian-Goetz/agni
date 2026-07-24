@@ -161,10 +161,12 @@ Layered so Game Modes are a swappable top layer, not a fork (ADR-0004):
 - **v1:**
   - In-Person mode, single device, offline-capable.
   - **Locate challenge type only** (item → tap its compartment → reveal).
-  - **One Vehicle Type: the author's LF**, rendered with the hand-crafted
-    `LfSketch` reused from `feuerwehr-activity`. Generic metadata-box renderer is
-    the documented fallback for future types (ADR-0003).
-  - **DIN seed content** ships for that LF: its fixed layout + standard loadout +
+  - **Four playable Vehicle Types.** The author's LF uses the hand-crafted
+    `LfSketch` reused from `feuerwehr-activity`; HLF 20, TLF 3000 and TSF-W use
+    the generic metadata-box renderer built from their compartment `side`+`order`
+    (ADR-0003). The rest of the Fahrzeugkatalog is master data without a
+    compartment layout — creatable as Vehicles, not loadable or playable.
+  - **DIN seed content** ships for those four: fixed layouts + standard loadouts +
     the shared Equipment catalog (authored by us).
   - **Author content-editor**: pick a Vehicle Type, then edit Placements
     (bidirectional) over the type's fixed schematic. No layout/compartment
@@ -183,7 +185,8 @@ Layered so Game Modes are a swappable top layer, not a fork (ADR-0004):
 - Learning-mode progression model.
 - Online PvP session/realtime design (lobby, PIN, scoreboard, participant model).
 - Roadmap scoring/competition variants (team-vs-team, PvP, timed multi-step).
-- Additional Vehicle Types beyond the LF, and whether they use hand-crafted or
-  metadata-box schematics.
+- Which of the remaining Fahrzeugkatalog types get a verified DIN loadout next,
+  and which of them earn hand-crafted artwork over the metadata boxes (the
+  spatially-unusual ones — DLK, RW — are the candidates).
 - Equipment images (deferred from v1).
 - Supabase RLS policy details + auth flow (when the Supabase adapter lands).

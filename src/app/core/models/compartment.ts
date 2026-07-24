@@ -1,7 +1,8 @@
 /**
  * Compartment ids for the LF (Fabian's truck). These MUST match the zone ids
- * hard-coded in `shared/lf-sketch.ts` — the v1 schematic is the reused LfSketch.
- * Future vehicle types drive a generic metadata renderer instead (ADR-0003).
+ * hard-coded in `shared/lf-sketch.ts` — the LF is the one type with a bespoke
+ * schematic. Every other type is drawn from its compartment metadata by
+ * `shared/metadata-sketch.ts` (ADR-0003).
  */
 export const LF_COMPARTMENT_IDS = [
   'Fahrerkabine',
@@ -34,6 +35,9 @@ export interface Compartment {
   id: CompartmentId;
   label: string;
   side: Side;
-  /** Front→rear ordering within a side; drives layout for the generic renderer. */
+  /**
+   * Front→rear rank **within its side** — not a global sequence. The generic
+   * renderer lays each flank out by it, so per-side ranks must be unique.
+   */
   order: number;
 }

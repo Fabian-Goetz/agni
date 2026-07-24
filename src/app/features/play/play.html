@@ -31,7 +31,8 @@
       }
     </section>
 
-    <fk-lf-sketch
+    <fk-vehicle-schematic
+      [type]="vehicleType()"
       [picked]="session.picked()"
       [correct]="c.correct"
       [revealed]="session.revealed()"

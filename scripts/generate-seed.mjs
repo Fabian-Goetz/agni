@@ -135,17 +135,33 @@ lfLoadout.push(
   { compartmentId: 'Bank hinten', equipmentId: idByName.get('Pressluftatmer') },
 );
 
-// ---- loadout-bearing types (HLF/TLF/TSF): keep their own Fächer, not yet playable --
+// ---- loadout-bearing types (HLF/TLF/TSF): their own Fächer, drawn by the -------
+// generic metadata renderer (ADR-0003) rather than a hand-crafted sketch.
 const sideFor = (id) =>
   id === 'Dach' ? 'roof' : id === 'Mannschaftsraum' || id === 'Fahrerkabine' ? 'cabin'
     : /[13579]$/.test(id) ? 'left' : /[2468]$/.test(id) ? 'right' : 'left';
 const identityMap = (_name, fach) => (fach && fach !== 'Heck' && fach !== '-' ? fach : null);
 
+/**
+ * Front→rear rank of a compartment within its side. DIN numbers the Geräteräume
+ * front to rear with odd on the left and even on the right (G1/G2 front, G3/G4
+ * middle, G5/G6 rear), so the pair number is the rank. Everything else (cabin,
+ * Dach) is a single compartment per type and sorts first. The renderer lays a
+ * side out by this order, so a CSV-encounter index would draw the truck backwards.
+ */
+const orderFor = (id) => {
+  const g = /^G(\d+)$/.exec(id);
+  return g ? Math.ceil(Number(g[1]) / 2) : 1;
+};
+const SIDE_RANK = { cabin: 0, left: 1, right: 2, roof: 3, rear: 4 };
+
 function listOnlyLoadout(file) {
   const loadout = loadoutPlacements(file, identityMap);
   const ids = [];
   for (const p of loadout) if (!ids.includes(p.compartmentId)) ids.push(p.compartmentId);
-  const compartments = ids.map((cid, i) => ({ id: cid, label: cid, side: sideFor(cid), order: i }));
+  const compartments = ids
+    .map((cid) => ({ id: cid, label: cid, side: sideFor(cid), order: orderFor(cid) }))
+    .sort((a, b) => SIDE_RANK[a.side] - SIDE_RANK[b.side] || a.order - b.order);
   return { compartments, defaultLoadout: loadout, hasCustomSketch: false };
 }
 

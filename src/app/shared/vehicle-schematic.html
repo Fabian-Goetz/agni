@@ -1,0 +1,18 @@
+@if (custom()) {
+  <fk-lf-sketch
+    [picked]="picked()"
+    [correct]="correct()"
+    [revealed]="revealed()"
+    [selected]="selected()"
+    (pick)="pick.emit($event)"
+  />
+} @else {
+  <fk-metadata-sketch
+    [compartments]="compartments()"
+    [picked]="picked()"
+    [correct]="correct()"
+    [revealed]="revealed()"
+    [selected]="selected()"
+    (pick)="pick.emit($event)"
+  />
+}

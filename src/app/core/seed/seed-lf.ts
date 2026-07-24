@@ -4309,52 +4309,52 @@ export const SEED_VEHICLE_TYPES: VehicleType[] = [
     "name": "TLF 3000",
     "compartments": [
       {
-        "id": "Dach",
-        "label": "Dach",
-        "side": "roof",
-        "order": 0
-      },
-      {
-        "id": "G6",
-        "label": "G6",
-        "side": "right",
+        "id": "Mannschaftsraum",
+        "label": "Mannschaftsraum",
+        "side": "cabin",
         "order": 1
-      },
-      {
-        "id": "G5",
-        "label": "G5",
-        "side": "left",
-        "order": 2
-      },
-      {
-        "id": "G3",
-        "label": "G3",
-        "side": "left",
-        "order": 3
       },
       {
         "id": "G1",
         "label": "G1",
         "side": "left",
-        "order": 4
+        "order": 1
       },
       {
-        "id": "G4",
-        "label": "G4",
-        "side": "right",
-        "order": 5
+        "id": "G3",
+        "label": "G3",
+        "side": "left",
+        "order": 2
+      },
+      {
+        "id": "G5",
+        "label": "G5",
+        "side": "left",
+        "order": 3
       },
       {
         "id": "G2",
         "label": "G2",
         "side": "right",
-        "order": 6
+        "order": 1
       },
       {
-        "id": "Mannschaftsraum",
-        "label": "Mannschaftsraum",
-        "side": "cabin",
-        "order": 7
+        "id": "G4",
+        "label": "G4",
+        "side": "right",
+        "order": 2
+      },
+      {
+        "id": "G6",
+        "label": "G6",
+        "side": "right",
+        "order": 3
+      },
+      {
+        "id": "Dach",
+        "label": "Dach",
+        "side": "roof",
+        "order": 1
       }
     ],
     "defaultLoadout": [
@@ -4713,14 +4713,14 @@ export const SEED_VEHICLE_TYPES: VehicleType[] = [
     "name": "TSF-W",
     "compartments": [
       {
-        "id": "G6",
-        "label": "G6",
-        "side": "right",
-        "order": 0
+        "id": "Mannschaftsraum",
+        "label": "Mannschaftsraum",
+        "side": "cabin",
+        "order": 1
       },
       {
-        "id": "G5",
-        "label": "G5",
+        "id": "G1",
+        "label": "G1",
         "side": "left",
         "order": 1
       },
@@ -4731,34 +4731,34 @@ export const SEED_VEHICLE_TYPES: VehicleType[] = [
         "order": 2
       },
       {
-        "id": "G1",
-        "label": "G1",
+        "id": "G5",
+        "label": "G5",
         "side": "left",
         "order": 3
-      },
-      {
-        "id": "G4",
-        "label": "G4",
-        "side": "right",
-        "order": 4
       },
       {
         "id": "G2",
         "label": "G2",
         "side": "right",
-        "order": 5
+        "order": 1
       },
       {
-        "id": "Mannschaftsraum",
-        "label": "Mannschaftsraum",
-        "side": "cabin",
-        "order": 6
+        "id": "G4",
+        "label": "G4",
+        "side": "right",
+        "order": 2
+      },
+      {
+        "id": "G6",
+        "label": "G6",
+        "side": "right",
+        "order": 3
       },
       {
         "id": "Dach",
         "label": "Dach",
         "side": "roof",
-        "order": 7
+        "order": 1
       }
     ],
     "defaultLoadout": [
@@ -5402,14 +5402,14 @@ export const SEED_VEHICLE_TYPES: VehicleType[] = [
     "name": "HLF 20",
     "compartments": [
       {
-        "id": "G6",
-        "label": "G6",
-        "side": "right",
-        "order": 0
+        "id": "Mannschaftsraum",
+        "label": "Mannschaftsraum",
+        "side": "cabin",
+        "order": 1
       },
       {
-        "id": "G5",
-        "label": "G5",
+        "id": "G1",
+        "label": "G1",
         "side": "left",
         "order": 1
       },
@@ -5420,34 +5420,34 @@ export const SEED_VEHICLE_TYPES: VehicleType[] = [
         "order": 2
       },
       {
-        "id": "Mannschaftsraum",
-        "label": "Mannschaftsraum",
-        "side": "cabin",
-        "order": 3
-      },
-      {
-        "id": "G1",
-        "label": "G1",
+        "id": "G5",
+        "label": "G5",
         "side": "left",
-        "order": 4
-      },
-      {
-        "id": "G4",
-        "label": "G4",
-        "side": "right",
-        "order": 5
+        "order": 3
       },
       {
         "id": "G2",
         "label": "G2",
         "side": "right",
-        "order": 6
+        "order": 1
+      },
+      {
+        "id": "G4",
+        "label": "G4",
+        "side": "right",
+        "order": 2
+      },
+      {
+        "id": "G6",
+        "label": "G6",
+        "side": "right",
+        "order": 3
       },
       {
         "id": "Dach",
         "label": "Dach",
         "side": "roof",
-        "order": 7
+        "order": 1
       }
     ],
     "defaultLoadout": [

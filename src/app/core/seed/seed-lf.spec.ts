@@ -28,9 +28,9 @@ describe('LF seed integrity', () => {
 });
 
 describe('catalog type schematics', () => {
-  // The UI gates Beladung/rounds on `hasCustomSketch && compartments.length` —
-  // a type claiming a sketch without a layout (or vice versa) would render the
-  // LF's zones for the wrong truck (ADR-0003).
+  // The UI gates Beladung/rounds on `compartments.length` — types with a layout
+  // are drawn either by their hand-crafted sketch or by the generic metadata
+  // renderer, so the layout data has to hold up on its own (ADR-0003).
   it('a type claiming a custom sketch also carries a compartment layout', () => {
     for (const t of SEED_VEHICLE_TYPES.filter((x) => x.hasCustomSketch)) {
       expect(t.compartments.length, t.id).toBeGreaterThan(0);
@@ -40,6 +40,33 @@ describe('catalog type schematics', () => {
   it('a type with a compartment layout also carries a default loadout', () => {
     for (const t of SEED_VEHICLE_TYPES.filter((x) => x.compartments.length > 0)) {
       expect(t.defaultLoadout.length, t.id).toBeGreaterThan(0);
+    }
+  });
+
+  it('orders compartments uniquely within a side', () => {
+    // Two compartments sharing a side + order would land on the same grid cell.
+    for (const t of SEED_VEHICLE_TYPES) {
+      const seen = new Set<string>();
+      for (const c of t.compartments) {
+        const cell = `${c.side}/${c.order}`;
+        expect(seen.has(cell), `${t.id}: ${cell} used twice`).toBe(false);
+        seen.add(cell);
+      }
+    }
+  });
+
+  it('numbers the DIN Geräteräume front→rear along each flank', () => {
+    // G1/G2 sit at the front, G5/G6 at the rear — a renderer laying a flank out
+    // by `order` draws the truck backwards if the seed encodes CSV order instead.
+    for (const t of SEED_VEHICLE_TYPES) {
+      const flank = t.compartments.filter((c) => /^G\d+$/.test(c.id));
+      for (const a of flank) {
+        for (const b of flank) {
+          if (a.side !== b.side || a === b) continue;
+          const older = Number(a.id.slice(1)) < Number(b.id.slice(1));
+          expect(older === a.order < b.order, `${t.id}: ${a.id} vs ${b.id}`).toBe(true);
+        }
+      }
     }
   });
 

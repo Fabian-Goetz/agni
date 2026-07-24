@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { LfSketch } from '../../shared/lf-sketch';
+import { VehicleSchematic } from '../../shared/vehicle-schematic';
 import { LibraryService } from '../../core/library/library.service';
 import { CompartmentId } from '../../core/models/compartment';
 import { HlmButton } from '../../shared/ui/hlm-button.directive';
@@ -14,7 +14,7 @@ import { HlmCard } from '../../shared/ui/hlm-card.directive';
  */
 @Component({
   selector: 'fk-editor',
-  imports: [LfSketch, FormsModule, RouterLink, HlmButton, HlmCard],
+  imports: [VehicleSchematic, FormsModule, RouterLink, HlmButton, HlmCard],
   templateUrl: './editor.html',
   styleUrl: './editor.scss',
 })
@@ -30,10 +30,15 @@ export class Editor {
     this.vehicleId() ? this.library.vehicleById(this.vehicleId()!) : undefined,
   );
 
+  /** The type drives which schematic gets drawn (ADR-0003). */
+  readonly vehicleType = computed(() => {
+    const v = this.currentVehicle();
+    return v ? this.library.typeById(v.typeId) : undefined;
+  });
+
   /**
-   * Only vehicles whose type has a schematic can be edited — the catalog types
-   * ship without a compartment layout and the generic renderer is still pending
-   * (ADR-0003). Without this the LF sketch would be drawn for every type.
+   * Only vehicles whose type carries a compartment layout can be edited — the
+   * Fahrzeugkatalog master-data stubs have none, so there is nothing to draw.
    */
   readonly hasSchematic = computed(() => {
     const id = this.vehicleId();

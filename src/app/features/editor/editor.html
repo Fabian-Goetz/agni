@@ -24,7 +24,11 @@
     }
 
     @if (hasSchematic()) {
-      <fk-lf-sketch [selected]="open() ? [open()!] : []" (pick)="openCompartment($event)" />
+      <fk-vehicle-schematic
+        [type]="vehicleType()"
+        [selected]="open() ? [open()!] : []"
+        (pick)="openCompartment($event)"
+      />
     } @else {
       <section class="rounded-md border border-border bg-card px-4 py-6 text-center">
         <p class="font-semibold">Für diesen Fahrzeugtyp fehlt noch das Fächer-Layout.</p>

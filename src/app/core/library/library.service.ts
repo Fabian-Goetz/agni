@@ -116,14 +116,14 @@ export class LibraryService {
   }
 
   /**
-   * Whether a schematic exists to render this type's compartments. v1 only draws
-   * the hand-crafted LfSketch, and the Fahrzeugkatalog types ship as master-data
-   * stubs with an empty layout — the generic metadata renderer is still pending
-   * (ADR-0003). Everything that shows a schematic (Beladung editor, rounds) must
-   * gate on this rather than assume the LF.
+   * Whether a schematic exists to render this type's compartments. A layout is
+   * all it takes: types with a hand-crafted sketch get one, the rest fall back to
+   * the generic metadata renderer (ADR-0003). Only the Fahrzeugkatalog master-data
+   * stubs — no compartments at all — have nothing to draw. Everything that shows a
+   * schematic (Beladung editor, rounds) must gate on this rather than assume the LF.
    */
   typeHasSchematic(type: VehicleType | undefined): boolean {
-    return !!type?.hasCustomSketch && type.compartments.length > 0;
+    return !!type && type.compartments.length > 0;
   }
 
   /** Whether a Vehicle can be loaded in the editor and drilled in a round. */

@@ -130,7 +130,7 @@
             @if (editing() !== r.vehicle.id) {
               <span class="v-meter">
                 @if (r.locked) {
-                  <span class="badge">{{ r.lockedReason }}</span>
+                  <span class="badge">Kein Fächer-Layout</span>
                 } @else {
                   <span class="v-figures">{{ r.filled }}/{{ r.total }} Fächer · {{ r.pct }}%</span>
                   <span class="v-bar"><span class="v-bar-fill" [style.width.%]="r.pct"></span></span>

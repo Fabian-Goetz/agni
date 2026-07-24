@@ -133,6 +133,13 @@ Class names are the shared vocabulary; canonical CSS is `login.scss`.
   is the "C"-language cousin of the interactive `LfSketch` — see ADR-0003 for the
   renderer contract (zones addressed by compartment id; highlighted / selected /
   correct / incorrect / disabled).
+- **Metadata schematic** (`fk-metadata-sketch`) — the zero-artwork schematic for
+  vehicle types with no hand-drawn SVG: a top-down CSS grid built from each
+  compartment's `side` + `order` (cabin bands the front, flanks run down the
+  outer columns front→rear, roof fills the centre, rear bands the back). Zones
+  are ≥44px `<button>`s, so unlike the SVG sketches it is keyboard-operable.
+  Same state vocabulary as the blueprint figure. Screens never choose a renderer
+  themselves — they embed `fk-vehicle-schematic`, which dispatches on the type.
 - **Card** (`.card`) — the primary surface. `--card-bg`, `--card-shadow`, a
   full-width `--signal` **top rule** (`::before`, 3px) that reads as a brand edge
   — *not* a progress/tab indicator (that ambiguity was explicitly removed).
@@ -243,4 +250,5 @@ values, this doc for intent and vocabulary.
 | 2026-07-24 | Initial version: captured the "C" blueprint language from `screens/01–03` and the shipped `login` component; recorded the firetruck→C migration status. |
 | 2026-07-24 | Migrated `home` (mode-select) to "C" from `screens/02-startseite`; added the mode-grid (`.modes`/`.mode`, available/locked states) and prepare-row (`.prep`/`.tile`) patterns; moved `home` to target in §0. Token block still copied per-screen — extraction to a shared partial is now actionable (two "C" screens shipped). |
 | 2026-07-24 | Added §7a **Layout & hierarchy principles** (one focal action, say-it-once, content-over-chrome, no duplicate controls, tappable nav, scannable rows, descending reading order). Rebuilt the Gerätehaus hub against them: single H1 (no eyebrow), ghost back-chip, one signal action (Beladen) with "+ Fahrzeug" demoted to ghost + inline create, per-row `⋯` manage menu, quiet reference strip. |
+| 2026-07-24 | Added the **metadata schematic** (§6): a compartment-metadata CSS grid that draws any vehicle type without hand-drawn artwork, behind the `fk-vehicle-schematic` dispatcher. Unlocks HLF 20 / TLF 3000 / TSF-W for Beladung and rounds. Zones are buttons — the first keyboard-operable schematic (§8). |
 | 2026-07-24 | Rolled §7a across the app. **Shared back-chip pattern** (bordered ghost + arrow icon, ≥44px) now on games/katalog/fahrzeugkatalog/select (C: `.back` SCSS block) and play/editor (firetruck: Tailwind chip). **Dropped page-identity-repeating eyebrows** on katalog/fahrzeugkatalog (deleted) and games ("Spielen"); **quieted** select's info-carrying eyebrow to `--faint` (no red rule). **Reserved red for the one focal action:** games' 2nd game CTA → ghost (Fach-Finder keeps the red), signup brand H1 `text-primary`→`text-foreground`. **De-duped labels:** roadmap game cards dropped the `Bald` status that doubled their `In Planung` badge; footers dropped bold self-names. Home dropped the loud "Willkommen zurück" greeting + possessive. **Not done here:** the firetruck→"C" migration of select/play/editor (tracked separately, §0/§5.5) — only hierarchy tweaks applied. |

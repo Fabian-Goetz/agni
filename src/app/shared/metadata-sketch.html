@@ -1,0 +1,29 @@
+<div class="mx-auto w-full max-w-md select-none">
+  <p class="text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+    ▲ Vorne
+  </p>
+
+  <div
+    class="mt-1 grid gap-1.5 rounded-2xl border-2 border-primary bg-elevated p-1.5"
+    [style.grid-template-columns]="'repeat(' + layout().cols + ', minmax(0, 1fr))'"
+    [style.grid-template-rows]="'repeat(' + layout().rows + ', minmax(2.75rem, auto))'"
+  >
+    @for (z of layout().zones; track z.id) {
+      <button
+        type="button"
+        [class]="zoneClass(z.id)"
+        [style.grid-column]="z.col + ' / span ' + z.colSpan"
+        [style.grid-row]="z.row + ' / span ' + z.rowSpan"
+        [disabled]="revealed()"
+        [attr.aria-label]="z.label"
+        (click)="tap(z.id)"
+      >
+        {{ z.label }}
+      </button>
+    }
+  </div>
+
+  <p class="mt-1 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+    Heck
+  </p>
+</div>
