@@ -1,0 +1,36 @@
+geraet,menge,pflicht,typischer_geraeteraum,im_katalog,din_bezug,konfidenz,anmerkung
+Tragkraftspritze,1,Pflicht,Heck,ja,DIN 14410,hoch,"PFPN 10-1000, tragbar — ersetzt die feste Pumpe (verifiziert)"
+Saugschlauch A,4,Pflicht,G6,ja,DIN 14810,mittel,"für den Saugbetrieb der Tragkraftspritze"
+Druckschlauch B,8,Pflicht,G5,ja,DIN 14811,hoch,"mind. 8 B-Schläuche (verifiziert)"
+Druckschlauch C,6,Pflicht,G3,ja,DIN 14811,mittel,
+Verteiler,1,Pflicht,G1,ja,DIN 14345,mittel,
+Standrohr,1,Pflicht,G1,ja,DIN 14375,mittel,
+Sammelstück,1,optional,G6,ja,DIN 14355,niedrig,
+Stützkrümmer,1,Pflicht,G1,ja,DIN 14360,niedrig,
+Saugkorb,1,Pflicht,G6,ja,DIN 14362,niedrig,
+Kupplungsschlüssel ABC,2,Pflicht,G1,ja,DIN 14822,mittel,
+Schlauchtragekorb,2,Pflicht,G3,ja,DIN 14827,mittel,
+Mehrzweckstrahlrohr C,2,Pflicht,G4,ja,DIN 14365,mittel,"CM"
+Mehrzweckstrahlrohr B,1,Pflicht,G4,ja,DIN 14365,mittel,"BM"
+Hohlstrahlrohr,1,wahlweise,G4,ja,,niedrig,
+Zumischer,1,optional,G2,ja,DIN 14384,niedrig,"Schaum begrenzt"
+Mittelschaumrohr,1,optional,G2,ja,DIN 14366,niedrig,
+Pulverlöscher,1,Pflicht,G1,ja,DIN EN 3,hoch,"6 kg ABC (verifiziert)"
+Kübelspritze,1,Pflicht,Mannschaftsraum,ja,DIN 14405,mittel,
+Steckleiter,1,Pflicht,Dach,ja,DIN EN 1147,hoch,"vierteilig (verifiziert)"
+Feuerwehrleine,2,Pflicht,Mannschaftsraum,ja,DIN 14920,mittel,
+Rettungstuch,1,optional,G3,ja,DIN 14152,niedrig,
+Pressluftatmer,2,Pflicht,Mannschaftsraum,ja,DIN EN 137,mittel,"Atemschutz vorhanden (verifiziert); Anzahl variiert"
+Atemschutzmaske,2,Pflicht,Mannschaftsraum,ja,DIN EN 136,mittel,
+Atemluftflasche,2,Pflicht,Mannschaftsraum,ja,,niedrig,"Reserve"
+Handscheinwerfer,2,Pflicht,Mannschaftsraum,ja,,mittel,
+Stromerzeuger,1,optional,G2,ja,DIN 14685,niedrig,"nicht immer Bestandteil"
+Flutlichtstrahler,1,optional,G2,ja,,niedrig,
+Verkehrsleitkegel,4,Pflicht,G5,ja,,mittel,
+Warnblitzleuchte,2,Pflicht,G5,ja,,niedrig,
+Verkehrssicherungskoffer,1,optional,G5,ja,,niedrig,
+Werkzeugkoffer,1,Pflicht,G1,ja,DIN 14881,mittel,
+Bolzenschneider,1,optional,G1,ja,,niedrig,
+Verbandkasten,1,Pflicht,Mannschaftsraum,ja,DIN 13157,mittel,
+Feuerlöschkreiselpumpe,0,nicht enthalten,-,ja,DIN 14530-17,hoch,"keine fest eingebaute Pumpe — Löschbetrieb über die Tragkraftspritze (verifiziert)"
+Rettungssatz,0,nicht enthalten,-,ja,DIN 14530-17,hoch,"kein hydraulischer Rettungssatz (verifiziert)"

@@ -1,0 +1,44 @@
+geraet,menge,pflicht,typischer_geraeteraum,im_katalog,din_bezug,konfidenz,anmerkung
+Feuerlöschkreiselpumpe,1,Pflicht,Heck,ja,DIN 14530-22,hoch,"FPN 10-2000, fest eingebaut (verifiziert)"
+Schnellangriffseinrichtung,1,Pflicht,Heck,ja,DIN 14530-22,mittel,"TLF meist mit Schnellangriff"
+Wenderohr,1,optional,Dach,ja,,niedrig,"Dachwerfer, herstellerabhängig"
+Saugschlauch A,4,Pflicht,G6,ja,DIN 14810,mittel,
+Druckschlauch B,8,Pflicht,G5,ja,DIN 14811,mittel,"weniger als LF (kleine Besatzung)"
+Druckschlauch C,6,Pflicht,G3,ja,DIN 14811,mittel,
+Verteiler,1,Pflicht,G1,ja,DIN 14345,mittel,
+Sammelstück,1,Pflicht,G6,ja,DIN 14355,mittel,
+Standrohr,1,Pflicht,G1,ja,DIN 14375,mittel,
+Stützkrümmer,1,Pflicht,G1,ja,DIN 14360,niedrig,
+Saugkorb,1,Pflicht,G6,ja,DIN 14362,niedrig,
+Kupplungsschlüssel ABC,2,Pflicht,G1,ja,DIN 14822,mittel,
+Schlauchtragekorb,2,Pflicht,G3,ja,DIN 14827,mittel,
+Mehrzweckstrahlrohr C,2,Pflicht,G4,ja,DIN 14365,mittel,"CM"
+Mehrzweckstrahlrohr B,1,Pflicht,G4,ja,DIN 14365,mittel,"BM"
+Hohlstrahlrohr,1,wahlweise,G4,ja,,mittel,
+Zumischer,1,Pflicht,G2,ja,DIN 14384,mittel,"Z4"
+Mittelschaumrohr,1,Pflicht,G2,ja,DIN 14366,niedrig,
+Schwerschaumrohr,1,Pflicht,G2,ja,DIN 14367,niedrig,
+Schaummittelkanister,6,Pflicht,G2,ja,DIN 14530-22,hoch,"6 × 20 l (verifiziert)"
+Pulverlöscher,2,Pflicht,G1,ja,DIN EN 3,hoch,"2 × 6 kg ABC (verifiziert)"
+Kübelspritze,1,optional,Mannschaftsraum,ja,DIN 14405,niedrig,
+Löschrucksack,1,optional,G6,ja,,niedrig,"Vegetationsbrand (Allrad-TLF)"
+Feuerpatsche,2,optional,G6,ja,,niedrig,"Waldbrand"
+Steckleiter,1,Pflicht,Dach,ja,DIN EN 1147,mittel,"4-teilig"
+Feuerwehrleine,2,Pflicht,Mannschaftsraum,ja,DIN 14920,niedrig,
+Pressluftatmer,2,Pflicht,Mannschaftsraum,ja,DIN EN 137,mittel,"Truppbesatzung ⇒ meist 2 PA"
+Atemschutzmaske,2,Pflicht,Mannschaftsraum,ja,DIN EN 136,mittel,
+Atemluftflasche,2,Pflicht,Mannschaftsraum,ja,,niedrig,"Reserve"
+Fluchthaube,2,optional,Mannschaftsraum,ja,,niedrig,
+Stromerzeuger,1,optional,G2,ja,DIN 14685,niedrig,"nicht immer Bestandteil"
+Flutlichtstrahler,2,optional,G2,ja,,niedrig,
+Handscheinwerfer,2,Pflicht,Mannschaftsraum,ja,,mittel,
+Verkehrssicherungskoffer,1,Pflicht,G5,ja,,mittel,
+Verkehrsleitkegel,4,Pflicht,G5,ja,,mittel,
+Warnblitzleuchte,4,Pflicht,G5,ja,,mittel,
+Werkzeugkoffer,1,Pflicht,G1,ja,DIN 14881,mittel,
+Bolzenschneider,1,optional,G1,ja,,niedrig,
+Brechstange,1,optional,G1,ja,,niedrig,
+Motorsäge,1,optional,G6,ja,,niedrig,"Vegetationsbrand/Sturm"
+Verbandkasten,1,Pflicht,Mannschaftsraum,ja,DIN 13157,mittel,
+Rettungsdecke,2,optional,Mannschaftsraum,ja,,niedrig,
+Rettungssatz,0,nicht enthalten,-,ja,DIN 14530-22,hoch,"TLF 3000 führt keinen hydraulischen Rettungssatz (verifiziert)"
