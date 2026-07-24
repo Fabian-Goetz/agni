@@ -4178,6 +4178,820 @@ export const LF_COMPARTMENTS: Compartment[] = [
 
 export const SEED_VEHICLE_TYPES: VehicleType[] = [
   {
+    "id": "kdow",
+    "name": "KdoW",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Kommandowagen",
+    "ordnungsnummer": "10",
+    "klasse": "Führungs- und Mannschaftsfahrzeuge",
+    "kategorie": "Führungsfahrzeug",
+    "synonyms": [
+      "Kommandowagen",
+      "Kdow"
+    ],
+    "besatzung": "Trupp (0/1/1/2)",
+    "gesamtmasse": "ca. 3 t",
+    "hauptaufgabe": "Führung",
+    "dinRef": "DIN 14507-5",
+    "antrieb": "Straße",
+    "beschreibung": "Pkw oder Kombi als schnelles Führungsfahrzeug für kleine Einsätze. Transportiert Führungskräfte mit Funk, Handscheinwerfern und Führungsmaterial.",
+    "verwendung": "Erkundung und Koordination kleiner Einsätze, Zubringer für Führungskräfte"
+  },
+  {
+    "id": "elw-1",
+    "name": "ELW 1",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Einsatzleitwagen 1",
+    "ordnungsnummer": "10",
+    "klasse": "Führungs- und Mannschaftsfahrzeuge",
+    "kategorie": "Führungsfahrzeug",
+    "synonyms": [
+      "Einsatzleitwagen",
+      "ELW"
+    ],
+    "besatzung": "bis 1/3",
+    "gesamtmasse": "ca. 4,6 t",
+    "hauptaufgabe": "Führung",
+    "dinRef": "DIN 14507-2",
+    "antrieb": "Straße",
+    "beschreibung": "Führungsfahrzeug auf Kastenwagenbasis mit Funkarbeitsplatz und Führungsmitteln. Bildet die erste Führungsstelle an der Einsatzstelle.",
+    "verwendung": "Leitung von Einsätzen bis Zugstärke, mobile Funk- und Führungsstelle"
+  },
+  {
+    "id": "elw-2",
+    "name": "ELW 2",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Einsatzleitwagen 2",
+    "ordnungsnummer": "10",
+    "klasse": "Führungs- und Mannschaftsfahrzeuge",
+    "kategorie": "Führungsfahrzeug",
+    "synonyms": [
+      "Einsatzleitwagen 2"
+    ],
+    "besatzung": "variabel (Stab)",
+    "gesamtmasse": "ca. 11 t",
+    "hauptaufgabe": "Führung",
+    "dinRef": "DIN 14507-3",
+    "antrieb": "Straße",
+    "beschreibung": "Großer Einsatzleitwagen mit mehreren Funk- und Sachgebietsarbeitsplätzen für die Stabsarbeit. Dient als ortsfeste Führungsstelle für Verbände.",
+    "verwendung": "Führung von Großschadenslagen und Verbänden, Stabsraum vor Ort"
+  },
+  {
+    "id": "elw-3",
+    "name": "ELW 3",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Einsatzleitwagen 3",
+    "ordnungsnummer": "10",
+    "klasse": "Führungs- und Mannschaftsfahrzeuge",
+    "kategorie": "Führungsfahrzeug",
+    "synonyms": [
+      "Einsatzleitwagen 3"
+    ],
+    "besatzung": "variabel (Stab)",
+    "gesamtmasse": ">12 t",
+    "hauptaufgabe": "Führung",
+    "dinRef": "ehem. DIN 14507-4 (nicht mehr genormt)",
+    "antrieb": "Straße",
+    "beschreibung": "Größte Führungsstelle für Katastrophen- und Größtschadenslagen mit Platz für einen kompletten Stab. Heute nicht mehr genormt, oft durch Abrollbehälter Einsatzleitung ersetzt.",
+    "verwendung": "Mobile Kommandozentrale bei Katastrophen und Größtschadenslagen"
+  },
+  {
+    "id": "mtf",
+    "name": "MTF",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Mannschaftstransportfahrzeug",
+    "ordnungsnummer": "10",
+    "klasse": "Führungs- und Mannschaftsfahrzeuge",
+    "kategorie": "Mannschaftstransport",
+    "synonyms": [
+      "MTW",
+      "Mannschaftstransportwagen"
+    ],
+    "besatzung": "bis Gruppe (0/1/8/9)",
+    "gesamtmasse": "ca. 4,5 t",
+    "hauptaufgabe": "Mannschaftstransport",
+    "antrieb": "Straße",
+    "beschreibung": "Kleinbus zum Transport von Einsatzkräften und Material. Meist ein handelsübliches Serienfahrzeug mit blauer Kennzeichnung.",
+    "verwendung": "Personentransport, Nachschub, Jugendfeuerwehr und logistische Aufgaben"
+  },
+  {
+    "id": "tlf-2000",
+    "name": "TLF 2000",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Tanklöschfahrzeug 2000",
+    "ordnungsnummer": "20",
+    "klasse": "Tank- und Löschfahrzeuge",
+    "kategorie": "Tanklöschfahrzeug",
+    "pumpe": "FPN 10-2000",
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "ca. 10 t",
+    "loeschwasser": "2000 l",
+    "hauptaufgabe": "Brandbekämpfung",
+    "dinRef": "DIN 14530-18",
+    "antrieb": "Allrad",
+    "beschreibung": "Wendiges Tanklöschfahrzeug mit 2000 l Wassertank, häufig für die Vegetations- und Waldbrandbekämpfung genutzt.",
+    "verwendung": "Schnellangriff und Löschwasserversorgung, Wald- und Flächenbrand"
+  },
+  {
+    "id": "tlf-3000",
+    "name": "TLF 3000",
+    "compartments": [
+      {
+        "id": "Dach",
+        "label": "Dach",
+        "side": "roof",
+        "order": 0
+      },
+      {
+        "id": "G6",
+        "label": "G6",
+        "side": "right",
+        "order": 1
+      },
+      {
+        "id": "G5",
+        "label": "G5",
+        "side": "left",
+        "order": 2
+      },
+      {
+        "id": "G3",
+        "label": "G3",
+        "side": "left",
+        "order": 3
+      },
+      {
+        "id": "G1",
+        "label": "G1",
+        "side": "left",
+        "order": 4
+      },
+      {
+        "id": "G4",
+        "label": "G4",
+        "side": "right",
+        "order": 5
+      },
+      {
+        "id": "G2",
+        "label": "G2",
+        "side": "right",
+        "order": 6
+      },
+      {
+        "id": "Mannschaftsraum",
+        "label": "Mannschaftsraum",
+        "side": "cabin",
+        "order": 7
+      }
+    ],
+    "defaultLoadout": [
+      {
+        "compartmentId": "Dach",
+        "equipmentId": "wenderohr"
+      },
+      {
+        "compartmentId": "G6",
+        "equipmentId": "saugschlauch-a",
+        "qty": 4
+      },
+      {
+        "compartmentId": "G5",
+        "equipmentId": "druckschlauch-b",
+        "qty": 8
+      },
+      {
+        "compartmentId": "G3",
+        "equipmentId": "druckschlauch-c",
+        "qty": 6
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "verteiler"
+      },
+      {
+        "compartmentId": "G6",
+        "equipmentId": "sammelstueck"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "standrohr"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "stuetzkruemmer"
+      },
+      {
+        "compartmentId": "G6",
+        "equipmentId": "saugkorb"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "kupplungsschluessel-abc",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G3",
+        "equipmentId": "schlauchtragekorb",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G4",
+        "equipmentId": "mehrzweckstrahlrohr-c",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G4",
+        "equipmentId": "mehrzweckstrahlrohr-b"
+      },
+      {
+        "compartmentId": "G4",
+        "equipmentId": "hohlstrahlrohr"
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "zumischer"
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "mittelschaumrohr"
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "schwerschaumrohr"
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "schaummittelkanister",
+        "qty": 6
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "pulverloescher",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "kuebelspritze"
+      },
+      {
+        "compartmentId": "G6",
+        "equipmentId": "loeschrucksack"
+      },
+      {
+        "compartmentId": "G6",
+        "equipmentId": "feuerpatsche",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Dach",
+        "equipmentId": "steckleiter"
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "feuerwehrleine",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "pressluftatmer",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "atemschutzmaske",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "atemluftflasche",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "fluchthaube",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "stromerzeuger"
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "flutlichtstrahler",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "handscheinwerfer",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G5",
+        "equipmentId": "verkehrssicherungskoffer"
+      },
+      {
+        "compartmentId": "G5",
+        "equipmentId": "verkehrsleitkegel",
+        "qty": 4
+      },
+      {
+        "compartmentId": "G5",
+        "equipmentId": "warnblitzleuchte",
+        "qty": 4
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "werkzeugkoffer"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "bolzenschneider"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "brechstange"
+      },
+      {
+        "compartmentId": "G6",
+        "equipmentId": "motorsaege"
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "verbandkasten"
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "rettungsdecke",
+        "qty": 2
+      }
+    ],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Tanklöschfahrzeug 3000",
+    "ordnungsnummer": "20",
+    "klasse": "Tank- und Löschfahrzeuge",
+    "kategorie": "Tanklöschfahrzeug",
+    "pumpe": "FPN 10-2000",
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "16 t",
+    "loeschwasser": "3000 l",
+    "hauptaufgabe": "Brandbekämpfung",
+    "dinRef": "DIN 14530-22",
+    "antrieb": "Allrad",
+    "beschreibung": "Tanklöschfahrzeug mit 3000 l Wasser für den unabhängigen Löschangriff und die Wasserversorgung im Pendelverkehr.",
+    "verwendung": "Schnellangriff mit großem Wasservorrat, Löschwasserversorgung"
+  },
+  {
+    "id": "tlf-4000",
+    "name": "TLF 4000",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Tanklöschfahrzeug 4000",
+    "ordnungsnummer": "20",
+    "klasse": "Tank- und Löschfahrzeuge",
+    "kategorie": "Tanklöschfahrzeug",
+    "pumpe": "FPN 10-2000",
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": ">16 t",
+    "loeschwasser": "4000 l + 500 l Schaummittel",
+    "hauptaufgabe": "Brandbekämpfung",
+    "dinRef": "DIN 14530-21",
+    "antrieb": "Allrad",
+    "beschreibung": "Großes Tanklöschfahrzeug mit 4000 l Wasser und 500 l Schaummittel für lang anhaltende oder wasserarme Einsatzstellen.",
+    "verwendung": "Löschwasserversorgung im Pendelverkehr, Großbrände, Waldbrand"
+  },
+  {
+    "id": "gtlf",
+    "name": "GTLF",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Großtanklöschfahrzeug",
+    "ordnungsnummer": "20",
+    "klasse": "Tank- und Löschfahrzeuge",
+    "kategorie": "Tanklöschfahrzeug",
+    "synonyms": [
+      "Großtanklöschfahrzeug"
+    ],
+    "pumpe": "FPN 10-2000",
+    "besatzung": "Trupp (0/1/1/2)",
+    "gesamtmasse": ">18 t",
+    "loeschwasser": "ab 8000 l",
+    "hauptaufgabe": "Brandbekämpfung",
+    "dinRef": "nicht genormt",
+    "antrieb": "Straße/Allrad",
+    "beschreibung": "Sonderfahrzeug mit sehr großem Löschmittelvorrat, oft mit Werfer. Verbreitet bei Werk- und Flughafenfeuerwehren.",
+    "verwendung": "Großbrände, Industrie- und Flugzeugbrände, mobiler Löschwasservorrat"
+  },
+  {
+    "id": "dlk-23-12",
+    "name": "DLK 23",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Drehleiter mit Korb 23-12",
+    "ordnungsnummer": "30",
+    "klasse": "Hubrettungsfahrzeuge",
+    "kategorie": "Drehleiter",
+    "synonyms": [
+      "DLK 23/12",
+      "DLAK 23-12",
+      "Drehleiter"
+    ],
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "16 t",
+    "hauptaufgabe": "Rettungstechnik",
+    "dinRef": "DIN EN 14043",
+    "antrieb": "Straße",
+    "beschreibung": "Verbreitetste Drehleiter mit Rettungskorb, Nennrettungshöhe 23 m bei 12 m Ausladung. Standard-Hubrettungsfahrzeug der Feuerwehren.",
+    "verwendung": "Menschenrettung aus Höhen, Anleitern, Arbeiten unter Höhe"
+  },
+  {
+    "id": "dlk-18-12",
+    "name": "DLK 18",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Drehleiter mit Korb 18-12",
+    "ordnungsnummer": "30",
+    "klasse": "Hubrettungsfahrzeuge",
+    "kategorie": "Drehleiter",
+    "synonyms": [
+      "DLK 18/12",
+      "DLAK 18-12"
+    ],
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "14 t",
+    "hauptaufgabe": "Rettungstechnik",
+    "dinRef": "DIN EN 14043",
+    "antrieb": "Straße",
+    "beschreibung": "Kompaktere Drehleiter mit 18 m Nennrettungshöhe für beengte Einsatzräume und leichtere Fahrgestelle.",
+    "verwendung": "Menschenrettung und Anleitern in enger Bebauung"
+  },
+  {
+    "id": "dlk-12-9",
+    "name": "DLK 12",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Drehleiter mit Korb 12-9",
+    "ordnungsnummer": "30",
+    "klasse": "Hubrettungsfahrzeuge",
+    "kategorie": "Drehleiter",
+    "synonyms": [
+      "DLK 12/9",
+      "DLAK 12-9"
+    ],
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "13 t",
+    "hauptaufgabe": "Rettungstechnik",
+    "dinRef": "DIN EN 14043",
+    "antrieb": "Straße",
+    "beschreibung": "Kleinste genormte Drehleiter mit 12 m Nennrettungshöhe auf leichtem Fahrgestell.",
+    "verwendung": "Anleitern niedriger Gebäude, Einsätze mit begrenztem Platz"
+  },
+  {
+    "id": "tgm-23-12",
+    "name": "TGM 23/12",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Teleskopgelenkmast 23-12",
+    "ordnungsnummer": "30",
+    "klasse": "Hubrettungsfahrzeuge",
+    "kategorie": "Hubarbeitsbühne",
+    "synonyms": [
+      "Teleskopmast",
+      "TMB",
+      "Teleskopgelenkmast"
+    ],
+    "besatzung": "Trupp (0/1/1/2)",
+    "gesamtmasse": "16 t",
+    "hauptaufgabe": "Rettungstechnik",
+    "dinRef": "DIN EN 1777",
+    "antrieb": "Straße",
+    "beschreibung": "Hubrettungsfahrzeug mit gelenkigem Teleskoparm und Korb, das auch über Hindernisse hinweg arbeiten kann.",
+    "verwendung": "Menschenrettung und Arbeiten in Höhe, Brandbekämpfung vom Korb"
+  },
+  {
+    "id": "tsf",
+    "name": "TSF",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Tragkraftspritzenfahrzeug",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Tragkraftspritzenfahrzeug",
+    "synonyms": [
+      "Tragkraftspritzenfahrzeug"
+    ],
+    "pumpe": "PFPN 10-1000",
+    "besatzung": "Staffel (0/1/5/6)",
+    "gesamtmasse": "4,75 t",
+    "hauptaufgabe": "Brandbekämpfung",
+    "dinRef": "DIN 14530-16",
+    "antrieb": "Straße",
+    "beschreibung": "Kleines Löschfahrzeug ohne Wassertank, das eine tragbare Tragkraftspritze und Beladung für eine Gruppe mitführt.",
+    "verwendung": "Brandbekämpfung mit unabhängiger Wasserentnahme, Grundschutz kleiner Wehren"
+  },
+  {
+    "id": "tsf-w",
+    "name": "TSF-W",
+    "compartments": [
+      {
+        "id": "G6",
+        "label": "G6",
+        "side": "right",
+        "order": 0
+      },
+      {
+        "id": "G5",
+        "label": "G5",
+        "side": "left",
+        "order": 1
+      },
+      {
+        "id": "G3",
+        "label": "G3",
+        "side": "left",
+        "order": 2
+      },
+      {
+        "id": "G1",
+        "label": "G1",
+        "side": "left",
+        "order": 3
+      },
+      {
+        "id": "G4",
+        "label": "G4",
+        "side": "right",
+        "order": 4
+      },
+      {
+        "id": "G2",
+        "label": "G2",
+        "side": "right",
+        "order": 5
+      },
+      {
+        "id": "Mannschaftsraum",
+        "label": "Mannschaftsraum",
+        "side": "cabin",
+        "order": 6
+      },
+      {
+        "id": "Dach",
+        "label": "Dach",
+        "side": "roof",
+        "order": 7
+      }
+    ],
+    "defaultLoadout": [
+      {
+        "compartmentId": "G6",
+        "equipmentId": "saugschlauch-a",
+        "qty": 4
+      },
+      {
+        "compartmentId": "G5",
+        "equipmentId": "druckschlauch-b",
+        "qty": 8
+      },
+      {
+        "compartmentId": "G3",
+        "equipmentId": "druckschlauch-c",
+        "qty": 6
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "verteiler"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "standrohr"
+      },
+      {
+        "compartmentId": "G6",
+        "equipmentId": "sammelstueck"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "stuetzkruemmer"
+      },
+      {
+        "compartmentId": "G6",
+        "equipmentId": "saugkorb"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "kupplungsschluessel-abc",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G3",
+        "equipmentId": "schlauchtragekorb",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G4",
+        "equipmentId": "mehrzweckstrahlrohr-c",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G4",
+        "equipmentId": "mehrzweckstrahlrohr-b"
+      },
+      {
+        "compartmentId": "G4",
+        "equipmentId": "hohlstrahlrohr"
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "zumischer"
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "mittelschaumrohr"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "pulverloescher"
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "kuebelspritze"
+      },
+      {
+        "compartmentId": "Dach",
+        "equipmentId": "steckleiter"
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "feuerwehrleine",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G3",
+        "equipmentId": "rettungstuch"
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "pressluftatmer",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "atemschutzmaske",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "atemluftflasche",
+        "qty": 2
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "handscheinwerfer",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "stromerzeuger"
+      },
+      {
+        "compartmentId": "G2",
+        "equipmentId": "flutlichtstrahler"
+      },
+      {
+        "compartmentId": "G5",
+        "equipmentId": "verkehrsleitkegel",
+        "qty": 4
+      },
+      {
+        "compartmentId": "G5",
+        "equipmentId": "warnblitzleuchte",
+        "qty": 2
+      },
+      {
+        "compartmentId": "G5",
+        "equipmentId": "verkehrssicherungskoffer"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "werkzeugkoffer"
+      },
+      {
+        "compartmentId": "G1",
+        "equipmentId": "bolzenschneider"
+      },
+      {
+        "compartmentId": "Mannschaftsraum",
+        "equipmentId": "verbandkasten"
+      }
+    ],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Tragkraftspritzenfahrzeug mit Wasser",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Tragkraftspritzenfahrzeug",
+    "synonyms": [
+      "TSF-W"
+    ],
+    "pumpe": "PFPN 10-1000",
+    "besatzung": "Staffel (0/1/5/6)",
+    "gesamtmasse": "7,5 t",
+    "loeschwasser": "500 bis 750 l",
+    "hauptaufgabe": "Brandbekämpfung",
+    "dinRef": "DIN 14530-17",
+    "antrieb": "Straße",
+    "beschreibung": "Tragkraftspritzenfahrzeug mit kleinem Löschwassertank und Schnellangriff für den sofortigen Erstangriff.",
+    "verwendung": "Erstangriff mit eigenem Wasser, Grundschutz kleiner und mittlerer Wehren"
+  },
+  {
+    "id": "klf",
+    "name": "KLF",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Kleinlöschfahrzeug",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Löschfahrzeug",
+    "synonyms": [
+      "Kleinlöschfahrzeug"
+    ],
+    "pumpe": "PFPN 10-1000",
+    "besatzung": "Staffel (0/1/5/6)",
+    "gesamtmasse": "4,75 t",
+    "loeschwasser": "500 l",
+    "hauptaufgabe": "Brandbekämpfung",
+    "dinRef": "DIN 14530-24",
+    "antrieb": "Straße",
+    "beschreibung": "Sehr leichtes Löschfahrzeug auf Kastenwagen mit Tragkraftspritze und kleinem Wassertank. Mit 4,75 t für die normale Fahrerlaubnis geeignet.",
+    "verwendung": "Erstmaßnahmen und Entstehungsbrände in kleinen Wehren"
+  },
+  {
+    "id": "mlf",
+    "name": "MLF",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Mittleres Löschfahrzeug",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Löschfahrzeug",
+    "synonyms": [
+      "Mittleres Löschfahrzeug"
+    ],
+    "pumpe": "FPN 10-1000",
+    "besatzung": "Staffel (0/1/5/6)",
+    "gesamtmasse": "9 t",
+    "loeschwasser": "600 bis 1000 l",
+    "hauptaufgabe": "Brandbekämpfung",
+    "dinRef": "DIN 14530-25",
+    "antrieb": "Straße/Allrad",
+    "beschreibung": "Lücke zwischen TSF-W und LF 10 mit fest eingebauter Pumpe, Wassertank und Staffelbesatzung.",
+    "verwendung": "Brandbekämpfung und einfache Hilfeleistung als selbstständige taktische Einheit"
+  },
+  {
+    "id": "lf-10",
+    "name": "LF 10",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Löschgruppenfahrzeug 10",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Löschgruppenfahrzeug",
+    "synonyms": [
+      "LF 10/6"
+    ],
+    "pumpe": "FPN 10-1000",
+    "besatzung": "Gruppe (0/1/8/9)",
+    "gesamtmasse": "14 t",
+    "loeschwasser": "1200 l",
+    "hauptaufgabe": "Brandbekämpfung / Technische Hilfeleistung",
+    "dinRef": "DIN 14530-5",
+    "antrieb": "Straße/Allrad",
+    "beschreibung": "Vielseitiges Löschgruppenfahrzeug mit Gruppenbesatzung, Pumpe, Tank und Beladung für Brand und einfache Hilfeleistung.",
+    "verwendung": "Standard-Löschfahrzeug mittlerer Wehren, Brandbekämpfung und TH"
+  },
+  {
     "id": "lf-20",
     "name": "LF 20",
     "compartments": [
@@ -4519,7 +5333,69 @@ export const SEED_VEHICLE_TYPES: VehicleType[] = [
         "equipmentId": "pressluftatmer"
       }
     ],
-    "hasCustomSketch": true
+    "hasCustomSketch": true,
+    "langbezeichnung": "Löschgruppenfahrzeug 20",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Löschgruppenfahrzeug",
+    "synonyms": [
+      "LF 20/16"
+    ],
+    "pumpe": "FPN 10-2000",
+    "besatzung": "Gruppe (0/1/8/9)",
+    "gesamtmasse": "16 t",
+    "loeschwasser": "2000 l",
+    "hauptaufgabe": "Brandbekämpfung / Technische Hilfeleistung",
+    "dinRef": "DIN 14530-11",
+    "antrieb": "Straße/Allrad",
+    "beschreibung": "Leistungsstarkes Löschgruppenfahrzeug mit großer Pumpe und 2000 l Tank. Rückgrat vieler Löschzüge.",
+    "verwendung": "Universelles Löschfahrzeug für Brandbekämpfung und technische Hilfeleistung"
+  },
+  {
+    "id": "lf-20-kats",
+    "name": "LF 20 KatS",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Löschgruppenfahrzeug 20 für den Katastrophenschutz",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Löschgruppenfahrzeug",
+    "synonyms": [
+      "LF-KatS"
+    ],
+    "pumpe": "FPN 10-2000",
+    "besatzung": "Gruppe (0/1/8/9)",
+    "gesamtmasse": "16 t",
+    "loeschwasser": "ab 1000 l",
+    "hauptaufgabe": "Brandbekämpfung / Technische Hilfeleistung",
+    "dinRef": "DIN 14530-11",
+    "antrieb": "Allrad",
+    "beschreibung": "Robuste, geländegängige Variante des LF 20 für den Katastrophenschutz mit reduziertem Tank und erweiterter Beladung.",
+    "verwendung": "Überörtliche Hilfe, Wald- und Flächenbrand, Katastrophenschutz"
+  },
+  {
+    "id": "hlf-10",
+    "name": "HLF 10",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Hilfeleistungslöschgruppenfahrzeug 10",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Hilfeleistungslöschgruppenfahrzeug",
+    "synonyms": [
+      "HLF 10/6"
+    ],
+    "pumpe": "FPN 10-1000",
+    "besatzung": "Gruppe (0/1/8/9)",
+    "gesamtmasse": "14 t",
+    "loeschwasser": "1000 l",
+    "hauptaufgabe": "Brandbekämpfung / Technische Hilfeleistung",
+    "dinRef": "DIN 14530-26",
+    "antrieb": "Straße/Allrad",
+    "beschreibung": "LF 10 mit erweiterter Beladung zur technischen Hilfeleistung, etwa hydraulischem Rettungssatz.",
+    "verwendung": "Kombinierter Brand- und Hilfeleistungseinsatz, Verkehrsunfälle"
   },
   {
     "id": "hlf-20",
@@ -4879,443 +5755,393 @@ export const SEED_VEHICLE_TYPES: VehicleType[] = [
         "qty": 4
       }
     ],
-    "hasCustomSketch": false
+    "hasCustomSketch": false,
+    "langbezeichnung": "Hilfeleistungslöschgruppenfahrzeug 20",
+    "ordnungsnummer": "40",
+    "klasse": "Löschgruppen- und Tragkraftspritzenfahrzeuge",
+    "kategorie": "Hilfeleistungslöschgruppenfahrzeug",
+    "synonyms": [
+      "HLF 20/16"
+    ],
+    "pumpe": "FPN 10-2000",
+    "besatzung": "Gruppe (0/1/8/9)",
+    "gesamtmasse": "16 t",
+    "loeschwasser": "1600 l",
+    "hauptaufgabe": "Brandbekämpfung / Technische Hilfeleistung",
+    "dinRef": "DIN 14530-27",
+    "antrieb": "Straße/Allrad",
+    "beschreibung": "LF 20 mit vollständiger Ausstattung zur technischen Hilfeleistung inklusive Rettungssatz. Sehr verbreitetes Erstangriffsfahrzeug.",
+    "verwendung": "Erstangriff bei Bränden und Verkehrsunfällen, universelle Hilfeleistung"
   },
   {
-    "id": "tlf-3000",
-    "name": "TLF 3000",
-    "compartments": [
-      {
-        "id": "Dach",
-        "label": "Dach",
-        "side": "roof",
-        "order": 0
-      },
-      {
-        "id": "G6",
-        "label": "G6",
-        "side": "right",
-        "order": 1
-      },
-      {
-        "id": "G5",
-        "label": "G5",
-        "side": "left",
-        "order": 2
-      },
-      {
-        "id": "G3",
-        "label": "G3",
-        "side": "left",
-        "order": 3
-      },
-      {
-        "id": "G1",
-        "label": "G1",
-        "side": "left",
-        "order": 4
-      },
-      {
-        "id": "G4",
-        "label": "G4",
-        "side": "right",
-        "order": 5
-      },
-      {
-        "id": "G2",
-        "label": "G2",
-        "side": "right",
-        "order": 6
-      },
-      {
-        "id": "Mannschaftsraum",
-        "label": "Mannschaftsraum",
-        "side": "cabin",
-        "order": 7
-      }
+    "id": "rw",
+    "name": "RW",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Rüstwagen",
+    "ordnungsnummer": "50",
+    "klasse": "Rüst- und Gerätewagen",
+    "kategorie": "Rüstwagen",
+    "synonyms": [
+      "Rüstwagen"
     ],
-    "defaultLoadout": [
-      {
-        "compartmentId": "Dach",
-        "equipmentId": "wenderohr"
-      },
-      {
-        "compartmentId": "G6",
-        "equipmentId": "saugschlauch-a",
-        "qty": 4
-      },
-      {
-        "compartmentId": "G5",
-        "equipmentId": "druckschlauch-b",
-        "qty": 8
-      },
-      {
-        "compartmentId": "G3",
-        "equipmentId": "druckschlauch-c",
-        "qty": 6
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "verteiler"
-      },
-      {
-        "compartmentId": "G6",
-        "equipmentId": "sammelstueck"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "standrohr"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "stuetzkruemmer"
-      },
-      {
-        "compartmentId": "G6",
-        "equipmentId": "saugkorb"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "kupplungsschluessel-abc",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G3",
-        "equipmentId": "schlauchtragekorb",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G4",
-        "equipmentId": "mehrzweckstrahlrohr-c",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G4",
-        "equipmentId": "mehrzweckstrahlrohr-b"
-      },
-      {
-        "compartmentId": "G4",
-        "equipmentId": "hohlstrahlrohr"
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "zumischer"
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "mittelschaumrohr"
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "schwerschaumrohr"
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "schaummittelkanister",
-        "qty": 6
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "pulverloescher",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "kuebelspritze"
-      },
-      {
-        "compartmentId": "G6",
-        "equipmentId": "loeschrucksack"
-      },
-      {
-        "compartmentId": "G6",
-        "equipmentId": "feuerpatsche",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Dach",
-        "equipmentId": "steckleiter"
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "feuerwehrleine",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "pressluftatmer",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "atemschutzmaske",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "atemluftflasche",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "fluchthaube",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "stromerzeuger"
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "flutlichtstrahler",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "handscheinwerfer",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G5",
-        "equipmentId": "verkehrssicherungskoffer"
-      },
-      {
-        "compartmentId": "G5",
-        "equipmentId": "verkehrsleitkegel",
-        "qty": 4
-      },
-      {
-        "compartmentId": "G5",
-        "equipmentId": "warnblitzleuchte",
-        "qty": 4
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "werkzeugkoffer"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "bolzenschneider"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "brechstange"
-      },
-      {
-        "compartmentId": "G6",
-        "equipmentId": "motorsaege"
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "verbandkasten"
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "rettungsdecke",
-        "qty": 2
-      }
-    ],
-    "hasCustomSketch": false
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "16 t",
+    "hauptaufgabe": "Technische Hilfeleistung",
+    "dinRef": "DIN 14555-3",
+    "antrieb": "Allrad",
+    "beschreibung": "Fahrzeug für technische Hilfeleistung größeren Umfangs mit Seilwinde, Generator und umfangreichem Gerät. Kern des Rüstzuges.",
+    "verwendung": "Schwere technische Hilfeleistung, Verkehrs- und Bauunfälle"
   },
   {
-    "id": "tsf-w",
-    "name": "TSF-W",
-    "compartments": [
-      {
-        "id": "G6",
-        "label": "G6",
-        "side": "right",
-        "order": 0
-      },
-      {
-        "id": "G5",
-        "label": "G5",
-        "side": "left",
-        "order": 1
-      },
-      {
-        "id": "G3",
-        "label": "G3",
-        "side": "left",
-        "order": 2
-      },
-      {
-        "id": "G1",
-        "label": "G1",
-        "side": "left",
-        "order": 3
-      },
-      {
-        "id": "G4",
-        "label": "G4",
-        "side": "right",
-        "order": 4
-      },
-      {
-        "id": "G2",
-        "label": "G2",
-        "side": "right",
-        "order": 5
-      },
-      {
-        "id": "Mannschaftsraum",
-        "label": "Mannschaftsraum",
-        "side": "cabin",
-        "order": 6
-      },
-      {
-        "id": "Dach",
-        "label": "Dach",
-        "side": "roof",
-        "order": 7
-      }
+    "id": "vrw",
+    "name": "VRW",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Vorausrüstwagen",
+    "ordnungsnummer": "50",
+    "klasse": "Rüst- und Gerätewagen",
+    "kategorie": "Rüstwagen",
+    "synonyms": [
+      "Vorausrüstwagen"
     ],
-    "defaultLoadout": [
-      {
-        "compartmentId": "G6",
-        "equipmentId": "saugschlauch-a",
-        "qty": 4
-      },
-      {
-        "compartmentId": "G5",
-        "equipmentId": "druckschlauch-b",
-        "qty": 8
-      },
-      {
-        "compartmentId": "G3",
-        "equipmentId": "druckschlauch-c",
-        "qty": 6
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "verteiler"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "standrohr"
-      },
-      {
-        "compartmentId": "G6",
-        "equipmentId": "sammelstueck"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "stuetzkruemmer"
-      },
-      {
-        "compartmentId": "G6",
-        "equipmentId": "saugkorb"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "kupplungsschluessel-abc",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G3",
-        "equipmentId": "schlauchtragekorb",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G4",
-        "equipmentId": "mehrzweckstrahlrohr-c",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G4",
-        "equipmentId": "mehrzweckstrahlrohr-b"
-      },
-      {
-        "compartmentId": "G4",
-        "equipmentId": "hohlstrahlrohr"
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "zumischer"
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "mittelschaumrohr"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "pulverloescher"
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "kuebelspritze"
-      },
-      {
-        "compartmentId": "Dach",
-        "equipmentId": "steckleiter"
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "feuerwehrleine",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G3",
-        "equipmentId": "rettungstuch"
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "pressluftatmer",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "atemschutzmaske",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "atemluftflasche",
-        "qty": 2
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "handscheinwerfer",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "stromerzeuger"
-      },
-      {
-        "compartmentId": "G2",
-        "equipmentId": "flutlichtstrahler"
-      },
-      {
-        "compartmentId": "G5",
-        "equipmentId": "verkehrsleitkegel",
-        "qty": 4
-      },
-      {
-        "compartmentId": "G5",
-        "equipmentId": "warnblitzleuchte",
-        "qty": 2
-      },
-      {
-        "compartmentId": "G5",
-        "equipmentId": "verkehrssicherungskoffer"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "werkzeugkoffer"
-      },
-      {
-        "compartmentId": "G1",
-        "equipmentId": "bolzenschneider"
-      },
-      {
-        "compartmentId": "Mannschaftsraum",
-        "equipmentId": "verbandkasten"
-      }
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "ca. 5,5 t",
+    "hauptaufgabe": "Technische Hilfeleistung",
+    "dinRef": "nicht genormt",
+    "antrieb": "Straße",
+    "beschreibung": "Kleines, schnelles Fahrzeug mit Rettungssatz und Erstausstattung, das vor den schweren Fahrzeugen eintrifft.",
+    "verwendung": "Schneller Erstangriff bei technischer Hilfeleistung"
+  },
+  {
+    "id": "gw-g",
+    "name": "GW-G",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Gerätewagen Gefahrgut",
+    "ordnungsnummer": "50",
+    "klasse": "Rüst- und Gerätewagen",
+    "kategorie": "Gerätewagen",
+    "synonyms": [
+      "Gerätewagen Gefahrgut",
+      "GW-Gefahrgut"
     ],
-    "hasCustomSketch": false
+    "besatzung": "Trupp (0/1/1/2 oder 0/1/2/3)",
+    "gesamtmasse": "16 t",
+    "hauptaufgabe": "Gefahrguteinsatz",
+    "dinRef": "DIN 14555-12",
+    "antrieb": "Straße/Allrad",
+    "beschreibung": "Gerätewagen mit spezieller Ausrüstung für Gefahrguteinsätze wie Chemikalienschutzanzügen, Auffang- und Dichtmaterial.",
+    "verwendung": "Abwehr chemischer Gefahren, Auffangen und Abdichten von Gefahrstoffen"
+  },
+  {
+    "id": "gw-l1",
+    "name": "GW-L1",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Gerätewagen Logistik 1",
+    "ordnungsnummer": "50",
+    "klasse": "Rüst- und Gerätewagen",
+    "kategorie": "Gerätewagen",
+    "synonyms": [
+      "Gerätewagen Logistik",
+      "GW-Logistik 1"
+    ],
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "7,5 t",
+    "hauptaufgabe": "Logistik",
+    "dinRef": "DIN 14555-21",
+    "antrieb": "Straße",
+    "beschreibung": "Leichter Logistikwagen zum Transport von Gerät und Material zur Einsatzstelle, ergänzt um Beladungsmodule.",
+    "verwendung": "Einsatzstellenversorgung mit Geräten und Material"
+  },
+  {
+    "id": "gw-l2",
+    "name": "GW-L2",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Gerätewagen Logistik 2",
+    "ordnungsnummer": "50",
+    "klasse": "Rüst- und Gerätewagen",
+    "kategorie": "Gerätewagen",
+    "synonyms": [
+      "Gerätewagen Logistik 2",
+      "GW-Logistik 2"
+    ],
+    "besatzung": "Staffel (0/1/5/6)",
+    "gesamtmasse": "16 t",
+    "hauptaufgabe": "Logistik",
+    "dinRef": "DIN 14555-22",
+    "antrieb": "Allrad",
+    "beschreibung": "Größerer Logistikwagen mit Ladebordwand und Rollcontainern; mit Modul Wasserversorgung Ersatz für den Schlauchwagen 2000.",
+    "verwendung": "Nachschub, Materialtransport und Löschwasserversorgung über Module"
+  },
+  {
+    "id": "gw-mess",
+    "name": "GW-Mess",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Gerätewagen Messtechnik",
+    "ordnungsnummer": "50",
+    "klasse": "Rüst- und Gerätewagen",
+    "kategorie": "Gerätewagen",
+    "synonyms": [
+      "Gerätewagen Messtechnik",
+      "GW-Messtechnik"
+    ],
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "ca. 7,5 t",
+    "hauptaufgabe": "ABC-Messtechnik",
+    "antrieb": "Straße",
+    "beschreibung": "Gerätewagen mit Mess- und Nachweisgeräten zur Erkundung von Schadstoffen in Luft, Wasser und Boden.",
+    "verwendung": "Messen und Bewerten von Gefahrstoffausbreitungen im ABC-Einsatz"
+  },
+  {
+    "id": "sw-1000",
+    "name": "SW 1000",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Schlauchwagen 1000",
+    "ordnungsnummer": "60",
+    "klasse": "Schlauchwagen und Wechsellader",
+    "kategorie": "Schlauchwagen",
+    "synonyms": [
+      "Schlauchwagen 1000"
+    ],
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "ca. 7 t",
+    "hauptaufgabe": "Wasserversorgung",
+    "dinRef": "ältere Norm",
+    "antrieb": "Straße",
+    "beschreibung": "Schlauchwagen mit rund 1000 m B-Schlauch zum Aufbau langer Förderstrecken.",
+    "verwendung": "Aufbau langer Wasserförderstrecken über Wegstrecke"
+  },
+  {
+    "id": "sw-2000",
+    "name": "SW 2000",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Schlauchwagen 2000 mit Truppbesatzung",
+    "ordnungsnummer": "60",
+    "klasse": "Schlauchwagen und Wechsellader",
+    "kategorie": "Schlauchwagen",
+    "synonyms": [
+      "SW 2000-Tr",
+      "Schlauchwagen 2000"
+    ],
+    "pumpe": "PFPN 8-800",
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "ca. 11 t",
+    "hauptaufgabe": "Wasserversorgung",
+    "dinRef": "Katastrophenschutz (BBK)",
+    "antrieb": "Allrad",
+    "beschreibung": "Allrad-Schlauchwagen mit 2000 m B-Schlauch und Tragkraftspritze, vom Bund für den Katastrophenschutz beschafft.",
+    "verwendung": "Aufbau langer Förderstrecken, Wasserversorgung über weite Strecken"
+  },
+  {
+    "id": "wlf",
+    "name": "WLF",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Wechselladerfahrzeug",
+    "ordnungsnummer": "60",
+    "klasse": "Schlauchwagen und Wechsellader",
+    "kategorie": "Wechselladerfahrzeug",
+    "synonyms": [
+      "Wechselladerfahrzeug",
+      "WLF",
+      "Abrollkipper"
+    ],
+    "besatzung": "Trupp (0/1/1/2)",
+    "gesamtmasse": ">16 t",
+    "hauptaufgabe": "Logistik",
+    "dinRef": "DIN 14505",
+    "antrieb": "Straße/Allrad",
+    "beschreibung": "Trägerfahrzeug für austauschbare Abrollbehälter (z. B. Atemschutz, Gefahrgut, Mulde, Einsatzleitung). Sehr wirtschaftliches Baukastenprinzip.",
+    "verwendung": "Transport wechselnder Abrollbehälter je nach Einsatzlage"
+  },
+  {
+    "id": "fwk",
+    "name": "FwK",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Feuerwehrkran",
+    "ordnungsnummer": "70",
+    "klasse": "Sonstige Feuerwehrfahrzeuge",
+    "kategorie": "Kranfahrzeug",
+    "synonyms": [
+      "Feuerwehrkran",
+      "Kranwagen"
+    ],
+    "besatzung": "Trupp (0/1/1/2)",
+    "gesamtmasse": ">16 t",
+    "hauptaufgabe": "Technische Hilfeleistung",
+    "dinRef": "nicht genormt",
+    "antrieb": "Allrad",
+    "beschreibung": "Mobiler Autokran der Feuerwehr zum Heben schwerer Lasten, etwa bei Lkw-Unfällen oder Bauunglücken.",
+    "verwendung": "Heben und Bewegen schwerer Lasten bei technischer Hilfeleistung"
+  },
+  {
+    "id": "gw-hoehenrettung",
+    "name": "GW-Höhenrettung",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Gerätewagen Höhenrettung",
+    "ordnungsnummer": "70",
+    "klasse": "Sonstige Feuerwehrfahrzeuge",
+    "kategorie": "Gerätewagen",
+    "synonyms": [
+      "Gerätewagen Höhenrettung",
+      "GW-Höhe"
+    ],
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "ca. 7,5 t",
+    "hauptaufgabe": "Rettungstechnik",
+    "antrieb": "Straße",
+    "beschreibung": "Gerätewagen mit seiltechnischer Ausrüstung für die Höhenrettungsgruppe zur Rettung aus Höhen und Tiefen.",
+    "verwendung": "Rettung aus Höhen und Tiefen über Seiltechnik"
+  },
+  {
+    "id": "rtw",
+    "name": "RTW",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Rettungswagen",
+    "ordnungsnummer": "80",
+    "klasse": "Rettungsdienstfahrzeuge",
+    "kategorie": "Rettungsmittel",
+    "synonyms": [
+      "Rettungswagen"
+    ],
+    "besatzung": "0/0/2/2",
+    "gesamtmasse": "ca. 5 t",
+    "hauptaufgabe": "Notfallrettung",
+    "dinRef": "DIN EN 1789",
+    "antrieb": "Straße",
+    "beschreibung": "Rettungswagen zur notfallmedizinischen Versorgung und zum Transport von Notfallpatienten. Bei vielen Berufsfeuerwehren im Rettungsdienst.",
+    "verwendung": "Notfallrettung und qualifizierter Patiententransport"
+  },
+  {
+    "id": "nef",
+    "name": "NEF",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Notarzteinsatzfahrzeug",
+    "ordnungsnummer": "80",
+    "klasse": "Rettungsdienstfahrzeuge",
+    "kategorie": "Rettungsmittel",
+    "synonyms": [
+      "Notarzteinsatzfahrzeug"
+    ],
+    "besatzung": "0/0/2/2",
+    "gesamtmasse": "ca. 3 t",
+    "hauptaufgabe": "Notfallrettung",
+    "dinRef": "DIN 75079",
+    "antrieb": "Straße",
+    "beschreibung": "Schnelles Fahrzeug, das den Notarzt zum Einsatzort bringt (Rendezvous-System) und medizinisches Gerät mitführt.",
+    "verwendung": "Zubringer für den Notarzt, notfallmedizinische Ausrüstung"
+  },
+  {
+    "id": "ktw",
+    "name": "KTW",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Krankentransportwagen",
+    "ordnungsnummer": "80",
+    "klasse": "Rettungsdienstfahrzeuge",
+    "kategorie": "Rettungsmittel",
+    "synonyms": [
+      "Krankentransportwagen"
+    ],
+    "besatzung": "0/0/2/2",
+    "gesamtmasse": "ca. 3,5 t",
+    "hauptaufgabe": "Krankentransport",
+    "dinRef": "DIN EN 1789",
+    "antrieb": "Straße",
+    "beschreibung": "Fahrzeug für den Transport nicht akut lebensbedrohlich erkrankter oder verletzter Personen.",
+    "verwendung": "Krankentransport und einfache Betreuung von Patienten"
+  },
+  {
+    "id": "abc-erkkw",
+    "name": "ABC-ErkKW",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "ABC-Erkundungskraftwagen",
+    "ordnungsnummer": "90",
+    "klasse": "ABC-Dienst und zur besonderen Verfügung",
+    "kategorie": "ABC-Fahrzeug",
+    "synonyms": [
+      "ABC-ErkKW",
+      "ABC-Erkunder"
+    ],
+    "besatzung": "Trupp (0/1/3)",
+    "gesamtmasse": "ca. 5 t",
+    "hauptaufgabe": "ABC-Erkundung",
+    "dinRef": "Katastrophenschutz (Bund)",
+    "antrieb": "Allrad",
+    "beschreibung": "Geländegängiges Fahrzeug mit fest eingebauter Mess- und Spürtechnik zur Erkundung von ABC-Gefahren.",
+    "verwendung": "Aufspüren und Messen radiologischer und chemischer Gefahren"
+  },
+  {
+    "id": "dekon-p",
+    "name": "Dekon-P",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Dekontaminationsfahrzeug Personen",
+    "ordnungsnummer": "90",
+    "klasse": "ABC-Dienst und zur besonderen Verfügung",
+    "kategorie": "ABC-Fahrzeug",
+    "synonyms": [
+      "Dekon-P",
+      "Dekontamination Personen"
+    ],
+    "besatzung": "Trupp/Staffel",
+    "gesamtmasse": "ca. 11 t",
+    "hauptaufgabe": "Dekontamination",
+    "dinRef": "Katastrophenschutz (Bund)",
+    "antrieb": "Allrad",
+    "beschreibung": "Fahrzeug mit Duschzelt und Ausstattung zur Dekontamination von Einsatzkräften und Betroffenen.",
+    "verwendung": "Aufbau der Personendekontamination im ABC-Einsatz"
+  },
+  {
+    "id": "gw-dekon",
+    "name": "GW-Dekon-G",
+    "compartments": [],
+    "defaultLoadout": [],
+    "hasCustomSketch": false,
+    "langbezeichnung": "Gerätewagen Dekontamination Gerät",
+    "ordnungsnummer": "90",
+    "klasse": "ABC-Dienst und zur besonderen Verfügung",
+    "kategorie": "ABC-Fahrzeug",
+    "synonyms": [
+      "GW-Dekon",
+      "Gerätewagen Dekontamination"
+    ],
+    "besatzung": "Trupp (0/1/2/3)",
+    "gesamtmasse": "ca. 11 t",
+    "hauptaufgabe": "Dekontamination",
+    "antrieb": "Allrad",
+    "beschreibung": "Gerätewagen zur Dekontamination von Gerät, Fahrzeugen und Material nach einem ABC-Einsatz.",
+    "verwendung": "Dekontamination von Gerät und Ausrüstung"
   }
 ];
 
-export const LF_VEHICLE_TYPE: VehicleType = SEED_VEHICLE_TYPES[0];
+export const LF_VEHICLE_TYPE: VehicleType =
+  SEED_VEHICLE_TYPES.find((t) => t.id === 'lf-20')!;
 export const LF_DEFAULT_LOADOUT = LF_VEHICLE_TYPE.defaultLoadout;

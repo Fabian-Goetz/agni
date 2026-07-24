@@ -142,13 +142,19 @@ export class LibraryService {
   }
 
   /**
-   * Guarantee at least one playable Vehicle exists by cloning the first seed
-   * type on first run. Returns the vehicle to use.
+   * Guarantee at least one playable Vehicle exists by cloning a seed type on
+   * first run. Prefers a type that actually carries a loadout — the catalog now
+   * also holds master-data stubs (empty compartments) which would make an empty
+   * starter vehicle. Returns the vehicle to use.
    */
   async ensureStarterVehicle(): Promise<Vehicle | undefined> {
     await this.ensureLoaded();
     if (this._vehicles().length > 0) return this._vehicles()[0];
-    const type = this._vehicleTypes()[0];
+    const types = this._vehicleTypes();
+    const type =
+      types.find((t) => t.hasCustomSketch) ??
+      types.find((t) => t.defaultLoadout.length > 0) ??
+      types[0];
     if (!type) return undefined;
     return this.createVehicleFromType(type.name, type.id);
   }

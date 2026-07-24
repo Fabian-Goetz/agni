@@ -24,6 +24,20 @@ export class SupabaseContentStore implements ContentStore {
       compartments: r.compartments,
       defaultLoadout: r.default_loadout,
       hasCustomSketch: r.has_custom_sketch,
+      langbezeichnung: r.langbezeichnung ?? undefined,
+      ordnungsnummer: r.ordnungsnummer ?? undefined,
+      klasse: r.klasse ?? undefined,
+      kategorie: r.kategorie ?? undefined,
+      synonyms: r.synonyms ?? undefined,
+      pumpe: r.pumpe ?? undefined,
+      besatzung: r.besatzung ?? undefined,
+      gesamtmasse: r.gesamtmasse ?? undefined,
+      loeschwasser: r.loeschwasser ?? undefined,
+      hauptaufgabe: r.hauptaufgabe ?? undefined,
+      dinRef: r.din_ref ?? undefined,
+      antrieb: r.antrieb ?? undefined,
+      beschreibung: r.beschreibung ?? undefined,
+      verwendung: r.verwendung ?? undefined,
     }));
   }
 

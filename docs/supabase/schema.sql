@@ -14,6 +14,23 @@ create table if not exists vehicle_types (
   has_custom_sketch boolean not null default false
 );
 
+-- Fahrzeugkatalog master data (taktische Ordnungsnummer 10–90). Idempotent so an
+-- existing project gains the columns without a rebuild (mirrors equipment above).
+alter table vehicle_types add column if not exists langbezeichnung  text;
+alter table vehicle_types add column if not exists ordnungsnummer   text;
+alter table vehicle_types add column if not exists klasse           text;
+alter table vehicle_types add column if not exists kategorie        text;
+alter table vehicle_types add column if not exists synonyms         text[];
+alter table vehicle_types add column if not exists pumpe            text;
+alter table vehicle_types add column if not exists besatzung        text;
+alter table vehicle_types add column if not exists gesamtmasse      text;
+alter table vehicle_types add column if not exists loeschwasser     text;
+alter table vehicle_types add column if not exists hauptaufgabe     text;
+alter table vehicle_types add column if not exists din_ref          text;
+alter table vehicle_types add column if not exists antrieb          text;
+alter table vehicle_types add column if not exists beschreibung     text;
+alter table vehicle_types add column if not exists verwendung       text;
+
 alter table vehicle_types enable row level security;
 
 -- Everyone (authenticated) may read the shared catalog; nobody writes via anon key.
