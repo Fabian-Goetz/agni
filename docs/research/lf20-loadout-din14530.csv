@@ -1,0 +1,64 @@
+geraet,menge,pflicht,typischer_geraeteraum,im_katalog,din_bezug,konfidenz,anmerkung
+Feuerlöschkreiselpumpe,1,Pflicht,Heck,ja,DIN 14530-11,hoch,"FPN 10-2000, fest eingebaut (verifiziert)"
+Schnellangriffseinrichtung,1,optional,Heck,ja,DIN 14530-11,mittel,"formstabiler Schlauch + Hohlstrahlrohr; herstellerabhängig"
+Saugschlauch A,4,Pflicht,G6,ja,DIN 14810,mittel,"A-Saugleitung, meist 4 Stück"
+Druckschlauch B,14,Pflicht,G5,ja,DIN 14811,mittel,"Anzahl variiert stark (Zubringer/Förderung)"
+Druckschlauch C,9,Pflicht,G3,ja,DIN 14811,mittel,"Angriffsleitungen, teils in Tragekörben gebuchtet"
+Druckschlauch D,2,optional,Mannschaftsraum,ja,DIN 14811,niedrig,"für D-Rohr / Nachlöscharbeiten"
+Verteiler,1,Pflicht,G1,ja,DIN 14345,mittel,"B-CBC"
+Sammelstück,1,Pflicht,G6,ja,DIN 14355,mittel,"A-BB am Sauganschluss"
+Standrohr,1,Pflicht,G1,ja,DIN 14375,mittel,"2B für Unterflurhydrant"
+Übergangsstück,2,Pflicht,G1,ja,DIN 14342,niedrig,"A-B und B-C"
+Stützkrümmer,2,Pflicht,G1,ja,DIN 14360,niedrig,
+Saugkorb,1,Pflicht,G6,ja,DIN 14362,niedrig,"mit Ventilleine"
+Kupplungsschlüssel ABC,4,Pflicht,G1,ja,DIN 14822,mittel,
+Unterflurhydrantenschlüssel,1,Pflicht,G1,ja,,niedrig,"Standrohr-Zubehör"
+Schlauchtragekorb,4,Pflicht,G3,ja,DIN 14827,mittel,"C-Schläuche gebuchtet"
+Schlauchbrücke,2,optional,G5,ja,,niedrig,
+Mehrzweckstrahlrohr C,3,Pflicht,G4,ja,DIN 14365,mittel,"CM"
+Mehrzweckstrahlrohr B,1,Pflicht,G4,ja,DIN 14365,mittel,"BM mit Stützkrümmer"
+Hohlstrahlrohr,2,wahlweise,G4,ja,,mittel,"modern, statt oder zusätzlich zu CM"
+Zumischer,1,Pflicht,G2,ja,DIN 14384,mittel,"Z4"
+Mittelschaumrohr,1,Pflicht,G2,ja,DIN 14366,niedrig,
+Schwerschaumrohr,1,Pflicht,G2,ja,DIN 14367,niedrig,
+Schaummittelkanister,6,Pflicht,G2,ja,DIN 14530-11,hoch,"6 × 20 l Schaummittel (verifiziert)"
+Kübelspritze,1,Pflicht,Mannschaftsraum,ja,DIN 14405,mittel,
+Pulverlöscher,2,Pflicht,G1,ja,DIN EN 3,hoch,"2 × 6 kg ABC-Pulver (verifiziert)"
+Kohlendioxidlöscher,1,optional,G1,ja,DIN EN 3,niedrig,
+Steckleiter,1,Pflicht,Dach,ja,DIN EN 1147,hoch,"4-teilig (verifiziert); alt. Multifunktionsleiter"
+Klappleiter,1,Pflicht,Dach,ja,DIN EN 1147,mittel,
+Multifunktionsleiter,2,wahlweise,Dach,ja,DIN EN 1147,mittel,"Alternative zur Steckleiter"
+Feuerwehrleine,4,Pflicht,Mannschaftsraum,ja,DIN 14920,mittel,"je Trupp, im Leinenbeutel"
+Mehrzweckleine,1,optional,G1,ja,DIN 14920,niedrig,
+Rettungstuch,1,optional,G3,ja,DIN 14152,niedrig,
+Pressluftatmer,4,Pflicht,Mannschaftsraum,ja,DIN EN 137,hoch,"4 PA (verifiziert)"
+Atemluftflasche,4,Pflicht,Mannschaftsraum,ja,,mittel,"plus Reserveflaschen"
+Atemschutzmaske,4,Pflicht,Mannschaftsraum,ja,DIN EN 136,mittel,
+Fluchthaube,2,Pflicht,Mannschaftsraum,ja,,hoch,"2 Stück (verifiziert)"
+Atemschutzüberwachungstafel,1,Pflicht,Mannschaftsraum,ja,,mittel,
+Wärmebildkamera,1,optional,Mannschaftsraum,ja,,niedrig,
+Stromerzeuger,1,Pflicht,G2,ja,DIN 14685,hoch,"im tiefen Geräteraum G2 (Quelle nennt G2)"
+Flutlichtstrahler,2,Pflicht,G2,ja,,mittel,
+Beleuchtungsstativ,2,Pflicht,G2,ja,,mittel,
+Kabeltrommel,2,Pflicht,G2,ja,DIN 14680,mittel,
+Handscheinwerfer,4,Pflicht,Mannschaftsraum,ja,,mittel,
+Verkehrssicherungskoffer,1,Pflicht,G5,ja,,mittel,"'Verkehrsunfallkasten' (WP)"
+Verkehrsleitkegel,4,Pflicht,G5,ja,,mittel,"im/bei Verkehrsunfallkasten"
+Warnblitzleuchte,4,Pflicht,G5,ja,,mittel,
+Werkzeugkoffer,1,Pflicht,G1,ja,DIN 14881,hoch,"Feuerwehr-Werkzeugkasten"
+Motorsäge,1,Pflicht,G6,ja,,mittel,"mit Schnittschutz-PSA"
+Trennschleifer,1,optional,G6,ja,,niedrig,
+Säbelsäge,1,Pflicht,G6,ja,,mittel,"bei LF 20 KatS nicht verpflichtend (WP) ⇒ Standard-LF führt sie"
+Tauchpumpe TP 4,1,Pflicht,G6,ja,DIN 14425,hoch,"TP 4 (verifiziert)"
+Überdrucklüfter,1,Pflicht,G6,ja,,mittel,"Drucklüfter; bei LF 20 KatS nicht verpflichtend (WP)"
+Kaminkehrgerät,1,Pflicht,G6,ja,,niedrig,"Schornstein-Werkzeugkasten (WP); KatS nicht verpflichtend"
+Bolzenschneider,1,Pflicht,G1,ja,,mittel,
+Brechstange,1,Pflicht,G1,ja,,mittel,
+Spaten,1,Pflicht,G6,ja,,niedrig,
+Rettungsaxt,1,Pflicht,G1,ja,,niedrig,
+Feuerwehreimer,2,optional,G6,ja,DIN 14808,niedrig,
+Verbandkasten,1,Pflicht,Mannschaftsraum,ja,DIN 13157,mittel,
+Rettungsdecke,2,optional,Mannschaftsraum,ja,,niedrig,
+Ölbindemittel,1,optional,G6,ja,,niedrig,"Sack"
+Auffangbehälter,1,optional,G6,ja,,niedrig,
+Rettungssatz,0,nicht enthalten,-,ja,DIN 14530-11,hoch,"LF 20 führt KEINEN hydraulischen Rettungssatz — erst HLF 20 (verifiziert)"
