@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { LfSketch } from '../../shared/lf-sketch';
 import { LibraryService } from '../../core/library/library.service';
 import { CompartmentId } from '../../core/models/compartment';
@@ -20,6 +20,7 @@ import { HlmCard } from '../../shared/ui/hlm-card.directive';
 })
 export class Editor {
   readonly library = inject(LibraryService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly vehicleId = signal<string | null>(null);
   readonly open = signal<CompartmentId | null>(null);
@@ -30,8 +31,13 @@ export class Editor {
   );
 
   constructor() {
+    // Deep-link from the Fuhrpark ("Beladen →"): ?vehicle=<id> opens that truck,
+    // otherwise fall back to the starter vehicle.
+    const requested = this.route.snapshot.queryParamMap.get('vehicle');
     this.library.ensureStarterVehicle().then((v) => {
-      if (v && this.vehicleId() === null) this.vehicleId.set(v.id);
+      if (this.vehicleId() !== null) return;
+      if (requested && this.library.vehicleById(requested)) this.vehicleId.set(requested);
+      else if (v) this.vehicleId.set(v.id);
     });
   }
 

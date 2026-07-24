@@ -159,6 +159,17 @@ export class LibraryService {
     await this.store.deleteVehicle(vehicleId); // placements cascade in the store
   }
 
+  /** Rename a Vehicle (its type and loadout are untouched). */
+  async renameVehicle(vehicleId: string, name: string): Promise<void> {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    let updated: Vehicle | undefined;
+    this._vehicles.update((all) =>
+      all.map((v) => (v.id === vehicleId ? (updated = { ...v, name: trimmed }) : v)),
+    );
+    if (updated) await this.store.putVehicle(updated);
+  }
+
   hasPlacement(vehicleId: string, compartmentId: CompartmentId, equipmentId: string): boolean {
     return this._placements().some(
       (p) =>
