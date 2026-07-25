@@ -1,4 +1,610 @@
-/* Play / In-Person Locate round styles.
-   Layout and visuals come from Tailwind utility classes in play.html;
-   add component-scoped rules here only when a utility won't do.
-   See docs/design/design-guidelines.md. */
+/* ============================================================
+   AGNI — design language "C": technical blueprint dossier.
+   Play (In-Person Locate round). Runs on *round chrome*: a slim sticky bar
+   instead of the brand topbar, no footer — during a drill nothing competes
+   with the question and the schematic.
+   Scoped to .play-screen; theme is local (OS default + toggle), mirroring
+   editor.scss / katalog.scss. See docs/design/design-guidelines.md.
+   ============================================================ */
+
+fk-play {
+  display: block;
+  min-height: 100%;
+}
+
+/* ---------- LIGHT (default) ---------- */
+.play-screen,
+.play-screen[data-theme='light'] {
+  --paper-bg: #f6f4f0;
+  --ink: #191a1c;
+  --ink-2: #4b4e54;
+  --faint: #9aa0a8;
+  --line: #e4e0d9;
+  --line-2: #d6d1c8;
+  --signal: #e5352b;
+  --signal-hi: #c82820;
+  --sodium: #b8791c;
+  --go: #16a34a;
+
+  --bg-image: radial-gradient(120% 90% at 22% 6%, #ffffff 0%, #f6f4f0 52%, #efebe4 100%),
+    linear-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.028) 1px, transparent 1px);
+
+  --plate-bg: #ffffff;
+  --card-bg: #ffffff;
+  --surface-2: #fbfaf7;
+  --go-bg: rgba(22, 163, 74, 0.1);
+  --signal-bg: rgba(229, 53, 43, 0.08);
+  --bar-bg: rgba(246, 244, 240, 0.88);
+  --focus-ring: 0 0 0 3px rgba(229, 53, 43, 0.28);
+  --btn-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+
+  --radius: 4px;
+  --maxw: 780px;
+  --font-display: 'Roboto Condensed', system-ui, sans-serif;
+  --font-body: 'Roboto', system-ui, sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, monospace;
+}
+
+/* ---------- DARK ---------- */
+.play-screen[data-theme='dark'] {
+  --paper-bg: #0e1116;
+  --ink: #e8eaed;
+  --ink-2: #8a94a3;
+  --faint: #5a6473;
+  --line: #1e242d;
+  --line-2: #262e3a;
+  --signal: #e5352b;
+  --signal-hi: #ff574c;
+  --sodium: #f4b860;
+  --go: #22c55e;
+
+  --bg-image: radial-gradient(120% 90% at 22% 8%, #171c25 0%, #0e1116 46%, #0b0e12 100%),
+    linear-gradient(#1e242d 1px, transparent 1px),
+    linear-gradient(90deg, #1e242d 1px, transparent 1px);
+
+  --plate-bg: rgba(22, 26, 33, 0.6);
+  --card-bg: linear-gradient(180deg, #161a21, #12161d);
+  --surface-2: #1b2029;
+  --go-bg: rgba(34, 197, 94, 0.14);
+  --signal-bg: rgba(229, 53, 43, 0.14);
+  --bar-bg: rgba(14, 17, 22, 0.88);
+  --focus-ring: 0 0 0 3px rgba(244, 184, 96, 0.4);
+  --btn-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.play-screen {
+  min-height: 100%;
+  color: var(--ink);
+  background: var(--paper-bg);
+  background-image: var(--bg-image);
+  background-size: 100% 100%, 34px 34px, 34px 34px;
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s, color 0.25s;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+.play-screen .shell {
+  min-height: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px) clamp(24px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.2vw, 22px);
+}
+
+/* ---------- round bar (replaces the brand topbar) ---------- */
+.play-screen .roundbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: clamp(12px, 2vw, 18px) 0 12px;
+  background: var(--bar-bg);
+  backdrop-filter: blur(6px);
+}
+.play-screen .exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px 0 10px;
+  background: var(--plate-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.play-screen .exit:hover {
+  color: var(--ink);
+  border-color: var(--ink-2);
+}
+.play-screen .exit:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.play-screen .exit svg {
+  width: 16px;
+  height: 16px;
+}
+
+.play-screen .rb-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  text-align: center;
+}
+.play-screen .rb-game {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.play-screen .rb-count {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.play-screen .theme-toggle {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--plate-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.play-screen .theme-toggle:hover {
+  color: var(--ink);
+  border-color: var(--ink-2);
+}
+.play-screen .theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.play-screen .theme-toggle svg {
+  width: 17px;
+  height: 17px;
+}
+.play-screen .theme-toggle .i-sun {
+  display: none;
+}
+.play-screen[data-theme='dark'] .theme-toggle .i-moon {
+  display: none;
+}
+.play-screen[data-theme='dark'] .theme-toggle .i-sun {
+  display: block;
+}
+
+/* ---------- progress rail ---------- */
+.play-screen .rail {
+  height: 3px;
+  margin-top: -8px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.play-screen .rail-fill {
+  display: block;
+  height: 100%;
+  background: var(--sodium);
+  transition: width 0.3s ease;
+}
+
+/* ---------- the question (the one loud thing) ---------- */
+.play-screen .eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+.play-screen .prompt {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: clamp(16px, 3vw, 24px);
+  text-align: center;
+  overflow: hidden;
+  transition: opacity 0.2s;
+}
+.play-screen .prompt::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--signal);
+}
+/* Once answered, the prompt has done its job — recede so the reveal leads. */
+.play-screen .prompt.done {
+  opacity: 0.62;
+}
+.play-screen .prompt h1 {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 6.4vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.play-screen .p-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+.play-screen .plate {
+  padding: 3px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.play-screen .p-cat {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* ---------- schematic stage ---------- */
+.play-screen .stage {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow: hidden;
+}
+.play-screen .stage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--sodium);
+}
+.play-screen .stage-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.play-screen .s-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+}
+.play-screen .s-type {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.play-screen .s-tally {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--go);
+}
+
+/* The sketch renderers carry their own dark instrument palette, so they sit in
+   a dark inset in both themes rather than fighting the paper (§6). */
+.play-screen .figure {
+  border: 1px solid #263243;
+  border-radius: var(--radius);
+  background: #0e1420;
+  padding: 12px;
+}
+.play-screen .hint {
+  margin: 12px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+
+/* ---------- reveal ---------- */
+.play-screen .verdict {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line-2);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+}
+.play-screen .verdict.hit {
+  background: var(--go-bg);
+  border-left-color: var(--go);
+}
+.play-screen .verdict.miss {
+  background: var(--signal-bg);
+  border-left-color: var(--signal);
+}
+.play-screen .v-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.play-screen .v-ico {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+.play-screen .verdict.hit .v-ico {
+  color: var(--go);
+}
+.play-screen .verdict.miss .v-ico {
+  color: var(--signal);
+}
+.play-screen .v-text {
+  font-size: 15.5px;
+  color: var(--ink-2);
+}
+.play-screen .v-text b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+/* ---------- buttons ---------- */
+.play-screen .btn {
+  min-height: 48px;
+  padding: 13px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.play-screen .btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.play-screen .btn:active {
+  transform: translateY(1px);
+}
+.play-screen .btn-primary {
+  background: var(--signal);
+  color: #fff;
+  box-shadow: var(--btn-shadow);
+}
+.play-screen .btn-primary:hover {
+  background: var(--signal-hi);
+}
+.play-screen .btn-ghost {
+  background: transparent;
+  border-color: var(--line-2);
+  color: var(--ink-2);
+}
+.play-screen .btn-ghost:hover {
+  border-color: var(--ink-2);
+  color: var(--ink);
+}
+
+/* ---------- end summary ---------- */
+.play-screen .result {
+  position: relative;
+  margin-top: clamp(8px, 3vw, 28px);
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: clamp(20px, 4vw, 32px);
+  text-align: center;
+  overflow: hidden;
+}
+.play-screen .result::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--signal);
+}
+.play-screen .score {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.play-screen .s-hit {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(52px, 14vw, 84px);
+  line-height: 1;
+  color: var(--go);
+}
+.play-screen .s-of {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(22px, 5vw, 32px);
+  color: var(--faint);
+}
+.play-screen .s-cap {
+  margin: 6px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.play-screen .quota {
+  height: 6px;
+  margin: 18px 0 0;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.play-screen .quota-fill {
+  display: block;
+  height: 100%;
+  background: var(--go);
+}
+.play-screen .clean {
+  margin: 20px 0 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+/* Review list — the misses, each with the Fach it should have been. */
+.play-screen .review {
+  margin-top: 24px;
+  text-align: left;
+}
+.play-screen .rv-head {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.play-screen .rv-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.play-screen .rv-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+.play-screen .rv-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.play-screen .rv-where {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  text-align: right;
+}
+.play-screen .rv-where b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--go);
+}
+.play-screen .rv-where em {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.play-screen .acts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+/* ---------- nothing to drill ---------- */
+.play-screen .notice {
+  margin-top: clamp(8px, 3vw, 28px);
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.play-screen .notice .n-title {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+}
+.play-screen .notice .n-body {
+  margin: 0 0 18px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+/* ---------- responsive & motion ---------- */
+@media (min-width: 620px) {
+  .play-screen .acts {
+    flex-direction: row-reverse;
+    justify-content: center;
+  }
+  .play-screen .acts .btn {
+    min-width: 180px;
+  }
+  .play-screen .verdict {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .play-screen .verdict .btn {
+    flex: none;
+    min-width: 160px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .play-screen,
+  .play-screen .rail-fill,
+  .play-screen .prompt,
+  .play-screen .btn {
+    transition: none;
+  }
+}

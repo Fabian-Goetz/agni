@@ -62,9 +62,39 @@ a single **Gerät** (Equipment) — Beladung is the *loading*, not the tool.
 ### Round Mode
 The game supports **mixed** round types drawn from one dataset:
 - **Locate** — given Equipment + Vehicle, pick the correct Compartment.
+- **Perform (Darstellen)** — given Equipment, act it out (Beschreiben / Zeichnen /
+  Pantomime) until your team names it. No computable verdict — a moderator calls it.
 - **Identify** — given a photo/silhouette or loadout, name the Vehicle Type.
 - **Name loadout** — given a Vehicle + open Compartment, select which Equipment belongs.
 - **True/False** — "Is Equipment X carried on Vehicle Y?" / "in Compartment Z?".
+
+### Activity Card
+**Rule data** decorating a catalog Equipment entry for the Activity game: a
+**difficulty** (Leicht / Mittel / Schwer), optional **Tabu-Wörter**, and an
+optional list of modes the term can't be performed in. Deliberately *not* folded
+into Equipment — `beschreibung`/`verwendung` are facts about a Gerät, a difficulty
+rating is a rule about a game, and layer 1 stays mode-agnostic (ADR-0004). Keyed by
+`equipmentId`, so the item's Fach comes from the chosen Vehicle's live Placements
+rather than being baked into the card. Equipment with no card is simply not playable
+in Activity. Ships as generated seed content like the rest.
+
+### Stufe
+One step of an Activity Zug: **1 Raten** (perform & guess) → **2 Verorten** (tap the
+Fach) → **3 Holen** (fetch the item). Stufe 1 is the game's identity and is always
+on; 2 and 3 are toggled at setup. Each cleared Stufe banks points. A failed Stufe
+ends the Zug but keeps what came before it — you cannot locate a word nobody
+guessed, yet a team that guessed and then misplaced still earned the guess. The
+chain lives in the Session driver, never in the Challenge engine (ADR-0006).
+
+### Zug
+One team's turn in Activity: gamble on a difficulty, take the card, run the Stufen,
+advance by the points earned. The board field a team stands on decides which mode
+they must perform — which is why the board is not optional.
+
+### Team
+An Activity roster entry (1–4). Teams alternate Züge in a shuffled order and race a
+36-field board; **first to Ziel wins**. One team is solo, scored in **Zügen bis
+Ziel**. Nothing is persisted between games (see Game Session).
 
 ### Author
 Any registered user. Owns a private **Library** of their own Vehicles,
@@ -109,12 +139,23 @@ the Content layer and Challenge engine (ADR-0004); they differ only in the
 A single generated question, produced by the **Challenge engine** from a Library
 slice: `{ prompt, subject, correct answer, candidate distractors, verdict }`.
 Carries no UI, no players, no scoring. The reusable core shared by every mode.
-Challenge types map to the Round Modes (Locate, Identify, Name-loadout, T/F).
+Challenge types map to the Round Modes (Locate, Perform, Identify, Name-loadout, T/F).
+Challenges are **atomic**: a game that asks several questions in one turn chains
+them in its Session driver, it does not get a composite Challenge type (ADR-0006).
+Where no verdict is computable — Perform, Holen — the driver records the
+moderator's call instead.
 
 ### Game Session
 One run of a Game Mode: a chosen slice of a Library, a stream of Challenges, and
 the participants. In-Person and Learning sessions are single-device and local;
 Online PvP sessions are multi-device and server-coordinated.
+
+A session keeps a **Round Answer** log — per answered Challenge, the subject, the
+Compartment(s) that were right and the one that was tapped. It lives in the Session
+driver, never in the Challenge engine (ADR-0004), and is what lets a round end on
+"these are the Geräte to go over again" rather than a bare tally. It is *not*
+scoring or progress: the log dies with the round and nothing is persisted (real
+progression is the deferred Learning-mode question).
 
 ### Participant
 Someone taking part in a Session. In-Person participants are an anonymous group
@@ -160,7 +201,11 @@ Layered so Game Modes are a swappable top layer, not a fork (ADR-0004):
 ## Scope
 - **v1:**
   - In-Person mode, single device, offline-capable.
-  - **Locate challenge type only** (item → tap its compartment → reveal).
+  - **Locate and Perform challenge types.** Locate ships as Fach-Finder (item → tap
+    its compartment → reveal); Perform ships inside **Activity**, which chains
+    Perform → Locate → Fetch in one Zug with per-Stufe points, 1–4 teams and a
+    36-field board (ADR-0006). Activity cards cover the equipment reachable on the
+    four playable Vehicle Types.
   - **Four playable Vehicle Types.** The author's LF uses the hand-crafted
     `LfSketch` reused from `feuerwehr-activity`; HLF 20, TLF 3000 and TSF-W use
     the generic metadata-box renderer built from their compartment `side`+`order`
@@ -171,18 +216,25 @@ Layered so Game Modes are a swappable top layer, not a fork (ADR-0004):
   - **Author content-editor**: pick a Vehicle Type, then edit Placements
     (bidirectional) over the type's fixed schematic. No layout/compartment
     editing, no equipment-image upload in v1.
-  - Scoring: minimal/none in v1 (see roadmap).
+  - Scoring: none in Fach-Finder; Activity scores per Stufe onto its own board.
+    Nothing is persisted between games either way.
 - **Later / roadmap:**
-  - Rich competition modes — team-vs-team, player-vs-player, activity-style,
-    point scoring; multi-step challenges (describe tool → select location →
-    fetch within a time limit, points per step). All implemented as **Session
-    drivers + scoring**, never in the Challenge engine (ADR-0004).
+  - Rich competition modes — player-vs-player, cross-session leaderboards.
+    Team-vs-team and multi-step scored challenges **shipped as Activity**; they
+    live in a **Session driver + scoring**, never in the Challenge engine
+    (ADR-0004, ADR-0006).
+  - Activity card editor (Tabu-Wörter, difficulty) — cards are read-only seed today.
+  - Fold `Gerät holen` into Activity's fetch harness, or give it the relay loop it
+    still lacks — today it is Fach-Finder with a different tagline.
   - Additional challenge types (Identify, Name-loadout, T/F).
   - Learning mode, Online PvP (realtime), photo+hotspot rendering.
   - Shared DIN seed catalog for cloning (convenience once multiple Authors).
 
 ## Open questions (deferred, not v1-blocking)
-- Learning-mode progression model.
+- Learning-mode progression model — also gates a persisted Activity Bestenliste
+  ("Zügen bis Ziel" is shown at game end but never stored).
+- Growing the Activity card set past the equipment reachable on the four playable
+  types, and who authors Tabu-Wörter for the rest of the 319-item catalog.
 - Online PvP session/realtime design (lobby, PIN, scoreboard, participant model).
 - Roadmap scoring/competition variants (team-vs-team, PvP, timed multi-step).
 - Which of the remaining Fahrzeugkatalog types get a verified DIN loadout next,

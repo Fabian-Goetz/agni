@@ -6,6 +6,15 @@ import { Equipment } from '../models/equipment';
 import { CompartmentId } from '../models/compartment';
 import { RoundConfig } from './round-config';
 
+/** One answered Locate question, kept so the end summary can name the misses. */
+export interface RoundAnswer {
+  subject: Equipment;
+  /** Compartment(s) the item actually lives in. */
+  correct: CompartmentId[];
+  picked: CompartmentId;
+  wasCorrect: boolean;
+}
+
 /**
  * In-Person Game Mode session driver (ADR-0004): single device, author-paced,
  * Locate challenges over one Vehicle. A round runs a fixed queue of subjects —
@@ -26,6 +35,7 @@ export class InPersonSessionStore {
   private readonly _correct = signal(0);
   private readonly _total = signal(0);
   private readonly _finished = signal(false);
+  private readonly _answers = signal<RoundAnswer[]>([]);
 
   readonly config = this._config.asReadonly();
   readonly current = this._current.asReadonly();
@@ -36,6 +46,10 @@ export class InPersonSessionStore {
   readonly total = this._total.asReadonly();
   /** True once the queue is exhausted — Play shows the end summary. */
   readonly finished = this._finished.asReadonly();
+  /** Every answer given this round, in order asked. Drives the end summary. */
+  readonly answers = this._answers.asReadonly();
+  /** The ones to go over again — what makes the summary worth reading. */
+  readonly missed = computed(() => this._answers().filter((a) => !a.wasCorrect));
 
   readonly revealed = computed(() => this._picked() !== null);
   readonly lastWasCorrect = computed(() => {
@@ -54,6 +68,7 @@ export class InPersonSessionStore {
     this._correct.set(0);
     this._total.set(this.queue.length);
     this._finished.set(false);
+    this._answers.set([]);
     this.next();
   }
 
@@ -92,7 +107,19 @@ export class InPersonSessionStore {
   /** Register a tap and reveal the answer. */
   pick(compartmentId: CompartmentId): void {
     if (this.revealed()) return;
+    const challenge = this._current();
+    if (!challenge) return;
     this._picked.set(compartmentId);
-    if (this.lastWasCorrect()) this._correct.update((n) => n + 1);
+    const wasCorrect = this.lastWasCorrect();
+    if (wasCorrect) this._correct.update((n) => n + 1);
+    this._answers.update((log) => [
+      ...log,
+      {
+        subject: challenge.subject,
+        correct: challenge.correct,
+        picked: compartmentId,
+        wasCorrect,
+      },
+    ]);
   }
 }

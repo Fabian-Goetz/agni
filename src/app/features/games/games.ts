@@ -1,14 +1,19 @@
 import { Component, ViewEncapsulation, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { LibraryService } from '../../core/library/library.service';
 import { USE_SUPABASE } from '../../core/content/supabase.config';
+import { GAMES } from '../../core/session/round-config';
 
 /**
  * Game-mode launcher — pick a game within the (In-Person) Game mode.
  * Sits between Home (pick a mode) and Vorbereiten (/select). v1 ships two
  * Schematic-engine games; the rest are roadmap. Ported from
  * docs/design/screens/04-spiele-uebersicht.html. See docs/design/game-catalog.md.
+ *
+ * Laid out like the Gerätehaus hub (design-guidelines §7a): the launchable games
+ * are the primary panel, the roadmap is demoted to a quiet reference strip so
+ * visual weight descends with actual usefulness.
  */
 @Component({
   selector: 'fk-games',
@@ -20,8 +25,10 @@ import { USE_SUPABASE } from '../../core/content/supabase.config';
 export class Games {
   readonly auth = inject(AuthService);
   private readonly library = inject(LibraryService);
-  private readonly router = inject(Router);
   readonly showAccount = USE_SUPABASE;
+
+  /** How many games are actually launchable — the section label and footer count. */
+  readonly availableCount = Object.keys(GAMES).length;
 
   /** Local light/dark theme for the screen — defaults to the OS preference. */
   readonly theme = signal<'light' | 'dark'>(
@@ -52,10 +59,5 @@ export class Games {
 
   toggleTheme(): void {
     this.theme.update((t) => (t === 'dark' ? 'light' : 'dark'));
-  }
-
-  async signOut(): Promise<void> {
-    await this.auth.signOut();
-    this.router.navigate(['/login'], { replaceUrl: true });
   }
 }
