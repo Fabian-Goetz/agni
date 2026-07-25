@@ -6,6 +6,7 @@ import { VehicleType } from '../models/vehicle-type';
 import { Equipment } from '../models/equipment';
 import { Vehicle, Placement } from '../models/vehicle';
 import { Compartment, CompartmentId } from '../models/compartment';
+import { ActivityCard } from '../models/activity-card';
 
 const samePlacement = (a: Placement, b: Placement): boolean =>
   a.vehicleId === b.vehicleId &&
@@ -27,12 +28,15 @@ export class LibraryService {
   private readonly _equipment = signal<Equipment[]>([]);
   private readonly _vehicles = signal<Vehicle[]>([]);
   private readonly _placements = signal<Placement[]>([]);
+  private readonly _activityCards = signal<ActivityCard[]>([]);
   private readonly _loaded = signal(false);
 
   readonly vehicleTypes = this._vehicleTypes.asReadonly();
   readonly equipment = this._equipment.asReadonly();
   readonly vehicles = this._vehicles.asReadonly();
   readonly placements = this._placements.asReadonly();
+  /** Activity rule data — shared reference content, never written from the app. */
+  readonly activityCards = this._activityCards.asReadonly();
   readonly loaded = this._loaded.asReadonly();
 
   /** Equipment sorted by name for stable catalog lists. */
@@ -70,22 +74,25 @@ export class LibraryService {
     this._equipment.set([]);
     this._vehicles.set([]);
     this._placements.set([]);
+    this._activityCards.set([]);
   }
 
   /** Load the Library once (idempotent). */
   ensureLoaded(): Promise<void> {
     if (!this.loadPromise) {
       this.loadPromise = (async () => {
-        const [types, equipment, vehicles, placements] = await Promise.all([
+        const [types, equipment, vehicles, placements, cards] = await Promise.all([
           this.store.loadVehicleTypes(),
           this.store.loadEquipment(),
           this.store.loadVehicles(),
           this.store.loadPlacements(),
+          this.store.loadActivityCards(),
         ]);
         this._vehicleTypes.set(types);
         this._equipment.set(equipment);
         this._vehicles.set(vehicles);
         this._placements.set(placements);
+        this._activityCards.set(cards);
         this._loaded.set(true);
       })();
     }
@@ -104,6 +111,23 @@ export class LibraryService {
 
   vehicleById(id: string): Vehicle | undefined {
     return this._vehicles().find((v) => v.id === id);
+  }
+
+  /** Activity rule data for a catalog item, if the item is playable at all. */
+  cardFor(equipmentId: string): ActivityCard | undefined {
+    return this._activityCards().find((c) => c.equipmentId === equipmentId);
+  }
+
+  /**
+   * How many Activity cards a Vehicle can actually serve. With Stufe 2 on, the
+   * pool is the intersection of the card set and what the truck carries — the
+   * setup screen shows this so an unplayable combination is visible up front.
+   */
+  activityPoolSize(vehicleId: string, intersectWithLoadout: boolean): number {
+    const cards = this._activityCards();
+    if (!intersectWithLoadout) return cards.length;
+    const placed = new Set(this.placedEquipment(vehicleId).map((e) => e.id));
+    return cards.filter((c) => placed.has(c.equipmentId)).length;
   }
 
   compartmentsForVehicle(vehicleId: string): Compartment[] {

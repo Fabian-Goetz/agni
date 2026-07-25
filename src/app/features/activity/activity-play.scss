@@ -1,0 +1,752 @@
+/* ============================================================
+   AGNI — design language "C": technical blueprint dossier.
+   Activity round (/activity/play). Round chrome: a slim sticky bar instead of
+   the brand topbar, no footer — during a Zug nothing competes with the card,
+   the clock and the schematic (design-guidelines §6, §7a.3).
+
+   Seven states share one screen, so shared traits are grouped into one rule
+   rather than repeated per state — the panels, the mono labels and the display
+   names each have a single home below.
+   Tokens from _blueprint.scss, shared with the Activity setup screen.
+   ============================================================ */
+
+@use './blueprint' as bp;
+
+fk-activity-play {
+  display: block;
+  min-height: 100%;
+}
+
+.activity-play,
+.activity-play[data-theme='light'] {
+  @include bp.light;
+  @include bp.team-colors;
+  /* Round chrome narrows to 780px so the performed phases stay readable across a
+     bay. The board phase alone opens up to 1040px — it is the one screen that is
+     *read* rather than performed, and a 36-cell grid plus the gamble genuinely
+     wants two columns on a tablet (ADR-0005). */
+  --maxw: 780px;
+  --maxw-board: 1040px;
+}
+.activity-play[data-theme='dark'] {
+  @include bp.dark;
+}
+
+.activity-play {
+  @include bp.page;
+  @include bp.buttons;
+  @include bp.theme-toggle;
+}
+.activity-play[data-theme='dark'] {
+  @include bp.theme-toggle-dark;
+}
+
+.activity-play .shell {
+  min-height: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  transition: max-width 0.2s;
+  padding: 0 clamp(16px, 4vw, 32px) clamp(24px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.2vw, 22px);
+}
+
+.activity-play .shell.wide {
+  max-width: var(--maxw-board);
+}
+
+/* ---------- shared primitives ---------- */
+
+/* Every panel on the screen: inset surface, hairline, top rule via ::before. */
+.activity-play .board-panel,
+.activity-play .prompt,
+.activity-play .gamble,
+.activity-play .handoff,
+.activity-play .stage,
+.activity-play .turn-result,
+.activity-play .result,
+.activity-play .notice {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+.activity-play .board-panel::before,
+.activity-play .prompt::before,
+.activity-play .handoff::before,
+.activity-play .stage::before,
+.activity-play .turn-result::before,
+.activity-play .result::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--sodium);
+}
+/* Red top rule marks what the screen is *asking* — the question, not the frame. */
+.activity-play .prompt::before,
+.activity-play .turn-result::before,
+.activity-play .result::before {
+  background: var(--signal);
+}
+
+/* Mono, uppercase, quiet — the metadata voice. */
+.activity-play .rb-count,
+.activity-play .s-type,
+.activity-play .st-pos,
+.activity-play .p-cat,
+.activity-play .g-pts,
+.activity-play .s-cap,
+.activity-play .rv-head,
+.activity-play .g-head,
+.activity-play .h-mode,
+.activity-play .rv-where em,
+.activity-play .hint {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* Condensed display — every name and heading on the screen. */
+.activity-play .rb-game,
+.activity-play .s-name,
+.activity-play .st-name,
+.activity-play .sl-name,
+.activity-play .g-name,
+.activity-play .rv-where b {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* Hairline-ruled vertical lists (Stufen log, final standings). */
+.activity-play .stufen-log,
+.activity-play .rv-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.activity-play .stufen-log li,
+.activity-play .rv-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Team pawn, coloured by roster index. */
+.activity-play .pawn {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--team-0);
+}
+.activity-play .pawn[data-team='1'] {
+  background: var(--team-1);
+}
+.activity-play .pawn[data-team='2'] {
+  background: var(--team-2);
+}
+.activity-play .pawn[data-team='3'] {
+  background: var(--team-3);
+}
+
+/* ---------- round bar ---------- */
+.activity-play .roundbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: clamp(12px, 2vw, 18px) 0 12px;
+  background: var(--bar-bg);
+  backdrop-filter: blur(6px);
+}
+.activity-play .exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px 0 10px;
+  background: var(--plate-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: var(--ink);
+    border-color: var(--ink-2);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+.activity-play .rb-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  text-align: center;
+}
+
+/* ---------- countdown ---------- */
+.activity-play .clockbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.activity-play .cl-time {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+}
+.activity-play .cl-rail {
+  flex: 1;
+  height: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.activity-play .cl-fill {
+  display: block;
+  height: 100%;
+  background: var(--sodium);
+  transition: width 1s linear;
+}
+/* Under ten seconds the whole bar turns — the clock is the only thing that matters. */
+.activity-play .clockbar.low .cl-time {
+  color: var(--signal);
+}
+.activity-play .clockbar.low .cl-fill {
+  background: var(--signal);
+}
+
+/* ---------- the board ---------- */
+.activity-play .board-panel {
+  padding: 14px;
+}
+.activity-play .board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+.activity-play .cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+.activity-play .cell.goal {
+  background: var(--sodium-bg);
+  border-color: var(--sodium);
+}
+.activity-play .cell.here {
+  border-color: var(--ink-2);
+}
+.activity-play .c-mode {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--faint);
+}
+.activity-play .cell.goal .c-mode {
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: var(--sodium);
+}
+.activity-play .c-pawns {
+  display: flex;
+  gap: 2px;
+}
+.activity-play .standings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+}
+.activity-play .standings li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ---------- the prompt (the one loud thing) ---------- */
+.activity-play .eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+.activity-play .prompt {
+  padding: clamp(16px, 3vw, 24px);
+  text-align: center;
+  transition: opacity 0.2s;
+}
+/* Answered: recede so the reveal leads instead of competing with it. */
+.activity-play .prompt.done {
+  opacity: 0.62;
+}
+.activity-play .prompt h1 {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 6.4vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+/* The card is read across a bay by one person — bigger still. */
+.activity-play .card-prompt h1 {
+  font-size: clamp(34px, 8.4vw, 58px);
+}
+.activity-play .p-hint {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.activity-play .p-hint b,
+.activity-play .teach b,
+.activity-play .v-text b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+.activity-play .p-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+.activity-play .plate {
+  padding: 3px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* ---------- Tabu-Wörter ---------- */
+.activity-play .taboo {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.activity-play .t-head {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+.activity-play .taboo ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.activity-play .taboo li {
+  padding: 5px 10px;
+  background: var(--signal-bg);
+  border: 1px solid var(--signal);
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--signal);
+  text-decoration: line-through;
+}
+
+/* ---------- the gamble ---------- */
+.activity-play .gamble {
+  padding: clamp(14px, 2.6vw, 20px);
+}
+.activity-play .g-head {
+  margin: 0 0 12px;
+}
+.activity-play .g-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.activity-play .g-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-height: 76px;
+  padding: 12px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: var(--ink-2);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+.activity-play .g-name {
+  font-weight: 700;
+  font-size: 17px;
+}
+.activity-play .g-none {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+/* The gamble reads left→right as rising risk, so the border says so too. */
+.activity-play .g-opt.g-leicht:not(:disabled) {
+  border-color: var(--go);
+}
+.activity-play .g-opt.g-mittel:not(:disabled) {
+  border-color: var(--sodium);
+}
+.activity-play .g-opt.g-schwer:not(:disabled) {
+  border-color: var(--signal);
+}
+
+/* ---------- handoff interstitial ---------- */
+.activity-play .handoff {
+  margin-top: clamp(8px, 4vw, 40px);
+  padding: clamp(22px, 5vw, 38px);
+  text-align: center;
+}
+.activity-play .handoff h1 {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(26px, 6vw, 40px);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.activity-play .h-body,
+.activity-play .teach {
+  margin: 14px auto 0;
+  max-width: 44ch;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.activity-play .h-mode {
+  margin: 18px 0 22px;
+  letter-spacing: 0.2em;
+}
+.activity-play .handoff .btn,
+.activity-play .turn-result .btn {
+  width: 100%;
+  max-width: 320px;
+}
+
+/* ---------- moderator calls ---------- */
+.activity-play .calls {
+  display: grid;
+  gap: 10px;
+}
+
+/* ---------- schematic stage (Stufe 2) ---------- */
+.activity-play .stage {
+  padding: 16px;
+}
+.activity-play .stage-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.activity-play .s-name {
+  font-size: 17px;
+}
+/* The sketch renderers carry their own dark instrument palette (§6). */
+.activity-play .figure {
+  border: 1px solid #263243;
+  border-radius: var(--radius);
+  background: #0e1420;
+  padding: 12px;
+}
+.activity-play .hint {
+  margin: 12px 0 0;
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
+/* ---------- reveal ---------- */
+.activity-play .verdict {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line-2);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+}
+.activity-play .verdict.hit {
+  background: var(--go-bg);
+  border-left-color: var(--go);
+}
+.activity-play .verdict.miss {
+  background: var(--signal-bg);
+  border-left-color: var(--signal);
+}
+.activity-play .v-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.activity-play .v-ico {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+.activity-play .verdict.hit .v-ico {
+  color: var(--go);
+}
+.activity-play .verdict.miss .v-ico {
+  color: var(--signal);
+}
+.activity-play .v-text {
+  font-size: 15.5px;
+  color: var(--ink-2);
+}
+.activity-play .v-text b {
+  font-size: 17px;
+}
+
+/* ---------- turn result & game over ---------- */
+.activity-play .turn-result,
+.activity-play .result,
+.activity-play .notice {
+  margin-top: clamp(8px, 3vw, 28px);
+  padding: clamp(20px, 4vw, 32px);
+}
+.activity-play .turn-result,
+.activity-play .result {
+  text-align: center;
+}
+.activity-play .score {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.activity-play .s-hit {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(46px, 12vw, 76px);
+  line-height: 1;
+  color: var(--go);
+  text-wrap: balance;
+}
+.activity-play .s-hit.zero {
+  color: var(--faint);
+}
+.activity-play .s-of {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(18px, 4.4vw, 28px);
+  color: var(--faint);
+}
+.activity-play .s-cap {
+  margin: 6px 0 0;
+}
+
+.activity-play .stufen-log {
+  max-width: 320px;
+  margin: 22px auto 0;
+}
+.activity-play .sl-no {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+.activity-play .sl-mark {
+  margin-left: auto;
+  font-size: 16px;
+}
+.activity-play .stufen-log li.hit .sl-no,
+.activity-play .stufen-log li.hit .sl-mark {
+  color: var(--go);
+}
+.activity-play .stufen-log li.miss .sl-no,
+.activity-play .stufen-log li.miss .sl-mark {
+  color: var(--signal);
+}
+
+/* A Zug that taught something says what — a bare tally teaches nothing (§6). */
+.activity-play .teach {
+  margin-top: 18px;
+}
+.activity-play .turn-result .btn {
+  margin-top: 24px;
+}
+
+/* ---------- final standings ---------- */
+.activity-play .review {
+  margin-top: 24px;
+  text-align: left;
+}
+.activity-play .rv-head {
+  margin: 0 0 8px;
+  letter-spacing: 0.18em;
+}
+.activity-play .rv-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.activity-play .rv-where {
+  margin-left: auto;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  text-align: right;
+}
+.activity-play .rv-where b {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--go);
+}
+.activity-play .rv-where em {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.activity-play .acts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+/* ---------- nothing to deal ---------- */
+.activity-play .notice .n-title {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+}
+.activity-play .notice .n-body {
+  margin: 0 0 18px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+/* ---------- responsive & motion ---------- */
+/* Board phase goes two-pane: the grid on the left, whose-turn and the gamble on
+   the right, so a tablet doesn't scroll to reach the difficulty buttons. */
+.activity-play .board-stage,
+.activity-play .turn-side {
+  display: grid;
+  gap: clamp(14px, 2.2vw, 22px);
+  align-items: start;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .activity-play .board-stage {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+  /* Wider board cells earn a bigger mode letter — it stops being a texture. */
+  .activity-play .c-mode {
+    font-size: 12px;
+  }
+  .activity-play .pawn {
+    width: 11px;
+    height: 11px;
+  }
+}
+
+@media (min-width: 620px) {
+  .activity-play .calls {
+    grid-template-columns: 1fr 1fr;
+  }
+  .activity-play .calls .btn-ghost {
+    grid-column: 1 / -1;
+  }
+  .activity-play .acts {
+    flex-direction: row-reverse;
+    justify-content: center;
+  }
+  .activity-play .acts .btn {
+    min-width: 180px;
+  }
+  .activity-play .verdict {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .activity-play .verdict .btn {
+    flex: none;
+    min-width: 160px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .activity-play,
+  .activity-play .cl-fill,
+  .activity-play .prompt,
+  .activity-play .btn,
+  .activity-play .g-opt {
+    transition: none;
+  }
+}

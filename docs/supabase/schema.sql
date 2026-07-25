@@ -62,6 +62,17 @@ alter table equipment add column if not exists din_ref              text;
 alter table equipment add column if not exists ist_behaelter        boolean;
 alter table equipment add column if not exists typischer_container  text;
 
+-- Activity rule data (difficulty + Tabu-Wörter), keyed by equipment id. Kept out
+-- of `equipment` because that table is mode-agnostic domain data (ADR-0004 layer
+-- 1) while this is game rules. Equipment with no row here is simply not playable
+-- in Activity. Shared read-only reference like vehicle_types; seeded via seed.sql.
+create table if not exists activity_cards (
+  equipment_id  text primary key references equipment (id) on delete cascade,
+  difficulty    text not null check (difficulty in ('Leicht', 'Mittel', 'Schwer')),
+  taboo         text[],
+  exclude_modes text[]
+);
+
 create table if not exists vehicles (
   id       text primary key,
   owner_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
@@ -81,9 +92,16 @@ create table if not exists placements (
 create index if not exists placements_owner_idx on placements (owner_id);
 create index if not exists placements_vehicle_idx on placements (vehicle_id);
 
-alter table equipment  enable row level security;
-alter table vehicles   enable row level security;
-alter table placements enable row level security;
+alter table equipment      enable row level security;
+alter table activity_cards enable row level security;
+alter table vehicles       enable row level security;
+alter table placements     enable row level security;
+
+-- Activity cards are shared rules, readable by everyone; never written via the
+-- anon key (same posture as vehicle_types).
+drop policy if exists activity_cards_read on activity_cards;
+create policy activity_cards_read on activity_cards
+  for select using (true);
 
 -- Equipment: shared seed (owner_id null) is world-readable; own custom items too.
 -- Writes stay owner-scoped, so the shared catalog is immutable via the anon key.

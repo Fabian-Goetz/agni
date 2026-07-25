@@ -1,0 +1,351 @@
+<div class="activity-play" [attr.data-theme]="theme()">
+  <!-- The shell widens only for the board — a planning moment, not a performed
+       one. Every phase the group watches stays at the narrow round-chrome width. -->
+  <div class="shell" [class.wide]="session.stage() === 'board'">
+    <!-- ROUND BAR — exit, whose Zug it is, theme. No brand, no footer. -->
+    <header class="roundbar">
+      <button type="button" class="exit" (click)="quit()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+        Beenden
+      </button>
+
+      <div class="rb-mid">
+        <span class="rb-game">{{ game.name }}</span>
+        @if (session.stage() !== 'over' && session.currentTeamName()) {
+          <span class="rb-count">{{ session.currentTeamName() }} ist dran</span>
+        }
+      </div>
+
+      <button class="theme-toggle" type="button" aria-label="Design umschalten" (click)="toggleTheme()">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+        </svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" />
+          <path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" />
+        </svg>
+      </button>
+    </header>
+
+    @if (emptyPool()) {
+      <!-- ============ NOTHING TO DEAL ============ -->
+      <section class="notice">
+        <p class="n-title">Keine Karten für dieses Fahrzeug.</p>
+        <p class="n-body">
+          Mit Stufe 2 zählen nur Geräte, die auf dem Fahrzeug verlastet sind. Beladung im
+          Gerätehaus ergänzen — oder Stufe 2 abschalten.
+        </p>
+        <button type="button" class="btn btn-ghost" (click)="quit()">Zurück</button>
+      </section>
+    } @else {
+      @switch (session.stage()) {
+        <!-- ============ BOARD — gamble on a difficulty ============ -->
+        @case ('board') {
+          <!-- Board left, whose-turn + gamble right on wide screens (ADR-0005). -->
+          <div class="board-stage">
+          <section class="board-panel">
+            <div class="board" role="img" [attr.aria-label]="'Spielbrett, ' + cells().length + ' Felder'">
+              @for (c of cells(); track c.index) {
+                <div class="cell" [class.goal]="c.cell === 'Ziel'" [class.here]="c.current">
+                  <span class="c-mode">{{ c.short }}</span>
+                  @if (c.occupants.length) {
+                    <span class="c-pawns">
+                      @for (t of c.occupants; track t) {
+                        <span class="pawn" [attr.data-team]="t" [attr.title]="teamName(t)"></span>
+                      }
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+
+            <ul class="standings">
+              @for (s of standings(); track s.team) {
+                <li>
+                  <span class="pawn" [attr.data-team]="s.team"></span>
+                  <span class="st-name">{{ s.name }}</span>
+                  <span class="st-pos">Feld {{ s.position }}</span>
+                </li>
+              }
+            </ul>
+          </section>
+
+          <div class="turn-side">
+          <section class="prompt">
+            <p class="eyebrow">{{ session.currentTeamName() }} · Feld sagt</p>
+            <h1>{{ session.currentMode() }}</h1>
+            <p class="p-hint">{{ modeHint() }}</p>
+          </section>
+
+          <section class="gamble">
+            <p class="g-head">Schwierigkeit wählen — mehr Punkte, weniger Zeit.</p>
+            <div class="g-list">
+              @for (d of difficulties; track d) {
+                <button
+                  type="button"
+                  class="g-opt"
+                  [class]="'g-' + d.toLowerCase()"
+                  [disabled]="available(d) === 0"
+                  (click)="session.beginTurn(d)"
+                >
+                  <span class="g-name">{{ d }}</span>
+                  <span class="g-pts">{{ pointsFor(d) }} Felder</span>
+                  @if (available(d) === 0) {
+                    <span class="g-none">keine Karte</span>
+                  }
+                </button>
+              }
+            </div>
+          </section>
+          </div>
+          </div>
+        }
+
+        <!-- ============ HANDOFF — the term must reach the performer first ============ -->
+        @case ('handoff') {
+          <section class="handoff">
+            <p class="eyebrow">Übergabe</p>
+            <h1>Tablet an {{ session.currentTeamName() }}</h1>
+            <p class="h-body">
+              Eine Person aus dem Team nimmt das Gerät entgegen und schaut allein auf die Karte.
+              Der Rest schaut weg — sonst ist der Zug hinüber, bevor er beginnt.
+            </p>
+            <p class="h-mode">{{ session.perform()?.mode }} · {{ session.perform()?.difficulty }}</p>
+            <button type="button" class="btn btn-primary" (click)="session.reveal()">
+              Karte aufdecken →
+            </button>
+          </section>
+        }
+
+        <!-- ============ PERFORM — the card and the clock ============ -->
+        @case ('perform') {
+          @if (session.perform(); as p) {
+            <div class="clockbar" [class.low]="clockLow()">
+              <span class="cl-time">{{ clock() }}</span>
+              <span class="cl-rail"><span class="cl-fill" [style.width.%]="clockPct()"></span></span>
+            </div>
+
+            <section class="prompt card-prompt">
+              <p class="eyebrow">{{ p.mode }} · {{ p.difficulty }}</p>
+              <h1>{{ p.subject.name }}</h1>
+              <div class="p-meta">
+                @if (p.subject.kurzzeichen) {
+                  <span class="plate">{{ p.subject.kurzzeichen }}</span>
+                }
+                @if (p.subject.category) {
+                  <span class="p-cat">{{ p.subject.category }}</span>
+                }
+              </div>
+
+              @if (p.taboo.length) {
+                <div class="taboo">
+                  <p class="t-head">Tabu</p>
+                  <ul>
+                    @for (word of p.taboo; track word) {
+                      <li>{{ word }}</li>
+                    }
+                  </ul>
+                </div>
+              } @else {
+                <p class="p-hint">{{ modeHint() }}</p>
+              }
+            </section>
+
+            <section class="calls">
+              <button type="button" class="btn btn-yes" (click)="session.resolvePerform(true)">
+                Erraten ✓
+              </button>
+              <button type="button" class="btn btn-no" (click)="session.resolvePerform(false)">
+                Nicht erraten ✕
+              </button>
+              <button
+                type="button"
+                class="btn btn-ghost"
+                [disabled]="session.skipUsed()"
+                (click)="session.skip()"
+              >
+                {{ session.skipUsed() ? 'Tausch verbraucht' : 'Karte tauschen' }}
+              </button>
+            </section>
+          }
+        }
+
+        <!-- ============ LOCATE — tap the Fach ============ -->
+        @case ('locate') {
+          @if (session.locate(); as l) {
+            <section class="prompt" [class.done]="session.locateRevealed()">
+              <p class="eyebrow">Stufe 2 · Wohin gehört</p>
+              <h1>{{ l.subject.name }}</h1>
+              <p class="p-hint">{{ session.banked() }} Felder sicher — noch eins für das Fach.</p>
+            </section>
+
+            <section class="stage">
+              <div class="stage-head">
+                @if (vehicle(); as v) {
+                  <span class="s-name">{{ v.name }}</span>
+                }
+                @if (vehicleType(); as t) {
+                  <span class="s-type">{{ t.name }}</span>
+                }
+              </div>
+
+              <div class="figure">
+                <fk-vehicle-schematic
+                  [type]="vehicleType()"
+                  [picked]="session.picked()"
+                  [correct]="l.correct"
+                  [revealed]="session.locateRevealed()"
+                  (pick)="session.pickCompartment($event)"
+                />
+              </div>
+
+              @if (!session.locateRevealed()) {
+                <p class="hint">Fach antippen — ohne Uhr, das soll gewusst sein.</p>
+              }
+            </section>
+
+            @if (session.locateRevealed()) {
+              <section
+                class="verdict"
+                [class.hit]="session.locateWasCorrect()"
+                [class.miss]="!session.locateWasCorrect()"
+              >
+                <div class="v-line">
+                  @if (session.locateWasCorrect()) {
+                    <svg class="v-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.2 5.2L20 7" /></svg>
+                    <span class="v-text">Richtig — <b>{{ correctLabel() }}</b></span>
+                  } @else {
+                    <svg class="v-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                    <span class="v-text">Daneben — richtig ist <b>{{ correctLabel() }}</b></span>
+                  }
+                </div>
+                <button type="button" class="btn btn-primary" (click)="session.continueFromLocate()">
+                  Weiter →
+                </button>
+              </section>
+            }
+          }
+        }
+
+        <!-- ============ FETCH — go and get it ============ -->
+        @case ('fetch') {
+          @if (session.perform(); as p) {
+            <div class="clockbar" [class.low]="clockLow()">
+              <span class="cl-time">{{ clock() }}</span>
+              <span class="cl-rail"><span class="cl-fill" [style.width.%]="clockPct()"></span></span>
+            </div>
+
+            <section class="prompt">
+              <p class="eyebrow">Stufe 3 · Holen</p>
+              <h1>{{ p.subject.name }}</h1>
+              @if (stufen().locate && correctLabel()) {
+                <p class="p-hint">Aus <b>{{ correctLabel() }}</b> — ans Fahrzeug und her damit.</p>
+              } @else {
+                <p class="p-hint">Ans Fahrzeug und her damit.</p>
+              }
+            </section>
+
+            <section class="calls">
+              <button type="button" class="btn btn-yes" (click)="session.resolveFetch(true)">
+                Gebracht ✓
+              </button>
+              <button type="button" class="btn btn-no" (click)="session.resolveFetch(false)">
+                Nicht gebracht ✕
+              </button>
+            </section>
+          }
+        }
+
+        <!-- ============ TURN RESULT ============ -->
+        @case ('result') {
+          @if (session.outcome(); as o) {
+            <section class="turn-result">
+              <p class="eyebrow">{{ teamName(o.team) }}</p>
+              <div class="score">
+                <span class="s-hit" [class.zero]="o.points === 0">+{{ o.points }}</span>
+                <span class="s-of">{{ o.points === 1 ? 'Feld' : 'Felder' }}</span>
+              </div>
+              <p class="s-cap">{{ o.subject.name }} · {{ o.mode }} · {{ o.difficulty }}</p>
+
+              <ul class="stufen-log">
+                <li [class.hit]="o.guessed" [class.miss]="!o.guessed">
+                  <span class="sl-no">1</span>
+                  <span class="sl-name">Raten</span>
+                  <span class="sl-mark">{{ o.guessed ? '✓' : '✕' }}</span>
+                </li>
+                @if (o.located !== null) {
+                  <li [class.hit]="o.located" [class.miss]="!o.located">
+                    <span class="sl-no">2</span>
+                    <span class="sl-name">Verorten</span>
+                    <span class="sl-mark">{{ o.located ? '✓' : '✕' }}</span>
+                  </li>
+                }
+                @if (o.fetched !== null) {
+                  <li [class.hit]="o.fetched" [class.miss]="!o.fetched">
+                    <span class="sl-no">3</span>
+                    <span class="sl-name">Holen</span>
+                    <span class="sl-mark">{{ o.fetched ? '✓' : '✕' }}</span>
+                  </li>
+                }
+              </ul>
+
+              @if (o.located === false && outcomeCorrectLabel()) {
+                <p class="teach">
+                  <b>{{ o.subject.name }}</b> liegt in <b>{{ outcomeCorrectLabel() }}</b> —
+                  getippt war {{ outcomePickedLabel() }}.
+                </p>
+              } @else if (!o.guessed) {
+                <p class="teach">Gesucht war <b>{{ o.subject.name }}</b>.</p>
+              }
+
+              <button type="button" class="btn btn-primary" (click)="session.nextTurn()">
+                Weiter →
+              </button>
+            </section>
+          }
+        }
+
+        <!-- ============ GAME OVER ============ -->
+        @case ('over') {
+          <section class="result">
+            <p class="eyebrow">Spiel beendet</p>
+
+            @if (session.soloResult(); as solo) {
+              <div class="score">
+                <span class="s-hit">{{ solo.zuege }}</span>
+                <span class="s-of">Züge</span>
+              </div>
+              <p class="s-cap">{{ solo.crew }} bis Ziel</p>
+            } @else if (winner(); as w) {
+              <div class="score">
+                <span class="s-hit">{{ w.name }}</span>
+              </div>
+              <p class="s-cap">am Ziel nach {{ w.zuege }} Zügen</p>
+            }
+
+            <div class="review">
+              <p class="rv-head">Endstand</p>
+              <ul class="rv-list">
+                @for (s of standings(); track s.team) {
+                  <li>
+                    <span class="pawn" [attr.data-team]="s.team"></span>
+                    <span class="rv-name">{{ s.name }}</span>
+                    <span class="rv-where">
+                      <b>Feld {{ s.position }}</b>
+                      <em>{{ s.zuege }} Züge</em>
+                    </span>
+                  </li>
+                }
+              </ul>
+            </div>
+
+            <div class="acts">
+              <button type="button" class="btn btn-primary" (click)="again()">Nochmal →</button>
+              <button type="button" class="btn btn-ghost" (click)="quit()">Startseite</button>
+            </div>
+          </section>
+        }
+      }
+    }
+  </div>
+</div>

@@ -2,13 +2,16 @@ import { ContentStore } from './content-store.port';
 import { VehicleType } from '../models/vehicle-type';
 import { Equipment } from '../models/equipment';
 import { Vehicle, Placement } from '../models/vehicle';
+import { ActivityCard } from '../models/activity-card';
 import { SEED_VEHICLE_TYPES, SEED_EQUIPMENT } from '../seed/seed-lf';
+import { SEED_ACTIVITY_CARDS } from '../seed/seed-activity-cards';
 
 const KEYS = {
   vehicleTypes: 'fk.vehicleTypes',
   equipment: 'fk.equipment',
   vehicles: 'fk.vehicles',
   placements: 'fk.placements',
+  activityCards: 'fk.activityCards',
 } as const;
 
 const samePlacement = (a: Placement, b: Placement): boolean =>
@@ -27,6 +30,10 @@ export class LocalStorageContentStore implements ContentStore {
 
   loadVehicleTypes(): Promise<VehicleType[]> {
     return Promise.resolve(this.read<VehicleType[]>(KEYS.vehicleTypes) ?? SEED_VEHICLE_TYPES);
+  }
+
+  loadActivityCards(): Promise<ActivityCard[]> {
+    return Promise.resolve(this.read<ActivityCard[]>(KEYS.activityCards) ?? SEED_ACTIVITY_CARDS);
   }
 
   loadEquipment(): Promise<Equipment[]> {

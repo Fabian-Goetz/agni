@@ -1,0 +1,696 @@
+/* ============================================================
+   AGNI — design language "C": technical blueprint dossier.
+   Activity setup (/activity): teams, vehicle, Stufen, knobs.
+   Laid out like the Gerätehaus hub — shell-level back chip, bare-noun H1,
+   quiet section labels (design-guidelines §7a). Tokens come from _blueprint.scss,
+   shared with the Activity play screen.
+   ============================================================ */
+
+@use './blueprint' as bp;
+
+fk-activity-setup {
+  display: block;
+  min-height: 100%;
+}
+
+.activity-setup,
+.activity-setup[data-theme='light'] {
+  @include bp.light;
+  @include bp.team-colors;
+  /* Wider than the round screens' 780px: setup is *browsed and configured*, not
+     performed, so it takes the authoring shell's width and two columns. */
+  --maxw: 1040px;
+}
+.activity-setup[data-theme='dark'] {
+  @include bp.dark;
+}
+
+.activity-setup {
+  @include bp.page;
+  @include bp.buttons;
+  @include bp.theme-toggle;
+}
+.activity-setup[data-theme='dark'] {
+  @include bp.theme-toggle-dark;
+}
+
+.activity-setup .shell {
+  min-height: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px) clamp(24px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.2vw, 20px);
+}
+
+/* Every focusable control shares one visible ring (§7) — grouped so the
+   declaration exists once rather than nine times. */
+.activity-setup .back:focus-visible,
+.activity-setup .seg button:focus-visible,
+.activity-setup .veh-option:focus-visible,
+.activity-setup .stufe:focus-visible,
+.activity-setup .tuning-toggle:focus-visible,
+.activity-setup .inline-fix:focus-visible,
+.activity-setup .start:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* The metadata voice: mono, uppercase, quiet. Sizes and spacing stay per-use. */
+.activity-setup .brand .sub,
+.activity-setup .label,
+.activity-setup .vinfo span,
+.activity-setup .vinfo .type,
+.activity-setup .tuning thead th,
+.activity-setup .tune-row label span,
+.activity-setup .s-pts,
+.activity-setup .est,
+.activity-setup .footer {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* ---------- topbar ---------- */
+.activity-setup .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: clamp(14px, 2.4vw, 22px) 0;
+}
+.activity-setup .brand .mark {
+  position: relative;
+  padding-left: 18px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.12em;
+}
+.activity-setup .brand .mark::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  background: var(--signal);
+  transform: translateY(-50%) rotate(45deg);
+}
+.activity-setup .brand .sub {
+  margin-top: 1px;
+  padding-left: 18px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}
+.activity-setup .account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.activity-setup .avatar {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+}
+
+/* ---------- back chip + page head ---------- */
+.activity-setup .back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px 0 10px;
+  background: var(--plate-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s;
+}
+.activity-setup .back:hover {
+  color: var(--ink);
+  border-color: var(--ink-2);
+}
+.activity-setup .back svg {
+  width: 16px;
+  height: 16px;
+}
+
+.activity-setup .eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+/* The step's question is the headline. Smaller than the hub screens' bare-noun
+   H1 (34→52px) because a question is several words, not one. */
+.activity-setup .page-head h1 {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 6vw, 42px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.activity-setup .page-head .lede {
+  margin: 8px 0 0;
+  max-width: 52ch;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+/* ---------- onboarding progress ---------- */
+/* A three-segment rail, deliberately inert: this flow is sequential, so the only
+   ways through it are Weiter and Zurück (design-guidelines §6, navigable stepper
+   entry — the non-navigable variant). */
+.activity-setup .wiz-rail {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+.activity-setup .wiz-rail span {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background-color 0.25s;
+}
+.activity-setup .wiz-rail span.on {
+  background: var(--signal);
+}
+
+/* Each step arrives as its own page. @switch recreates the node, so the
+   animation replays on every move without any state to track. */
+.activity-setup .step-panel {
+  animation: setup-step-in 0.22s ease-out;
+}
+@keyframes setup-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* ---------- setup blocks ---------- */
+.activity-setup .setup {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.4vw, 22px);
+}
+/* Step 3 has two panels' worth of content; the others don't. */
+.activity-setup .two-up {
+  display: grid;
+  gap: clamp(14px, 2.4vw, 22px);
+  align-items: start;
+}
+.activity-setup .block {
+  background: var(--card-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: clamp(14px, 2.6vw, 20px);
+  /* A panel clips its own content: nothing inside may bleed across the page. */
+  overflow: hidden;
+}
+.activity-setup .label {
+  margin-bottom: 12px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+}
+.activity-setup .hint-line {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.activity-setup .hint-line b {
+  color: var(--ink);
+}
+
+/* ---------- segmented control ---------- */
+.activity-setup .seg {
+  display: flex;
+  gap: 6px;
+}
+.activity-setup .seg button {
+  flex: 1;
+  min-height: 44px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.activity-setup .seg button:hover {
+  border-color: var(--ink-2);
+  color: var(--ink);
+}
+.activity-setup .seg button.on {
+  background: var(--signal-bg);
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+/* ---------- team roster ---------- */
+.activity-setup .team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.activity-setup .team-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+}
+.activity-setup .team-row:focus-within {
+  border-color: var(--signal);
+  box-shadow: var(--focus-ring);
+}
+.activity-setup .team-row input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+}
+.activity-setup .team-row input:focus {
+  outline: none;
+}
+.activity-setup .pawn {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--team-0);
+}
+.activity-setup .team-row[data-team='1'] .pawn {
+  background: var(--team-1);
+}
+.activity-setup .team-row[data-team='2'] .pawn {
+  background: var(--team-2);
+}
+.activity-setup .team-row[data-team='3'] .pawn {
+  background: var(--team-3);
+}
+
+/* ---------- vehicle chooser ---------- */
+.activity-setup .veh-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.activity-setup .veh-option,
+.activity-setup .veh-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px;
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: inherit;
+}
+.activity-setup .veh-option {
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.activity-setup .veh-option:hover {
+  border-color: var(--ink-2);
+}
+.activity-setup .veh-option.on {
+  border-color: var(--signal);
+  background: var(--signal-bg);
+}
+.activity-setup .thumb {
+  flex: none;
+  color: var(--faint);
+}
+.activity-setup .thumb .hole {
+  fill: none;
+}
+.activity-setup .vinfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.activity-setup .vinfo strong {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+}
+.activity-setup .vinfo span,
+.activity-setup .vinfo .type {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+}
+.activity-setup .mark-sel {
+  margin-left: auto;
+  flex: none;
+  color: var(--signal);
+  opacity: 0;
+}
+.activity-setup .veh-option.on .mark-sel {
+  opacity: 1;
+}
+
+/* No vehicle at all — the block must say so rather than sit empty. */
+.activity-setup .empty-note {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.activity-setup .empty-note a {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--signal);
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-decoration: none;
+}
+.activity-setup .empty-note a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Stufen toggles ---------- */
+/* Grid, not flex-column: grid items can't overflow their track, so a long
+   description can never push a row out of the panel. */
+.activity-setup .stufen {
+  display: grid;
+  grid-auto-flow: row;
+  gap: 8px;
+}
+.activity-setup .stufe {
+  /* Rows are a mix of <div> (Stufe 1, always on) and <button> (2 and 3), so the
+     UA button styling is reset explicitly rather than assumed away. */
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 60px;
+  padding: 10px 12px;
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s, opacity 0.15s;
+}
+.activity-setup .stufe:not(.always-on):not(.on) {
+  opacity: 0.55;
+}
+.activity-setup .stufe:hover:not(.always-on) {
+  border-color: var(--ink-2);
+}
+.activity-setup .stufe.on,
+.activity-setup .stufe.always-on {
+  border-color: var(--go);
+  background: var(--go-bg);
+  opacity: 1;
+}
+.activity-setup .stufe.always-on {
+  cursor: default;
+}
+.activity-setup .stufe.on .s-no,
+.activity-setup .stufe.always-on .s-no {
+  color: var(--go);
+}
+.activity-setup .s-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.activity-setup .s-body strong {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+}
+.activity-setup .s-body span {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.activity-setup .s-pts {
+  margin-left: auto;
+  flex: none;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.activity-setup .stufe.on .s-pts,
+.activity-setup .stufe.always-on .s-pts {
+  color: var(--go);
+}
+
+/* ---------- fine tuning ---------- */
+.activity-setup .tuning-toggle {
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.activity-setup .tuning-toggle:hover {
+  color: var(--ink);
+}
+.activity-setup .tuning {
+  margin-top: 6px;
+}
+.activity-setup .tuning table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.activity-setup .tuning th,
+.activity-setup .tuning td {
+  padding: 7px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.activity-setup .tuning thead th {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+}
+.activity-setup .tuning tbody th {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+}
+.activity-setup .tune-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+.activity-setup .tune-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 140px;
+}
+.activity-setup .tune-row label span {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+.activity-setup .tuning input {
+  width: 84px;
+  min-height: 40px;
+  padding: 0 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+.activity-setup .tune-row input {
+  width: 100%;
+}
+.activity-setup .tuning input:focus {
+  outline: none;
+  border-color: var(--signal);
+  box-shadow: var(--focus-ring);
+}
+.activity-setup .tune-note {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: var(--faint);
+}
+/* Collapsed state still says what's behind the toggle — an unlabelled `+` on an
+   otherwise empty panel gives no reason to open it. */
+.activity-setup .tune-note.collapsed {
+  margin-top: 10px;
+}
+
+/* ---------- per-step problems ---------- */
+/* Stated where the control that causes it lives, not only on the start button. */
+.activity-setup .step-warn {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  background: var(--signal-bg);
+  border-left: 3px solid var(--signal);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.activity-setup .inline-fix {
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--signal);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---------- wizard nav ---------- */
+/* Phone: the forward action is the full-width primary and sits on top; Zurück is
+   the quiet one underneath. `order` does the flip so the DOM keeps reading
+   back-then-forward for a screen reader. */
+.activity-setup .wizard-nav {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+.activity-setup .nav-back {
+  order: 2;
+}
+.activity-setup .wizard-nav .start {
+  order: 1;
+}
+.activity-setup .start {
+  width: 100%;
+  min-height: 54px;
+  background: var(--signal);
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--btn-shadow);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.activity-setup .start:hover:not(:disabled) {
+  background: var(--signal-hi);
+}
+.activity-setup .start:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.activity-setup .est {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.activity-setup .est.warn {
+  color: var(--signal);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+/* ---------- footer ---------- */
+.activity-setup .footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+.activity-setup .footer b {
+  color: var(--ink-2);
+  font-weight: 400;
+}
+
+/* ---------- responsive ---------- */
+@media (min-width: 620px) {
+  /* One line: Zurück left, forward right. Capped rather than full-width — a
+     1040px red bar would be the loudest thing on the page by area rather than by
+     importance (§7a.1). Column 2 is fixed, so the button holds its place whether
+     or not Zurück exists. */
+  .activity-setup .wizard-nav {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+  .activity-setup .nav-back {
+    order: 0;
+    justify-self: start;
+  }
+  .activity-setup .wizard-nav .start {
+    order: 0;
+    grid-column: 2;
+    width: auto;
+    min-width: 260px;
+  }
+}
+
+@media (min-width: 900px) {
+  .activity-setup .two-up {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* Room for the knobs to sit side by side rather than stacking. */
+  .activity-setup .tune-row label {
+    flex: 1 1 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-setup .step-panel {
+    animation: none;
+  }
+  .activity-setup .wiz-rail span,
+  .activity-setup,
+  .activity-setup .btn,
+  .activity-setup .stufe,
+  .activity-setup .veh-option {
+    transition: none;
+  }
+}

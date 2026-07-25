@@ -41,10 +41,18 @@ game as content + config. Design the overview screen around that.
 | Engine | What it does | Backs families | Notes |
 |--------|--------------|----------------|-------|
 | **Schematic** | Render a vehicle, address zones by compartment id, tap/highlight/verdict | Family 1 | Exists (Locate). Generic per ADR-0003. |
+| **Perform** | Draw a card by (mode × difficulty), show it privately, moderator calls the guess | Family 6 | Exists (Activity). Cards are mode-agnostic; the board assigns the mode. |
 | **Quiz** | Multiple-choice / drag-to-match, graded | Family 3 | Cheapest to build; largest content surface. |
 | **Calc** | Numeric/slider input, graded against a formula with tolerance | Family 2 | New. Needs a units/formula layer. |
 | **Sequence** | Drag-to-order steps, graded on order | Family 4 | New, small. |
-| **Physical/Timer harness** | App randomizes a prompt, times & scores a real-world drill | Family 5 | Not a simulator — a stopwatch + scoreboard + prompt generator. |
+| **Physical/Timer harness** | App randomizes a prompt, times & scores a real-world drill | Family 5 | Exists inside Activity (Stufe 3). Not a simulator — a stopwatch + scoreboard + prompt generator. |
+
+### Composite games
+Most games are one engine + content + config. **Activity is the first that chains
+several engines inside a single turn** — Perform → Schematic → Physical harness,
+with points per step. The chaining, the scoring and the board live in the Session
+driver; the engines stay atomic and reusable (ADR-0006). Expect more of these:
+"engine + content + config" scales to composites without new engine types.
 
 ---
 
@@ -54,7 +62,7 @@ game as content + config. Design the overview screen around that.
 | Game | Modes | Trains | Status |
 |------|-------|--------|--------|
 | **Fach-Finder (Locate)** — tool shown → tap correct compartment | 🚒📱 | Fahrzeug-/Gerätekunde | shipped |
-| **Gerät holen (Bring it / Staffellauf)** — driver names a tool, trainee physically fetches it; timed relay | 🚒👥 | Beladung, speed | v1-shortlist |
+| **Gerät holen (Bring it / Staffellauf)** — driver names a tool, trainee physically fetches it; timed relay | 🚒👥 | Beladung, speed | shipped-as-Locate ⚠ |
 | **Umgekehrt / Was ist im Fach?** — compartment highlighted → name/pick what's inside (inverse of Locate) | 📱 | Beladung recall | roadmap |
 | **Beladungs-Blitz** — 60 s speed round, max correct tool→fach matches, leaderboard | 📱👥 | Beladung, speed | roadmap |
 | **Vollständigkeits-Check** — "is compartment G3 complete per DIN?" spot the missing/wrong item | 🚒 | Beladekontrolle | idea |
@@ -89,6 +97,21 @@ game as content + config. Design the overview screen around that.
 | **Saugbetrieb / Löschaufbau** — order steps to draft from open water or set up an attack line | 📱 | Löschtechnik | idea |
 | **Einsatzablauf** — first-arriving-unit priority ordering (Menschenrettung first, then water supply, …) | 📱 | Einsatztaktik | idea |
 
+## 5a. Family 6 — Perform / act it out
+*Engine: Perform (+ Schematic + Physical harness when composed). One card, up to
+three Stufen, points per Stufe.*
+
+| Game | Modes | Trains | Status |
+|------|-------|--------|--------|
+| **Activity** — Beschreiben / Zeichnen / Pantomime a Gerät → tap its Fach → fetch it; 1–4 teams race a 36-field board | 🚒👥 | Gerätekunde, Beladung, Teamsprache | shipped |
+| **Nur Raten** — Activity with Stufen 2+3 off; pure word game away from the truck | 📱👥 | Gerätekunde vocabulary | shipped (a config) |
+| **Tabu-Duell** — two teams alternate on the same card, first correct guess scores | 👥 | speed recall | idea |
+
+Activity is the port of the standalone `feuerwehr-activity` app, with the one change
+that mattered: **the Fach comes from the Vehicle's live Placements**, not from
+locations baked into each card against one specific truck. The same card therefore
+plays correctly on every Vehicle that carries the item.
+
 ## 6. Family 5 — Skill / physical (in-person; app scores/times/randomizes)
 *Engine: Physical/Timer harness. The app never simulates the skill — it prompts, times, and scores a real drill.*
 
@@ -105,12 +128,17 @@ game as content + config. Design the overview screen around that.
 Highest training value, maximal reuse of what already exists:
 
 1. **Fach-Finder** — shipped; the Schematic engine, proven.
-2. **Gerät holen** (in-person relay) — same engine, physical wrapper.
-3. **Wasserförderung / Druckrechnen** — seeds the Calc engine; high real-world value.
-4. **Löschmittel-Match** — seeds the Quiz engine cheaply.
+2. **Activity** — shipped; seeds the Perform engine *and* the Physical harness, and
+   proves composites (ADR-0006).
+3. **Gerät holen** (in-person relay) — ⚠ launchable but still Fach-Finder with a
+   different tagline; the relay loop now exists inside Activity's Stufe 3 and should
+   be shared or the game folded in.
+4. **Wasserförderung / Druckrechnen** — seeds the Calc engine; high real-world value.
+5. **Löschmittel-Match** — seeds the Quiz engine cheaply.
 
-Shipping these four exercises three of the five engines, which is the point: it
-proves the "engine + content + config" model before the catalog is filled out.
+Shipping these exercises four of the six engines, which is the point: it proves the
+"engine + content + config" model — and, with Activity, that composing engines needs
+no new engine type.
 
 **Where they live:** games are launched from the Game-mode launcher — mockup
 [`04-spiele-uebersicht`](./screens/04-spiele-uebersicht.html), flow in
@@ -130,6 +158,12 @@ Each game then reuses a per-engine setup template (Vorbereiten) → Play → Erg
   content live vs the vehicle Library? New store contract or extend the existing one?
 - **Engine boundaries.** Is Sequence distinct enough from Quiz to be its own engine,
   or a Quiz mode? Decide before building either.
+- **`Gerät holen` vs. Activity Stufe 3.** They are the same mechanic; one has a
+  timer and a scoreboard, the other doesn't. Either re-point `geraet-holen` at
+  Activity's fetch harness, or retire it as "Activity, Stufe 3 only".
+- **Activity card coverage.** Cards exist for the equipment reachable on the four
+  playable Vehicle Types. Growing past that means authoring difficulty + Tabu-Wörter
+  for the rest of the 319-item catalog — and deciding whether Authors may edit them.
 - **Domains deliberately not yet covered:** THL/technische Hilfeleistung, Erste
   Hilfe, Rechtsgrundlagen — parked, not rejected.
 
@@ -146,3 +180,4 @@ and, if it introduces a new engine or store contract, an ADR.
 |------|--------|
 | 2026-07-24 | Initial brainstorm: 5 mechanic families, ~5 engines, ~20 games, v1 shortlist, open questions. |
 | 2026-07-24 | `/games` launcher shipped (`features/games`, ported from mockup 04). Home In-Person CTA now lands here; Fach-Finder + Gerät holen start `/select`, roadmap games shown as "In Planung". |
+| 2026-07-25 | **Activity shipped.** Adds Family 6 (Perform engine) and the first *composite* game — Perform → Schematic → Physical harness chained in one Zug (ADR-0006). Physical/Timer harness marked as existing (Stufe 3). `Gerät holen` flagged ⚠: launchable but not yet a real relay; consolidation raised as an open question. Card locations now come from live Placements, not baked into the card as in the standalone app. |

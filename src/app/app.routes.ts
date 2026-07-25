@@ -43,6 +43,18 @@ export const routes: Routes = [
     loadComponent: () => import('./features/play/play').then((m) => m.Play),
   },
   {
+    path: 'activity',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/activity/activity-setup').then((m) => m.ActivitySetup),
+  },
+  {
+    path: 'activity/play',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/activity/activity-play').then((m) => m.ActivityPlay),
+  },
+  {
     path: 'editor',
     canActivate: [authGuard],
     loadComponent: () => import('./features/editor/editor').then((m) => m.Editor),

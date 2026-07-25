@@ -3,6 +3,7 @@ import { ContentStore } from './content-store.port';
 import { VehicleType } from '../models/vehicle-type';
 import { Equipment } from '../models/equipment';
 import { Vehicle, Placement } from '../models/vehicle';
+import { ActivityCard } from '../models/activity-card';
 
 /**
  * Supabase-backed ContentStore (ADR-0002). Same port as the local adapter, so it
@@ -38,6 +39,18 @@ export class SupabaseContentStore implements ContentStore {
       antrieb: r.antrieb ?? undefined,
       beschreibung: r.beschreibung ?? undefined,
       verwendung: r.verwendung ?? undefined,
+    }));
+  }
+
+  /** Shared reference data, seeded via SQL like vehicle_types — read-only here. */
+  async loadActivityCards(): Promise<ActivityCard[]> {
+    const { data, error } = await this.db.from('activity_cards').select('*');
+    if (error) throw error;
+    return (data ?? []).map((r) => ({
+      equipmentId: r.equipment_id,
+      difficulty: r.difficulty,
+      taboo: r.taboo ?? undefined,
+      excludeModes: r.exclude_modes ?? undefined,
     }));
   }
 

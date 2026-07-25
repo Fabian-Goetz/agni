@@ -1,0 +1,197 @@
+/* ============================================================
+   AGNI — design language "C" token block, shared by the two Activity screens.
+   The other features each inline this block; Activity ships two screens in one
+   feature, so it lives in a partial rather than being pasted twice.
+   See docs/design/design-guidelines.md §3 (color tokens) and §4 (typography).
+   ============================================================ */
+
+@mixin light {
+  --paper-bg: #f6f4f0;
+  --ink: #191a1c;
+  --ink-2: #4b4e54;
+  --faint: #9aa0a8;
+  --line: #e4e0d9;
+  --line-2: #d6d1c8;
+  --signal: #e5352b;
+  --signal-hi: #c82820;
+  --sodium: #b8791c;
+  --go: #16a34a;
+
+  --bg-image: radial-gradient(120% 90% at 22% 6%, #ffffff 0%, #f6f4f0 52%, #efebe4 100%),
+    linear-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.028) 1px, transparent 1px);
+
+  --plate-bg: #ffffff;
+  --card-bg: #ffffff;
+  --surface-2: #fbfaf7;
+  --go-bg: rgba(22, 163, 74, 0.1);
+  --signal-bg: rgba(229, 53, 43, 0.08);
+  --sodium-bg: rgba(184, 121, 28, 0.1);
+  --bar-bg: rgba(246, 244, 240, 0.88);
+  --focus-ring: 0 0 0 3px rgba(229, 53, 43, 0.28);
+  --btn-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  --radius: 4px;
+  --font-display: 'Roboto Condensed', system-ui, sans-serif;
+  --font-body: 'Roboto', system-ui, sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, monospace;
+}
+
+@mixin dark {
+  --paper-bg: #0e1116;
+  --ink: #e8eaed;
+  --ink-2: #8a94a3;
+  --faint: #5a6473;
+  --line: #1e242d;
+  --line-2: #262e3a;
+  --signal: #e5352b;
+  --signal-hi: #ff574c;
+  --sodium: #f4b860;
+  --go: #22c55e;
+
+  --bg-image: radial-gradient(120% 90% at 22% 8%, #171c25 0%, #0e1116 46%, #0b0e12 100%),
+    linear-gradient(#1e242d 1px, transparent 1px),
+    linear-gradient(90deg, #1e242d 1px, transparent 1px);
+
+  --plate-bg: rgba(22, 26, 33, 0.6);
+  --card-bg: linear-gradient(180deg, #161a21, #12161d);
+  --surface-2: #1b2029;
+  --go-bg: rgba(34, 197, 94, 0.14);
+  --signal-bg: rgba(229, 53, 43, 0.14);
+  --sodium-bg: rgba(244, 184, 96, 0.14);
+  --bar-bg: rgba(14, 17, 22, 0.88);
+  --focus-ring: 0 0 0 3px rgba(244, 184, 96, 0.4);
+  --btn-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* The four team colours, in roster order. Used for pawns on the board and for
+   the team strip; each is a hue that survives both themes. */
+@mixin team-colors {
+  --team-0: #e5352b;
+  --team-1: #3b82f6;
+  --team-2: #16a34a;
+  --team-3: #d97706;
+}
+
+/* Page background — the blueprint grid. */
+@mixin page {
+  min-height: 100%;
+  color: var(--ink);
+  background: var(--paper-bg);
+  background-image: var(--bg-image);
+  background-size: 100% 100%, 34px 34px, 34px 34px;
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s, color 0.25s;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+/* `.btn` / `.btn-primary` / `.btn-ghost` (design-guidelines §6). */
+@mixin buttons {
+  .btn {
+    min-height: 48px;
+    padding: 13px 18px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--signal);
+    color: #fff;
+    box-shadow: var(--btn-shadow);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--signal-hi);
+  }
+  .btn-ghost {
+    background: transparent;
+    border-color: var(--line-2);
+    color: var(--ink-2);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    border-color: var(--ink-2);
+    color: var(--ink);
+  }
+  /* Moderator calls: the two verdicts a human gives, never colour alone (§3). */
+  .btn-yes {
+    background: var(--go-bg);
+    border-color: var(--go);
+    color: var(--go);
+  }
+  .btn-no {
+    background: var(--signal-bg);
+    border-color: var(--signal);
+    color: var(--signal);
+  }
+}
+
+/**
+ * The 38px sun/moon swap. Include inside the screen's root selector; the icon
+ * swap itself needs the `[data-theme='dark']` root and is one rule per screen.
+ */
+@mixin theme-toggle {
+  .theme-toggle {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    background: var(--plate-bg);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+
+    &:hover {
+      color: var(--ink);
+      border-color: var(--ink-2);
+    }
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+    svg {
+      width: 17px;
+      height: 17px;
+    }
+    .i-sun {
+      display: none;
+    }
+  }
+}
+
+/** The dark-theme half of `theme-toggle`. Include under `[data-theme='dark']`. */
+@mixin theme-toggle-dark {
+  .theme-toggle .i-moon {
+    display: none;
+  }
+  .theme-toggle .i-sun {
+    display: block;
+  }
+}

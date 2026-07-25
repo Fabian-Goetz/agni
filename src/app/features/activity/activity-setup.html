@@ -1,0 +1,361 @@
+<div class="activity-setup" [attr.data-theme]="theme()">
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">AGNI</div>
+        <div class="sub">Fahrzeugkunde</div>
+      </div>
+      <div class="account">
+        @if (showAccount && auth.user()) {
+          <div class="avatar">{{ initials() }}</div>
+        }
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="Design umschalten"
+          (click)="toggleTheme()"
+        >
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+          </svg>
+          <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <a class="back" routerLink="/games">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+      Spiele
+    </a>
+
+    <!-- ============ ONBOARDING HEAD ============
+         One question per screen. The step's question is the H1; the rail is the
+         only progress chrome, and it is not interactive. -->
+    <div class="page-head">
+      <p class="eyebrow">{{ game.name }} · Schritt {{ step() + 1 }} von {{ steps.length }}</p>
+      <h1>{{ current().title }}</h1>
+      <p class="lede">{{ current().lede }}</p>
+    </div>
+
+    <div class="wiz-rail" role="presentation">
+      @for (s of steps; track $index) {
+        <span [class.on]="$index <= step()"></span>
+      }
+    </div>
+
+    <div class="setup">
+      @switch (step()) {
+        <!-- ============ 1 · TEAMS ============ -->
+        @case (0) {
+          <div class="step-panel">
+          <div class="block">
+            <div class="label">Anzahl Teams</div>
+            <div class="seg" role="group" aria-label="Anzahl Teams">
+              @for (n of teamSizes; track n) {
+                <button type="button" [class.on]="teams().length === n" (click)="setTeamCount(n)">
+                  {{ n }}
+                </button>
+              }
+            </div>
+
+            <div class="team-list">
+              @for (name of teams(); track $index) {
+                <label class="team-row" [attr.data-team]="$index">
+                  <span class="pawn" aria-hidden="true"></span>
+                  <input
+                    type="text"
+                    [value]="name"
+                    maxlength="16"
+                    [attr.aria-label]="'Name Team ' + ($index + 1)"
+                    (input)="renameTeam($index, $any($event.target).value)"
+                  />
+                </label>
+              }
+            </div>
+
+            <p class="hint-line">
+              @if (isSolo()) {
+                Ein Team — gewertet wird in <b>Zügen bis Ziel</b>.
+              } @else {
+                Wer zuerst am <b>Ziel</b> steht, gewinnt. Die Reihenfolge wird ausgelost.
+              }
+            </p>
+            @if (!namesOk()) {
+              <p class="step-warn">Jedes Team braucht einen Namen.</p>
+            }
+          </div>
+          </div>
+        }
+
+        <!-- ============ 2 · FAHRZEUG ============ -->
+        @case (1) {
+          <div class="step-panel">
+          <div class="block">
+            <div class="label">{{ vehicles().length > 1 ? 'Fahrzeug wählen' : 'Dienstfahrzeug' }}</div>
+
+            @if (preparing()) {
+              <p class="empty-note">Lädt…</p>
+            } @else if (vehicles().length > 1) {
+              <div class="veh-list">
+                @for (o of vehicles(); track o.id) {
+                  <button
+                    type="button"
+                    class="veh-option"
+                    [class.on]="o.id === vehicle()?.id"
+                    (click)="chooseVehicle(o.id)"
+                  >
+                    <span class="thumb">
+                      <svg width="60" height="36" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+                        <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="1.6" />
+                        <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="1.6" />
+                        <circle cx="20" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="1.6" />
+                        <circle cx="54" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="1.6" />
+                      </svg>
+                    </span>
+                    <span class="vinfo">
+                      <strong>{{ o.name }}</strong>
+                      <span>{{ vehicleNote(o.id) }}</span>
+                    </span>
+                    <span class="mark-sel">✓</span>
+                  </button>
+                }
+              </div>
+            } @else if (vehicle(); as v) {
+              <div class="veh-card">
+                <span class="thumb">
+                  <svg width="88" height="52" viewBox="0 0 72 44" fill="none" aria-hidden="true">
+                    <path d="M6 12 L6 34 L66 34 L66 16 L60 12 Z" stroke="currentColor" stroke-width="1.6" />
+                    <path d="M6 12 L6 34 L24 34 L24 15 L17 12 Z" stroke="currentColor" stroke-width="1.6" />
+                    <rect x="30" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2" />
+                    <rect x="48" y="18" width="14" height="14" stroke="currentColor" stroke-width="1.2" />
+                    <circle cx="20" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="1.6" />
+                    <circle cx="54" cy="34" r="6" class="hole" stroke="currentColor" stroke-width="1.6" />
+                  </svg>
+                </span>
+                <div class="vinfo">
+                  @if (vehicleType(); as t) {
+                    <span class="type">{{ t.name }}</span>
+                  }
+                  <strong>{{ v.name }}</strong>
+                  <span>{{ poolSize() }} Karten im Pool</span>
+                </div>
+              </div>
+            } @else {
+              <p class="empty-note">
+                Noch kein Fahrzeug im Gerätehaus — ohne eines gibt es keine Beladung, die
+                Stufe 2 und 3 abfragen könnten.
+                <a routerLink="/geraetehaus">Fahrzeug anlegen →</a>
+              </p>
+            }
+
+            @if (!preparing() && vehicle() && !schematicOk()) {
+              <p class="step-warn">
+                Für diesen Fahrzeugtyp fehlt das Fächer-Layout. Anderes Fahrzeug wählen — oder
+                <button type="button" class="inline-fix" (click)="locateOn.set(false)">
+                  Stufe 2 abschalten
+                </button>.
+              </p>
+            }
+          </div>
+          </div>
+        }
+
+        <!-- ============ 3 · STUFEN ============ -->
+        @case (2) {
+          <div class="step-panel">
+          <div class="two-up">
+            <div class="block">
+              <div class="label">Stufen</div>
+
+              <div class="stufen">
+                <div class="stufe always-on">
+                  <span class="s-no">1</span>
+                  <span class="s-body">
+                    <strong>Raten</strong>
+                    <span>Beschreiben · Zeichnen · Pantomime — das Feld entscheidet.</span>
+                  </span>
+                  <span class="s-pts">{{ pointsFor('Leicht') }}–{{ pointsFor('Schwer') }} P</span>
+                </div>
+
+                <button
+                  type="button"
+                  class="stufe"
+                  [class.on]="locateOn()"
+                  [attr.aria-pressed]="locateOn()"
+                  (click)="locateOn.set(!locateOn())"
+                >
+                  <span class="s-no">2</span>
+                  <span class="s-body">
+                    <strong>Verorten</strong>
+                    <span>Richtiges Fach am Fahrzeug antippen — automatisch geprüft.</span>
+                  </span>
+                  <span class="s-pts">+{{ locateBonus() }} P</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="stufe"
+                  [class.on]="fetchOn()"
+                  [attr.aria-pressed]="fetchOn()"
+                  (click)="fetchOn.set(!fetchOn())"
+                >
+                  <span class="s-no">3</span>
+                  <span class="s-body">
+                    <strong>Holen</strong>
+                    <span>Gerät wirklich bringen — gegen die Uhr, Gruppenführer wertet.</span>
+                  </span>
+                  <span class="s-pts">+{{ fetchBonus() }} P</span>
+                </button>
+              </div>
+
+              <p class="hint-line">
+                Bis zu <b>{{ maxPoints() }} Felder</b> pro Zug. Eine verfehlte Stufe beendet den
+                Zug — was davor geschafft wurde, zählt trotzdem.
+              </p>
+              @if (poolSize() === 0) {
+                <p class="step-warn">
+                  Keine Activity-Karten für dieses Fahrzeug. Erst im Gerätehaus beladen.
+                </p>
+              }
+            </div>
+
+            <div class="block">
+              <button
+                type="button"
+                class="tuning-toggle"
+                [attr.aria-expanded]="tuning()"
+                (click)="tuning.set(!tuning())"
+              >
+                {{ tuning() ? '−' : '+' }} Feineinstellung
+              </button>
+
+              @if (tuning()) {
+                <div class="tuning">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Schwierigkeit</th>
+                        <th>Punkte</th>
+                        <th>Sekunden</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (d of difficulties; track d) {
+                        <tr>
+                          <th scope="row">{{ d }}</th>
+                          <td>
+                            <input
+                              type="number" min="1" max="20"
+                              [value]="pointsFor(d)"
+                              [attr.aria-label]="'Punkte ' + d"
+                              (change)="setPoints(d, $any($event.target).value)"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number" min="10" max="300" step="5"
+                              [value]="secondsFor(d)"
+                              [attr.aria-label]="'Sekunden ' + d"
+                              (change)="setSeconds(d, $any($event.target).value)"
+                            />
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+
+                  <div class="tune-row">
+                    <label>
+                      <span>Bonus Verorten</span>
+                      <input
+                        type="number" min="0" max="20"
+                        [value]="locateBonus()"
+                        (change)="setLocateBonus($any($event.target).value)"
+                      />
+                    </label>
+                    <label>
+                      <span>Bonus Holen</span>
+                      <input
+                        type="number" min="0" max="20"
+                        [value]="fetchBonus()"
+                        (change)="setFetchBonus($any($event.target).value)"
+                      />
+                    </label>
+                    <label>
+                      <span>Sekunden Holen</span>
+                      <input
+                        type="number" min="10" max="300" step="5"
+                        [value]="fetchSeconds()"
+                        (change)="setFetchSeconds($any($event.target).value)"
+                      />
+                    </label>
+                  </div>
+
+                  <p class="tune-note">
+                    Stufe 2 läuft ohne Uhr: welches Fach es ist, soll gewusst und nicht geraten
+                    werden.
+                  </p>
+                </div>
+              } @else {
+                <p class="tune-note collapsed">
+                  Punkte und Sekunden je Schwierigkeit, Boni für Stufe 2 und 3. Die Vorgaben
+                  stimmen für eine normale Übung.
+                </p>
+              }
+            </div>
+          </div>
+          </div>
+        }
+      }
+
+      <!-- ============ NAV ============
+           Sequential: Weiter carries the flow, Zurück only exists once there is
+           somewhere to go back to, and the start button appears on the last step.
+           Weiter is never disabled — the steps are interdependent, so paging on
+           is sometimes the only route to the fix (see `stepValid`). -->
+      <div class="wizard-nav">
+        @if (step() > 0) {
+          <button type="button" class="btn btn-ghost nav-back" (click)="prev()">← Zurück</button>
+        }
+
+        @if (step() < lastStep) {
+          <button type="button" class="start nav-next" (click)="next()">Weiter →</button>
+        } @else {
+          <button class="start" type="button" [disabled]="!canStart()" (click)="start()">
+            Spiel starten →
+          </button>
+        }
+      </div>
+
+      <!-- The configuration, gathered back together before the last commit. -->
+      @if (step() === lastStep && canStart()) {
+        <p class="est">{{ summary() }} · {{ poolSize() }} Karten · 36 Felder bis Ziel</p>
+      } @else if (preparing()) {
+        <p class="est">Gerätehaus wird geladen …</p>
+      } @else if (step() === lastStep) {
+        <!-- Only where it blocks something. Earlier steps state their own problem
+             inline, next to the control that causes it. -->
+        <p class="est warn">
+          @if (!stepValid(0)) {
+            Schritt 1: jedes Team braucht einen Namen.
+          } @else if (!vehicle()) {
+            Schritt 2: kein Fahrzeug im Gerätehaus — dort erst eines anlegen.
+          } @else if (!schematicOk()) {
+            Schritt 2: diesem Fahrzeugtyp fehlt das Fächer-Layout für Stufe 2.
+          } @else {
+            Schritt 3: keine Activity-Karten für dieses Fahrzeug.
+          }
+        </p>
+      }
+    </div>
+
+    <footer class="footer">
+      <span><b>v1</b> · In-Person-Modus</span>
+      <span>Karten aus dem <b>Geräte-Katalog</b></span>
+      <span>Ein Gerät · Gruppe am Fahrzeug</span>
+    </footer>
+  </div>
+</div>

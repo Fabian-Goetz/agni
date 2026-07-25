@@ -2,6 +2,7 @@ import { InjectionToken } from '@angular/core';
 import { VehicleType } from '../models/vehicle-type';
 import { Equipment } from '../models/equipment';
 import { Vehicle, Placement } from '../models/vehicle';
+import { ActivityCard } from '../models/activity-card';
 
 /**
  * Persistence seam (ADR-0002). The app depends only on this port. A localStorage
@@ -12,10 +13,14 @@ import { Vehicle, Placement } from '../models/vehicle';
  * Writes are **granular** (add/put/remove one thing), not whole-array saves: this
  * prunes deleted rows correctly and lets RLS scope each mutation to the owner,
  * instead of the delete-all-then-reinsert dance a whole-array save would force.
- * Vehicle types are shared read-only reference data — loaded, never written here.
+ * Vehicle types and Activity cards are shared read-only reference data — loaded,
+ * never written here.
  */
 export interface ContentStore {
   loadVehicleTypes(): Promise<VehicleType[]>;
+
+  /** Activity rule data (difficulty, Tabu-Wörter) decorating catalog equipment. */
+  loadActivityCards(): Promise<ActivityCard[]>;
 
   loadEquipment(): Promise<Equipment[]>;
   /** Insert or update one catalog entry. */
